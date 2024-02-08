@@ -6,9 +6,14 @@ namespace MavericksBank.Models
 {
 	public class Transactions:IEquatable<Transactions>
 	{
+        public Transactions()
+        {
+
+        }
+
         public Transactions(int transactionID,
-    string transactionType, float amount, int sAccountID,
-    DateTime transactionDate, string description)
+    string transactionType, float amount,
+    DateTime transactionDate, string description,int sAccountID,int beneficiaryID,string status)
         {
             TransactionID = transactionID;
             TransactionDate = transactionDate;
@@ -16,20 +21,21 @@ namespace MavericksBank.Models
             Amount = amount;
             Description = description;
             SAccountID = sAccountID;
-            //DAccountID = dAccountID;
-            
-            
+            BeneficiaryID = beneficiaryID;
+            Status = status;
         }
 
         [Key]
         public int TransactionID { set; get; }
+        public string Status { set; get; }
 
-
-
-
-        public int SAccountID;
         [ForeignKey("SAccountID")]
-        public Accounts SourceAccount { set; get; }
+        public int SAccountID { set; get; }
+        public Accounts? SourceAccount { set; get; }
+
+        [ForeignKey("BeneficiaryID")]
+        public int BeneficiaryID { set; get; }
+        public Beneficiaries? Beneficiaries { set; get; }
 
 
         public string TransactionType { set; get; }
@@ -41,7 +47,7 @@ namespace MavericksBank.Models
 
         public override string ToString()
         {
-            return $"TransactionID : {TransactionID}\nSourceAccount : {SourceAccount.AccountID}\n" +
+            return $"TransactionID : {TransactionID}\n" +
                 $"TransactionType : {TransactionType}\nAmount : {Amount}\n" +
             $"\nTransactionDate : {TransactionDate}\n" +
             $"Description : {Description}";

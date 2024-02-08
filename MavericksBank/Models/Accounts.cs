@@ -11,7 +11,7 @@ namespace MavericksBank.Models
             Status = "Pending";
         }
         public Accounts(int accountID, int customerID, string accountType,
-            float balance, string accountNumber,string status, int bankID)
+            float balance, string accountNumber,string status, string iFSCCode)
         {
             AccountID = accountID;
             CustomerID = customerID;
@@ -19,7 +19,7 @@ namespace MavericksBank.Models
             Balance = balance;
             AccountNumber = accountNumber;
             Status = status;
-            BankID = bankID;
+            IFSCCode = iFSCCode;
         }
 
         [Key]
@@ -29,11 +29,11 @@ namespace MavericksBank.Models
         [ForeignKey("CustomerID")]
         public int CustomerID { set; get; }
         public Customer Customer { set; get; }
+        //public Beneficiaries? Beneficiaries { set; get; }
 
-        
-        public int BankID { set; get; }
-        [ForeignKey("BankID")]
-        public Banks Banks { set; get; }
+        public string IFSCCode { set; get; }
+        [ForeignKey("IFSCCode")]
+        public Branches Branches { set; get; }
 
 
         
@@ -43,8 +43,7 @@ namespace MavericksBank.Models
 
         //Navigations
 
-        //public Transactions SentTransactions { set; get; }
-        //public Transactions RecievedTransactions { set; get; }
+        public List<Transactions> RecievedTransactions { set; get; }
 
         public bool Equals(Accounts? other)
         {

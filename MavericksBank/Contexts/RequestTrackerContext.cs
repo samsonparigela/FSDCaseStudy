@@ -23,7 +23,7 @@ namespace MavericksBank.Contexts
         public DbSet<Loan> Loans { get; set; }
         public DbSet<Transactions> Transactions { get; set; }
         public DbSet<Users> Users { get; set; }
-
+        public DbSet<LoanPolicies> LoanPolicies { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,7 +34,7 @@ namespace MavericksBank.Contexts
             modelBuilder.Entity<BankEmployee>()
                 .HasKey(p => p.EmployeeID);
             modelBuilder.Entity<Beneficiaries>()
-                .HasKey(p => p.BeneficiaryID);
+                .HasKey(p => p.BeneficiaryAccountNumber);
             modelBuilder.Entity<Banks>()
                 .HasKey(p => p.BankID);
             modelBuilder.Entity<Branches>()
@@ -47,67 +47,69 @@ namespace MavericksBank.Contexts
                 .HasKey(p => p.TransactionID);
             modelBuilder.Entity<Users>()
                 .HasKey(p => p.UserID);
+            modelBuilder.Entity<LoanPolicies>()
+                .HasKey(p => p.LoanPolicyID);
 
-            //modelBuilder.Entity<Accounts>()
-            //    .HasOne(p => p.Customer)
-            //    .WithMany(a => a.Accounts)
-            //    .HasForeignKey("Accounts","CustomerID");
+            modelBuilder.Entity<Accounts>()
+                .HasOne(p => p.Customer)
+                .WithMany(a => a.Accounts)
+                .HasForeignKey("CustomerID");
 
-            //modelBuilder.Entity<Accounts>()
-            //    .HasOne(p => p.Banks)
-            //    .WithMany(a => a.Accounts)
-            //    .HasForeignKey("Accounts", "BankID");
+            modelBuilder.Entity<Accounts>()
+                .HasOne(p => p.Branches)
+                .WithMany(a => a.Accounts)
+                .HasForeignKey("IFSCCode");
 
-            //modelBuilder.Entity<Accounts>()
-            //    .HasOne(p => p.Beneficiaries)
-            //    .WithOne(a => a.Accounts)
-            //    .HasForeignKey("Accounts", "BeneficiaryID");
+            modelBuilder.Entity<Loan>()
+                .HasOne(p => p.Customer)
+                .WithMany(a => a.Loans)
+                .HasForeignKey("CustomerID");
 
-            //modelBuilder.Entity<Loan>()
-            //    .HasOne(p => p.Customer)
-            //    .WithMany(a => a.Loans)
-            //    .HasForeignKey("Loan", "CustomerID");
+            modelBuilder.Entity<Loan>()
+                .HasOne(p => p.LoanPolicies)
+                .WithMany(a => a.Loans)
+                .HasForeignKey("LoanPolicyID");
 
-            ////modelBuilder.Entity<Branches>()
-            ////    .HasOne(p => p.Banks)
-            ////    .WithMany(a => a.Branches)
-            ////    .HasForeignKey("Branches", "BankID");
-            ////    //.HasPrincipalKey(a => a.BankID);
+            modelBuilder.Entity<Branches>()
+                .HasOne(p => p.Banks)
+                .WithMany(a => a.Branches)
+                .HasForeignKey("BankID");
 
-            //modelBuilder.Entity<Beneficiaries>()
-            //    .HasOne(p => p.Customer)
-            //    .WithMany(a => a.Beneficiaries)
-            //    .HasForeignKey("Beneficiaries", "CustomerID");
+            modelBuilder.Entity<Beneficiaries>()
+                .HasOne(p => p.Customer)
+                .WithMany(a => a.Beneficiaries)
+                .HasForeignKey("CustomerID");
 
-            //modelBuilder.Entity<Beneficiaries>()
-            //    .HasOne(p => p.Accounts)
-            //    .WithOne(a => a.Beneficiaries)
-            //    .HasForeignKey("Beneficiaries", "AccountID");
+            modelBuilder.Entity<Beneficiaries>()
+                .HasOne(p => p.Branch)
+                .WithMany(a => a.Beneficiaries)
+                .HasForeignKey("IFSCCode");
 
-            //modelBuilder.Entity<Transactions>()
-            //    .HasOne(p => p.SourceAccount)
-            //    .WithOne(a => a.SentTransactions)
-            //    .HasForeignKey("Transactions", "SAccountID");
+            modelBuilder.Entity<Transactions>()
+                .HasOne(p => p.SourceAccount)
+                .WithMany(a => a.RecievedTransactions)
+                .HasForeignKey("SAccountID");
 
-            //modelBuilder.Entity<Transactions>()
-            //    .HasOne(p => p.DestinationAccount)
-            //    .WithOne(a => a.RecievedTransactions)
-            //    .HasForeignKey("Transactions", "DAccountID");
+            modelBuilder.Entity<Transactions>()
+                .HasOne(p => p.Beneficiaries)
+                .WithMany(a => a.Transactions)
+                .HasForeignKey("BeneficiaryID")
+                .OnDelete(DeleteBehavior.NoAction);
 
-            //modelBuilder.Entity<Customer>()
-            //    .HasOne(p => p.Users)
-            //    .WithOne(a => a.Customer)
-            //    .HasForeignKey("Customer", "UserID");
+            modelBuilder.Entity<Customer>()
+                .HasOne(p => p.Users)
+                .WithMany(a => a.Customers)
+                .HasForeignKey("UserID");
 
-            //modelBuilder.Entity<BankEmployee>()
-            //    .HasOne(p => p.Users)
-            //    .WithOne(a => a.BankEmployee)
-            //    .HasForeignKey("BankEmployee", "UserID");
+            modelBuilder.Entity<BankEmployee>()
+                .HasOne(p => p.Users)
+                .WithMany(a => a.BankEmployees)
+                .HasForeignKey("UserID");
 
-            //modelBuilder.Entity<Admin>()
-            //    .HasOne(p => p.Users)
-            //    .WithOne(a => a.Admin)
-            //    .HasForeignKey("Admin", "UserID");
+            modelBuilder.Entity<Admin>()
+                .HasOne(p => p.Users)
+                .WithMany(a => a.Admins)
+                .HasForeignKey("UserID");
 
 
 

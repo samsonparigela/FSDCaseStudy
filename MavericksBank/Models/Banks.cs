@@ -5,6 +5,10 @@ namespace MavericksBank.Models
 {
 	public class Banks:IEquatable<Banks>
 	{
+        public Banks()
+        {
+
+        }
         public Banks(int bankID, string bankName)
         {
             BankID = bankID;
@@ -15,8 +19,8 @@ namespace MavericksBank.Models
         public int BankID { get; set; }
 		public string BankName { get; set; }
 
-
-
+        
+        public List<Branches> Branches { set; get; }
 
         public bool Equals(Banks? other)
         {

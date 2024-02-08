@@ -12,13 +12,11 @@ namespace MavericksBank.Models
         }
 
         public Loan(int loanID, Customer customer, int customerID,
-            float loanAmount, float interestRate, int tenureMonths, string status, string loanPurpose)
+            float loanAmount, string status, string loanPurpose)
         {
             LoanID = loanID;
             CustomerID = customerID;
             LoanAmount = loanAmount;
-            InterestRate = interestRate;
-            TenureMonths = tenureMonths;
             Status = status;
             LoanPurpose = loanPurpose;
         }
@@ -29,18 +27,34 @@ namespace MavericksBank.Models
         [ForeignKey("CustomerID")]
         public int CustomerID { set; get; }
 
-        public Customer Customer { set; get; }
+        public Customer? Customer { set; get; }
+
+        [ForeignKey("LoanPloicyID")]
+        public int LoanPolicyID { set; get; }
+
+        public LoanPolicies? LoanPolicies { set; get; }
 
         public float LoanAmount { set; get; }
-        public float InterestRate { set; get; }
-        public int TenureMonths { set; get; }
-        public string Status { set; get; }
-        public string LoanPurpose { set; get; }
+        public int TenureInMonths { set; get; }
+        public float CalculateFinalAmount {
+            get
+            {
+                return LoanAmount;
+            }
+            set
+            {
+                LoanAmount = LoanAmount * (1 + (LoanPolicies.Interest * LoanPolicies.TenureInMonths));
+            }
+        }
+
+
+        public string Status { set; get; } = string.Empty;
+        public string LoanPurpose { set; get; } = string.Empty;
 
         public override string ToString()
         {
-            return $"LoanID : {LoanID}\nCustomerID : {Customer.CustomerID}\nLoanAmount : {LoanAmount}\n InterestRate : {InterestRate}\n" +
-            $"TenureMonths : {TenureMonths}\nStatus : {Status}\nLoanPurpose : {LoanPurpose}";
+            return $"LoanID : {LoanID}\nCustomerID : {Customer.CustomerID}\nLoanAmount : {LoanAmount}\n" +
+            $"\nStatus : {Status}\nLoanPurpose : {LoanPurpose}";
         }
     }
 }

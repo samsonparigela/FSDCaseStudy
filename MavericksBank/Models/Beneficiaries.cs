@@ -6,48 +6,44 @@ namespace MavericksBank.Models
 {
 	public class Beneficiaries:IEquatable<Beneficiaries>
 	{
-        public Beneficiaries(int beneficiaryID, int customerID, string beneficiaryName, int accountID,
-            string bankName, string branch, string iFSCCode)
+        public Beneficiaries(int beneficiaryID, int customerID, string beneficiaryName,
+            string iFSCCode)
         {
-            BeneficiaryID = beneficiaryID;
+            BeneficiaryAccountNumber = beneficiaryID;
             CustomerID = customerID;
             BeneficiaryName = beneficiaryName;
-            AccountID = accountID;
-            BankName = bankName;
-            Branch = branch;
             IFSCCode = iFSCCode;
         }
+        public Beneficiaries()
+        {
 
+        }
         [Key]
-        public int BeneficiaryID { set; get; }
+        public int BeneficiaryAccountNumber { set; get; }
 
         [ForeignKey("CustomerID")]
         public int CustomerID { set; get; }
 
-        public Customer Customer { set; get; }
+        public Customer? Customer { set; get; }
+        public List<Transactions> Transactions { set; get; }
 
         public string BeneficiaryName { set; get; }
 
-        [ForeignKey("AccountID")]
-        public int AccountID { set; get; }
-
-        public Accounts Accounts { set; get; }
-
-
-        public string BankName { set; get; }
-        public string Branch { set; get; }
+        [ForeignKey("IFSCCode")]
         public string IFSCCode { set; get; }
+
+        public Branches Branch { set; get; }
+
+
 
         public bool Equals(Beneficiaries? other)
         {
-            return this.BeneficiaryID == other.BeneficiaryID;
+            return this.BeneficiaryAccountNumber == other.BeneficiaryAccountNumber;
         }
 
         public override string ToString()
         {
-            return $"BeneficiaryID : {BeneficiaryID}\nCustomer : {Customer.CustomerID}\nBeneficiaryName : {BeneficiaryName}\n" +
-            $"AccountNumber : {AccountID}\nBankName : {BankName}\nBranch : {Branch}\n" +
-                $"IFSCCode : {IFSCCode}\n";
+            return $"\nCustomer : {Customer.CustomerID}\nBeneficiaryName : {BeneficiaryName}\n";
         }
     }
 }

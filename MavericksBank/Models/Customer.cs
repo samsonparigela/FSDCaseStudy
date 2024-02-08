@@ -6,6 +6,10 @@ namespace MavericksBank.Models
 {
 	public class Customer:IEquatable<Customer>
 	{
+        public Customer()
+        {
+
+        }
         public Customer(int customerID, int userID, string name,
             string gender, string phone, string address, DateTime dOB, string aadhaar,
             string pANNumber, int age)
@@ -28,7 +32,7 @@ namespace MavericksBank.Models
         public int UserID { set; get; }
         [ForeignKey("UserID")]
 
-        public Users Users { set; get; }
+        public Users? Users { set; get; }
 
         public string Name { set; get; }
         public DateTime DOB { set; get; }
@@ -41,7 +45,9 @@ namespace MavericksBank.Models
 
         //Navigations
 
-
+        public List<Accounts> Accounts { set; get; }
+        public List<Loan> Loans { set; get; }
+        public List<Beneficiaries> Beneficiaries { set; get; }
 
 
         public bool Equals(Customer? other)

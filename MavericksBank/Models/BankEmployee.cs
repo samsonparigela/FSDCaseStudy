@@ -6,6 +6,10 @@ namespace MavericksBank.Models
 {
 	public class BankEmployee:IEquatable<BankEmployee>
 	{
+        public BankEmployee()
+        {
+
+        }
         public BankEmployee(int employeeID, string name, string position, int userID)
         {
             EmployeeID = employeeID;
@@ -21,7 +25,7 @@ namespace MavericksBank.Models
         [ForeignKey("UserID")]
         public int UserID { set; get; }
 
-        public Users Users { set; get; }
+        public Users? Users { set; get; }
         public string Position { set; get; }
 
         public bool Equals(BankEmployee? other)

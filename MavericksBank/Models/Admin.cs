@@ -15,7 +15,6 @@ namespace MavericksBank.Models
 
         [Key]
         public int AdminID { set; get; }
-
         [ForeignKey("UserID")]
         public int UserID { set; get; }
 
