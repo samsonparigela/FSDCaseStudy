@@ -5,7 +5,7 @@ namespace MavericksBank.Models.DTO
 {
 	public class AccountsCreateDTO
 	{
-        public string AccountNumber { set; get; } = string.Empty;
+        public int AccountNumber { set; get; }
 
 
         public string IFSCCode { set; get; } = string.Empty;

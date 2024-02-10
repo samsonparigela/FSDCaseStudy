@@ -24,15 +24,8 @@ namespace MavericksBank.Migrations
 
             modelBuilder.Entity("MavericksBank.Models.Accounts", b =>
                 {
-                    b.Property<int>("AccountID")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("AccountNumber")
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AccountID"));
-
-                    b.Property<string>("AccountNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AccountType")
                         .IsRequired()
@@ -52,7 +45,7 @@ namespace MavericksBank.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("AccountID");
+                    b.HasKey("AccountNumber");
 
                     b.HasIndex("CustomerID");
 
@@ -129,10 +122,7 @@ namespace MavericksBank.Migrations
             modelBuilder.Entity("MavericksBank.Models.Beneficiaries", b =>
                 {
                     b.Property<int>("BeneficiaryAccountNumber")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BeneficiaryAccountNumber"));
 
                     b.Property<string>("BeneficiaryName")
                         .IsRequired()
@@ -298,7 +288,10 @@ namespace MavericksBank.Migrations
                     b.Property<float>("Amount")
                         .HasColumnType("real");
 
-                    b.Property<int>("BeneficiaryID")
+                    b.Property<int>("BeneficiaryAccountNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BeneficiaryID")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -463,8 +456,7 @@ namespace MavericksBank.Migrations
                     b.HasOne("MavericksBank.Models.Beneficiaries", "Beneficiaries")
                         .WithMany("Transactions")
                         .HasForeignKey("BeneficiaryID")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("MavericksBank.Models.Accounts", "SourceAccount")
                         .WithMany("RecievedTransactions")

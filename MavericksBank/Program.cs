@@ -1,10 +1,15 @@
 ﻿using System.Numerics;
+using System.Text;
+using System.Text.Json.Serialization;
 using MavericksBank.Contexts;
 using MavericksBank.Interfaces;
 using MavericksBank.Models;
 using MavericksBank.Repository;
 using MavericksBank.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 internal class Program
 {
@@ -14,10 +19,56 @@ internal class Program
 
         // Add services to the container.
 
-        builder.Services.AddControllers();
+        builder.Services.AddControllers().AddJsonOptions(opts=>
+        {
+            opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+            opts.JsonSerializerOptions.WriteIndented = true;
+        }
+        );
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(opt=>
+        {
+            opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });
+            opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Please Enter Token",
+                Name="Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "bearer"
+            });
+
+            opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id="Bearer"
+                        }
+                    },
+                    new string[]{}
+                }
+            });
+        }
+        );
+
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["SecretKey"])),
+                ValidateIssuer = false,
+                ValidateAudience = false
+            };
+        });
+
 
         builder.Services.AddControllersWithViews()
             .AddNewtonsoftJson(options =>
@@ -42,11 +93,11 @@ internal class Program
         builder.Services.AddScoped<ICustomerTransactionService, CustomerTransactionService>();
         builder.Services.AddScoped<IBankEmpAccMngmtService, BankEmpAccMngmntService>();
         builder.Services.AddScoped<IEmployeeAdminService, BankEmployeeService>();
-        builder.Services.AddScoped<IAccountAdminService, AccountService>();
         builder.Services.AddScoped<IBankAdminService, BankService>();
         builder.Services.AddScoped<IBankEmpLoanService, BankEmpLoanService>();
         builder.Services.AddScoped<IBranchAdminService, BranchService>();
         builder.Services.AddScoped<ICustomerLoanService, CustomerLoanService>();
+        builder.Services.AddScoped<ITokenService, TokenService>();
 
         builder.Services.AddDbContext<RequestTrackerContext>(opts =>
         {

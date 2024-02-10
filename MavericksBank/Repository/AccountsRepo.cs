@@ -30,6 +30,8 @@ namespace MavericksBank.Repository
         public async Task<Accounts> Delete(int item)
         {
             Accounts accounts = await GetByID(item);
+            if (accounts == null)
+                throw new NoAccountFoundException();
             _context.Remove(accounts);
             _context.SaveChanges();
             _logger.LogInformation($"Account {accounts.AccountNumber} Deleted");
@@ -40,23 +42,25 @@ namespace MavericksBank.Repository
         {
             _logger.LogInformation($"Accounts retrieved");
             var accounts = _context.Accounts.ToList();
-            if (accounts != null)
-                return accounts;
-            throw new NoAccountFoundException();
+            if (accounts == null)
+                throw new NoAccountFoundException();
+            return accounts;
         }
 
         public async Task<Accounts> GetByID(int key)
         {
             _logger.LogInformation($"Accounts {key} retrieved");
-            var accounts = _context.Accounts.SingleOrDefault(p => p.AccountID == key);
-            if (accounts != null)
-                return accounts;
-            throw new NoAccountFoundException();
+            var accounts = _context.Accounts.SingleOrDefault(p => p.AccountNumber == key);
+            if (accounts == null)
+                throw new NoAccountFoundException();
+            return accounts;
         }
 
         public async Task<Accounts> Update(Accounts item)
         {
-            var accounts = await GetByID(item.AccountID);
+            var accounts = await GetByID(item.AccountNumber);
+            if (accounts == null)
+                throw new NoAccountFoundException();
             _context.Entry<Accounts>(item).State = EntityState.Modified;
             _context.SaveChanges();
             _logger.LogInformation($"Accounts {item.AccountNumber} Updated");

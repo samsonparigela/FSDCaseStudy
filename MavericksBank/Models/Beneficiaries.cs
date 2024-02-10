@@ -19,6 +19,7 @@ namespace MavericksBank.Models
 
         }
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int BeneficiaryAccountNumber { set; get; }
 
         [ForeignKey("CustomerID")]

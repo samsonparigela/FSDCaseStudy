@@ -13,7 +13,7 @@ namespace MavericksBank.Models
 
         public Transactions(int transactionID,
     string transactionType, float amount,
-    DateTime transactionDate, string description,int sAccountID,int beneficiaryID,string status)
+    DateTime transactionDate, string description,int sAccountID,int beneficiaryAccountNumber, string status)
         {
             TransactionID = transactionID;
             TransactionDate = transactionDate;
@@ -21,7 +21,7 @@ namespace MavericksBank.Models
             Amount = amount;
             Description = description;
             SAccountID = sAccountID;
-            BeneficiaryID = beneficiaryID;
+            BeneficiaryAccountNumber = beneficiaryAccountNumber;
             Status = status;
         }
 
@@ -34,7 +34,7 @@ namespace MavericksBank.Models
         public Accounts? SourceAccount { set; get; }
 
         [ForeignKey("BeneficiaryID")]
-        public int BeneficiaryID { set; get; }
+        public int BeneficiaryAccountNumber { set; get; }
         public Beneficiaries? Beneficiaries { set; get; }
 
 

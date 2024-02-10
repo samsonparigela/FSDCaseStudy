@@ -11,12 +11,15 @@ namespace MavericksBank.Interfaces
         public Task<Accounts> ViewAccountByID(int key);
         public Task<AccountsUpdateDTO> EditAccount(AccountsUpdateDTO updateDTO);
         public Task<List<Accounts>> ViewAllYourAccounts(int ID);
-        public Task<List<Transactions>> ViewAllYourTransactions(int ID);
-        public Task<List<Transactions>> ViewAllTransactionBetweenDates(DateTime date1, DateTime date2, int ID);
-        public Task<List<Transactions>> ViewAllTransactionsByAccount(int AID);
-        public Task<List<Transactions>> ViewAllTransactionsMadeToAnAccount(int AID,int CID);
-        public Task<List<Transactions>> ViewLastNTransactions(int ID, int n);
-        public Task<List<Transactions>> ViewAllTransactionsInTheLastMonth(int CID);
+        public Task<List<TransactionDTO>> ViewAllYourTransactions(int ID);
+//      public Task<List<TransactionDTO>> ViewAllTransactionBetweenDates(DateTime date1, DateTime date2, int ID);
+        public Task<List<TransactionDTO>> ViewAllTransactionsByAccount(int AID);
+        public Task<List<TransactionDTO>> ViewAllTransactionsMadeToAnAccount(int AID,int CID);
+        public Task<List<TransactionDTO>> ViewLastNTransactions(int ID, int n);
+        public Task<List<TransactionDTO>> ViewAllTransactionsInTheLastMonth(int CID);
+        public Task<List<TransactionDTO>> ViewAllTransactionsInThisMonth(int CID);
+        public Task<List<Banks>> ViewAllBanks();
+        public Task<List<Branches>> ViewBankBranches(int BID);
 
 
 

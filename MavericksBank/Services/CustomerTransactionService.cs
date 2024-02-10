@@ -1,4 +1,5 @@
 ﻿using System;
+using MavericksBank.Exceptions;
 using MavericksBank.Interfaces;
 using MavericksBank.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -11,16 +12,14 @@ namespace MavericksBank.Services
         private readonly ILogger<CustomerTransactionService> _logger;
         private readonly IRepository<Transactions, int> _TransacRepo;
         private readonly IRepository<Accounts, int> _AccRepo;
-        private readonly IAccountAdminService _AccService;
         public CustomerTransactionService(ILogger<CustomerTransactionService> logger,
-            IRepository<Transactions, int> TransacRepo, IRepository<Accounts, int> AccRepo, IAccountAdminService AccService)
+            IRepository<Transactions, int> TransacRepo, IRepository<Accounts, int> AccRepo)
 		{
             _logger = logger;
             _TransacRepo = TransacRepo;
             _AccRepo = AccRepo;
-            _AccService = AccService;
 		}
-        public async Task<Accounts> GetByAccountNumber(string accountNumber)
+        public async Task<Accounts> GetByAccountNumber(int accountNumber)
         {
             var account = await _AccRepo.GetAll();
             var myAccount = account.SingleOrDefault(p => p.AccountNumber == accountNumber);
@@ -45,9 +44,11 @@ namespace MavericksBank.Services
         }
 
 
-        public async Task<Transactions> DepositMoney(string accountNumber, int amount)
+        public async Task<Transactions> DepositMoney(int accountNumber, int amount)
         {
             var account = await GetByAccountNumber(accountNumber);
+            if (account.Status == "Pending")
+                throw new AccountTransactionException("Account is not active yet");
             account.Balance += amount;
             await _AccRepo.Update(account);
             var transaction = new Transactions();
@@ -55,8 +56,8 @@ namespace MavericksBank.Services
             transaction.TransactionType = "Deposit";
             transaction.TransactionDate = DateTime.Now;
             transaction.Status = "Success";
-            transaction.SAccountID = account.AccountID;
-            transaction.BeneficiaryID = 1;
+            transaction.SAccountID = account.AccountNumber;
+            transaction.BeneficiaryAccountNumber = account.AccountNumber;
             transaction.Description = "Self Deposit";
 
             transaction = await _TransacRepo.Add(transaction);
@@ -65,9 +66,13 @@ namespace MavericksBank.Services
 
         }
 
-        public async Task<Transactions> TransferMoney(int amount, int sourceAccountID, string accountNumber)
+        public async Task<Transactions> TransferMoney(int amount, int destAccountID, int accountNumber)
         {
             var account = await GetByAccountNumber(accountNumber);
+            if (account.Status == "Pending")
+                throw new AccountTransactionException("Account is not active yet");
+            if (amount > account.Balance)
+                throw new InsufficientFundsException("No Sufficient Funds to do the transaction");
             account.Balance -= amount;
             await _AccRepo.Update(account);
             var transaction1 = new Transactions();
@@ -75,8 +80,9 @@ namespace MavericksBank.Services
             transaction1.TransactionType = "Sent";
             transaction1.TransactionDate = DateTime.Now;
             transaction1.Status = "Success";
-            transaction1.SAccountID = sourceAccountID;
-            transaction1.BeneficiaryID = destAccountID;
+            transaction1.SAccountID = accountNumber;
+            transaction1.BeneficiaryAccountNumber = destAccountID;
+            transaction1.Description = "Sent";
 
             _logger.LogInformation("Amount Transferred");
 
@@ -87,17 +93,25 @@ namespace MavericksBank.Services
         public async Task<Transactions> WithdrawMoney(int amount,int accountID)
         {
             var account = await _AccRepo.GetByID(accountID);
+            if (account.Status == "Pending")
+                throw new AccountTransactionException("Account is not active yet");
+            if (amount > account.Balance)
+                throw new InsufficientFundsException("No Sufficient Funds to do the transaction");
             account.Balance -= amount;
             await _AccRepo.Update(account);
             var transaction = new Transactions();
             transaction.Amount = amount;
             transaction.TransactionType = "Withdraw";
             transaction.TransactionDate = DateTime.Now;
-            transaction.Status = "Withdrawn";
+            transaction.Status = "Success";
             transaction.SAccountID = accountID;
-            transaction.BeneficiaryID = 1;
+            transaction.BeneficiaryAccountNumber= account.AccountNumber;
+            transaction.Description = "Self Withdraw";
+
             _logger.LogInformation("Amount Withdrawn");
+
             transaction = await _TransacRepo.Add(transaction);
+
             return transaction;
         }
     }

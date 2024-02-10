@@ -10,10 +10,9 @@ namespace MavericksBank.Models
         {
             Status = "Pending";
         }
-        public Accounts(int accountID, int customerID, string accountType,
-            float balance, string accountNumber,string status, string iFSCCode)
+        public Accounts(int customerID, string accountType,
+            float balance, int accountNumber, string status, string iFSCCode)
         {
-            AccountID = accountID;
             CustomerID = customerID;
             AccountType = accountType;
             Balance = balance;
@@ -23,8 +22,8 @@ namespace MavericksBank.Models
         }
 
         [Key]
-        public int AccountID { set; get; }
-        public string AccountNumber { set; get; }
+        [DatabaseGeneratedAttribute(DatabaseGeneratedOption.None)]
+        public int AccountNumber { set; get; }
 
         [ForeignKey("CustomerID")]
         public int CustomerID { set; get; }
@@ -47,13 +46,13 @@ namespace MavericksBank.Models
 
         public bool Equals(Accounts? other)
         {
-            return this.AccountID == other.AccountID;
+            return this.AccountNumber == other.AccountNumber;
         }
 
         public override string ToString()
         {
-            return $"AccountID : {AccountID}\nAccount Number: " +
-                $"{AccountNumber}\nCustomerID : {Customer.CustomerID}\nAccountType : " +
+            return $"Account Number: {AccountNumber}" +
+                $"\nCustomerID : {Customer.CustomerID}\nAccountType : " +
                 $"{AccountType}\nBalance : {Balance}\nStatus : {Status}";
         }
     }

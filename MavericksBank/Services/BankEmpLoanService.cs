@@ -10,18 +10,21 @@ namespace MavericksBank.Repository
     {
         private readonly ILogger<BankEmpLoanService> _logger;
         private readonly IRepository<Loan, int> _LoanRepo;
+        private readonly IRepository<LoanPolicies, int> _LoanPolicyRepo;
         private readonly ICustomerAccountService _AccService;
         private readonly ICustomerLoanService _LoanService;
         private readonly IRepository<Customer, int> _CustRepo;
 
         public BankEmpLoanService(ILogger<BankEmpLoanService> logger, IRepository<Loan, int> LoanRepo,
-            ICustomerAccountService AccService, IRepository<Customer, int> CustRepo, ICustomerLoanService LoanService)
+            ICustomerAccountService AccService, IRepository<Customer, int> CustRepo,
+            ICustomerLoanService LoanService, IRepository<LoanPolicies, int> LoanPolicyRepo)
 		{
             _logger = logger;
             _LoanRepo = LoanRepo;
             _AccService = AccService;
             _CustRepo = CustRepo;
             _LoanService = LoanService;
+            _LoanPolicyRepo = LoanPolicyRepo;
 		}
 
         public async Task<Loan> ApproveOrDisapproveLoan(int LID)
@@ -43,6 +46,40 @@ namespace MavericksBank.Repository
         {
             var loans = await _LoanRepo.GetAll();
             return loans;
+        }
+
+
+        public async Task<List<LoanPolicies>> GetDifferentLoanPolicies()
+        {
+            var loanPolicies = await _LoanPolicyRepo.GetAll();
+            _logger.LogInformation("All Loan Policies retrieved Successfully");
+            return loanPolicies;
+        }
+
+        public async Task<LoanPolicies> AddLoanPolicies(LoanPolicies policies)
+        {
+            var loanPolicies = await _LoanPolicyRepo.Add(policies);
+            _logger.LogInformation("Loan Policy added Successfully");
+            return loanPolicies;
+        }
+
+        public async Task<LoanPolicies> DeleteLoanPolicies(int ID)
+        {
+            var loanPolicies = await _LoanPolicyRepo.Delete(ID);
+            _logger.LogInformation("Loan Policy Deleted Successfully");
+            return loanPolicies;
+        }
+
+        public async Task<LoanPolicies> UpdateLoanPolicies(LoanPolicies policies)
+        {
+
+            var loanPolicy = await _LoanPolicyRepo.GetByID(policies.LoanPolicyID);
+            loanPolicy.Interest = policies.Interest;
+            loanPolicy.LoanAmount = policies.LoanAmount;
+            loanPolicy.TenureInMonths = policies.TenureInMonths;
+            loanPolicy = await _LoanPolicyRepo.Update(loanPolicy);
+            _logger.LogInformation("Loan Policy Updated Successfully");
+            return loanPolicy;
         }
 
         public async Task<List<Loan>> GetAllLoansAppliedByACustomer(int CID)

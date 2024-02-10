@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MavericksBank.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class init1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -147,9 +147,7 @@ namespace MavericksBank.Migrations
                 name: "Accounts",
                 columns: table => new
                 {
-                    AccountID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AccountNumber = table.Column<int>(type: "int", nullable: false),
                     CustomerID = table.Column<int>(type: "int", nullable: false),
                     IFSCCode = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -158,7 +156,7 @@ namespace MavericksBank.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Accounts", x => x.AccountID);
+                    table.PrimaryKey("PK_Accounts", x => x.AccountNumber);
                     table.ForeignKey(
                         name: "FK_Accounts_Branches_IFSCCode",
                         column: x => x.IFSCCode,
@@ -177,8 +175,7 @@ namespace MavericksBank.Migrations
                 name: "Beneficiaries",
                 columns: table => new
                 {
-                    BeneficiaryAccountNumber = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BeneficiaryAccountNumber = table.Column<int>(type: "int", nullable: false),
                     CustomerID = table.Column<int>(type: "int", nullable: false),
                     BeneficiaryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IFSCCode = table.Column<string>(type: "nvarchar(450)", nullable: false)
@@ -239,7 +236,8 @@ namespace MavericksBank.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SAccountID = table.Column<int>(type: "int", nullable: false),
-                    BeneficiaryID = table.Column<int>(type: "int", nullable: false),
+                    BeneficiaryAccountNumber = table.Column<int>(type: "int", nullable: false),
+                    BeneficiaryID = table.Column<int>(type: "int", nullable: true),
                     TransactionType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Amount = table.Column<float>(type: "real", nullable: false),
                     TransactionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -252,7 +250,7 @@ namespace MavericksBank.Migrations
                         name: "FK_Transactions_Accounts_SAccountID",
                         column: x => x.SAccountID,
                         principalTable: "Accounts",
-                        principalColumn: "AccountID",
+                        principalColumn: "AccountNumber",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Transactions_Beneficiaries_BeneficiaryID",

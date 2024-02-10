@@ -36,16 +36,7 @@ namespace MavericksBank.Models
 
         public float LoanAmount { set; get; }
         public int TenureInMonths { set; get; }
-        public float CalculateFinalAmount {
-            get
-            {
-                return LoanAmount;
-            }
-            set
-            {
-                LoanAmount = LoanAmount * (1 + (LoanPolicies.Interest * LoanPolicies.TenureInMonths));
-            }
-        }
+        public float CalculateFinalAmount { set; get; }
 
 
         public string Status { set; get; } = string.Empty;

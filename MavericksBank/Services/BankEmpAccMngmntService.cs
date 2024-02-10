@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Security.Cryptography;
 using MavericksBank.Interfaces;
+using MavericksBank.Mappers;
 using MavericksBank.Models;
+using MavericksBank.Models.DTO;
 
 namespace MavericksBank.Services
 {
@@ -23,14 +25,15 @@ namespace MavericksBank.Services
         public async Task<Accounts> ApproveAccountClosing(int AID)
         {
             var account = await _AccRepo.GetByID(AID);
-            await _AccRepo.Delete(account.AccountID);
+            account.Status = "Account Closing Approved";
+            await _AccRepo.Update(account);
             _logger.LogInformation("Account Closing Approved");
             return account;
         }
         public async Task<Customer> GetCustomerDetailsforAccount(int AID)
         {
             var accounts = await _AccRepo.GetAll();
-            var account = accounts.SingleOrDefault(a => a.AccountID==AID);
+            var account = accounts.SingleOrDefault(a => a.AccountNumber==AID);
             var customerID = account.CustomerID;
             var customer = await _CustRepo.GetByID(customerID);
             return customer;
@@ -56,9 +59,9 @@ namespace MavericksBank.Services
         public async Task<List<Accounts>> GetAllAccountsForCloseRequest()
         {
             var accounts = await _AccRepo.GetAll();
-            var filteredAccounts = accounts.Where(a => a.Status == "Close Request");
+            var filteredAccounts = accounts.Where(a => a.Status == "Close Request").ToList();
             _logger.LogInformation("Retrieved All Accounts with Close Request");
-            return accounts;
+            return filteredAccounts;
         }
 
         public async Task<List<Accounts>> GetAllAccountsForOpenRequest()
@@ -66,14 +69,21 @@ namespace MavericksBank.Services
             var accounts = await _AccRepo.GetAll();
             var filteredAccounts = accounts.Where(a => a.Status == "Pending").ToList();
             _logger.LogInformation("Retrieved All Accounts with Open Request");
-            return accounts;
+            return filteredAccounts;
         }
 
-        public async Task<List<Transactions>> GetAllTransactions()
+        public async Task<List<TransactionDTO>> GetAllTransactions()
         {
             var transactions = await _TransacRepo.GetAll();
             _logger.LogInformation("Retrieved All Transactions");
-            return transactions;
+
+            List<TransactionDTO> DTOList = new List<TransactionDTO>();
+            foreach (Transactions transac in transactions)
+            {
+                var DTO = new GetTransactionDTO(transac).GetDTO();
+                DTOList.Add(DTO);
+            }
+            return DTOList;
         }
 
         public async Task<Accounts> ViewAccountDetails(int AID)
@@ -84,36 +94,60 @@ namespace MavericksBank.Services
 
         }
 
-        public async Task<List<Transactions>> ViewTransactionDetailsByAccount(int AID)
+        public async Task<List<TransactionDTO>> ViewTransactionDetailsByAccount(int AID)
         {
             var transactions = await _TransacRepo.GetAll();
             var filteredtransactions = transactions.Where(a=>a.SAccountID==AID).ToList();
             _logger.LogInformation($"Retrieved All Transactions of Account {AID}");
-            return filteredtransactions;
+            List<TransactionDTO> DTOList = new List<TransactionDTO>();
+            foreach (Transactions transac in filteredtransactions)
+            {
+                var DTO = new GetTransactionDTO(transac).GetDTO();
+                DTOList.Add(DTO);
+            }
+            return DTOList;
         }
 
-        public async Task<List<Transactions>> ViewSentTransactions(int AID)
+        public async Task<List<TransactionDTO>> ViewSentTransactions(int AID)
         {
             var transactions = await _TransacRepo.GetAll();
             var filteredtransactions = transactions.Where(t => t.SAccountID==AID).ToList();
             _logger.LogInformation($"Retrieved All Transactions of Account {AID}");
-            return filteredtransactions;
+            List<TransactionDTO> DTOList = new List<TransactionDTO>();
+            foreach (Transactions transac in filteredtransactions)
+            {
+                var DTO = new GetTransactionDTO(transac).GetDTO();
+                DTOList.Add(DTO);
+            }
+            return DTOList;
         }
 
-        public async Task<List<Transactions>> ViewReceivedTransactions(int AID)
+        public async Task<List<TransactionDTO>> ViewReceivedTransactions(int AID)
         {
             var transactions = await _TransacRepo.GetAll();
-            var filteredtransactions = transactions.Where(t => t.BeneficiaryID == AID).ToList();
+            var filteredtransactions = transactions.Where(t => t.BeneficiaryAccountNumber== AID).ToList();
             _logger.LogInformation($"Retrieved All Transactions of Account {AID}");
-            return filteredtransactions;
+            List<TransactionDTO> DTOList = new List<TransactionDTO>();
+            foreach (Transactions transac in filteredtransactions)
+            {
+                var DTO = new GetTransactionDTO(transac).GetDTO();
+                DTOList.Add(DTO);
+            }
+            return DTOList;
         }
 
-        public async Task<List<Transactions>> ViewTransactionsWith5HighestAmount()
+        public async Task<List<TransactionDTO>> ViewTransactionsWith5HighestAmount()
         {
             var transactions = await _TransacRepo.GetAll();
             var filteredtransactions = transactions.OrderByDescending(t => t.Amount).ToList();
             _logger.LogInformation("Retrieved Top 5 Transactions");
-            return filteredtransactions;
+            List<TransactionDTO> DTOList = new List<TransactionDTO>();
+            foreach (Transactions transac in filteredtransactions)
+            {
+                var DTO = new GetTransactionDTO(transac).GetDTO();
+                DTOList.Add(DTO);
+            }
+            return DTOList;
         }
     }
 }

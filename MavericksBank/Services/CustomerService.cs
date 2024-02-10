@@ -16,14 +16,17 @@ namespace MavericksBank.Services
         private readonly ILogger<CustomerService> _logger;
         private readonly IRepository<Customer,int> _CustomerRepo;
         private readonly IRepository<Users, string> _UserRepo;
+        private readonly ITokenService _tokenService;
 
         public CustomerService(ILogger<CustomerService> logger, IRepository<Customer, int> CustomerRepo,
-            IRepository<Users, string> usersRepo)
+            IRepository<Users, string> usersRepo, ITokenService tokenService)
 		{
             _logger = logger;
             _UserRepo = usersRepo;
             _CustomerRepo = CustomerRepo;
-		}
+            _tokenService = tokenService;
+
+        }
 
         public async Task<CustomerLoginDTO> Register(CustomerRegisterDTO customerRegister)
         {
@@ -54,6 +57,7 @@ namespace MavericksBank.Services
             {
                 customerLogin.Password = "";
                 customerLogin.UserType = user.UserType;
+                customerLogin.token = await _tokenService.GenerateToken(customerLogin);
             }
             _logger.LogInformation("Successfully Loggedin");
             return customerLogin;

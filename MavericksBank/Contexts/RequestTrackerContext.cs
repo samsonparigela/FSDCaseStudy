@@ -28,7 +28,7 @@ namespace MavericksBank.Contexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Accounts>()
-                .HasKey(p => p.AccountID);
+                .HasKey(p => p.AccountNumber);
             modelBuilder.Entity<Admin>()
                 .HasKey(p => p.AdminID);
             modelBuilder.Entity<BankEmployee>()

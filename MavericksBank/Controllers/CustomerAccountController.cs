@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using MavericksBank.Interfaces;
 using MavericksBank.Models;
 using MavericksBank.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
@@ -52,7 +54,7 @@ namespace MavericksBank.Controllers
             _logger.LogInformation("Account Updated");
             return account;
         }
-
+        [Authorize(Roles = "Customer")]
         [Route("View All your Accounts")]
         [HttpGet]
         public async Task<List<Accounts>> ViewAllYourAccounts(int ID)
@@ -60,6 +62,24 @@ namespace MavericksBank.Controllers
             var account = await _service.ViewAllYourAccounts(ID);
             _logger.LogInformation($"Accounts Retrieved");
             return account;
+        }
+
+        [Route("View All Banks")]
+        [HttpGet]
+        public async Task<List<Banks>> ViewAllBanks()
+        {
+            var banks = await _service.ViewAllBanks();
+            _logger.LogInformation($"Banks Retrieved");
+            return banks;
+        }
+
+        [Route("View All Branches")]
+        [HttpGet]
+        public async Task<List<Branches>> ViewBankBranches(int BID)
+        {
+            var branches = await _service.ViewBankBranches(BID);
+            _logger.LogInformation($"Branches Retrieved");
+            return branches;
         }
 
         [Route("View Account By ID")]
@@ -73,7 +93,7 @@ namespace MavericksBank.Controllers
 
         [Route("View Transactions By Dates")]
         [HttpGet]
-        public async Task<List<Transactions>> ViewAllYourTransactions(int CID)
+        public async Task<List<TransactionDTO>> ViewAllYourTransactions(int CID)
         {
             var transacs = await _service.ViewAllYourTransactions(CID);
             _logger.LogInformation("Transactions Retrieved");
@@ -82,7 +102,7 @@ namespace MavericksBank.Controllers
 
         [Route("View all your Transactions")]
         [HttpGet]
-        public async Task<List<Transactions>> ViewAllTransactionsByAccount(int AID)
+        public async Task<List<TransactionDTO>> ViewAllTransactionsByAccount(int AID)
         {
             var transacs = await _service.ViewAllTransactionsByAccount(AID);
             _logger.LogInformation($"Transactions of Account {AID} Retrieved");
@@ -91,7 +111,7 @@ namespace MavericksBank.Controllers
 
         [Route("View all Transactions to an Account")]
         [HttpGet]
-        public async Task<List<Transactions>> ViewAllTransactionsMadeToAnAccount(int AID, int CID)
+        public async Task<List<TransactionDTO>> ViewAllTransactionsMadeToAnAccount(int AID, int CID)
         {
             var transacs = await _service.ViewAllTransactionsMadeToAnAccount(AID,CID);
             _logger.LogInformation($"Transactions for Account {CID} Retrieved");
@@ -109,16 +129,25 @@ namespace MavericksBank.Controllers
 
         [Route("View Transactions in Last month")]
         [HttpGet]
-        public async Task<List<Transactions>> ViewAllTransactionsInTheLastMonth(int CID)
+        public async Task<List<TransactionDTO>> ViewAllTransactionsInTheLastMonth(int CID)
         {
             var transacs = await _service.ViewAllTransactionsInTheLastMonth(CID);
             _logger.LogInformation($"Transactions made in the previous month Retrieved");
             return transacs;
         }
 
+        [Route("View Transactions in This month")]
+        [HttpGet]
+        public async Task<List<TransactionDTO>> ViewAllTransactionsInThisMonth(int CID)
+        {
+            var transacs = await _service.ViewAllTransactionsInThisMonth(CID);
+            _logger.LogInformation($"Transactions made in this month Retrieved");
+            return transacs;
+        }
+
         [Route("View Last N Transactions")]
         [HttpGet]
-        public async Task<List<Transactions>> ViewLastNTransactions(int ID, int n)
+        public async Task<List<TransactionDTO>> ViewLastNTransactions(int ID, int n)
         {
             var transacs = await _service.ViewLastNTransactions(ID,n);
             _logger.LogInformation($"Last {n} Transactions Retrieved");

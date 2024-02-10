@@ -26,7 +26,7 @@ namespace MavericksBank.Controllers
 
         [Route("Deposit Money")]
         [HttpPost]
-        public async Task<Transactions> DepositMoney(string accountNumber, int amount)
+        public async Task<Transactions> DepositMoney(int accountNumber, int amount)
         {
             var transaction =await _service.DepositMoney(accountNumber, amount);
             _logger.LogInformation("Money Deposited");
@@ -35,7 +35,7 @@ namespace MavericksBank.Controllers
 
         [Route("Transfer Money")]
         [HttpPost]
-        public async Task<Transactions> TransferMoney(int amount, int destAccountID, string accountNumber)
+        public async Task<Transactions> TransferMoney(int amount, int destAccountID, int accountNumber)
         {
             var transaction = await _service.TransferMoney(amount, destAccountID, accountNumber);
             _logger.LogInformation("Money Transferred");

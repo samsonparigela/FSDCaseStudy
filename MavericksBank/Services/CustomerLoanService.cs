@@ -1,4 +1,5 @@
 ﻿using System;
+using MavericksBank.Exceptions;
 using MavericksBank.Interfaces;
 using MavericksBank.Mappers;
 using MavericksBank.Models;
@@ -12,10 +13,10 @@ namespace MavericksBank.Services
 		private readonly IRepository<Loan, int> _loanRepo;
         private readonly IRepository<Accounts, int> _AccRepo;
         private readonly IRepository<LoanPolicies, int> _loanPolicyRepo;
-        private readonly IAccountAdminService _accountsService;
+        private readonly ICustomerAccountService _accountsService;
 
         public CustomerLoanService(ILogger<CustomerLoanService> logger, IRepository<Loan, int> loanRepo,
-			IRepository<LoanPolicies, int> loanPolicyRepo, IAccountAdminService accountsService, IRepository<Accounts, int> AccRepo)
+			IRepository<LoanPolicies, int> loanPolicyRepo, ICustomerAccountService accountsService, IRepository<Accounts, int> AccRepo)
 		{
 			_logger = logger;
 			_loanRepo = loanRepo;
@@ -75,28 +76,34 @@ namespace MavericksBank.Services
         public async Task<Accounts> GetLoanAmountToAccount(int LoanID,int AccID)
         {
             var loan = await _loanRepo.GetByID(LoanID);
-            var account = await _accountsService.GetAccountByID(AccID);
+            var account = await _AccRepo.GetByID(AccID);
             if (loan.Status == "Approved")
             {
                 account.Balance += loan.LoanAmount;
                 account = await _AccRepo.Update(account);
+                _logger.LogInformation($"Loan Amount Added to Account Successfully");
+                return account;
             }
-            _logger.LogInformation($"Loan Amount Added to Account Successfully");
-            return account;
+            throw new LoanNotApprovedYetException("Loan is yet to be approved");
         }
 
-        public async Task<Loan> RepayLoan(int loanID,string accountType,int amount)
+        public async Task<Loan> RepayLoan(int loanID,int accountNumber,int amount)
         {
             var loan = await _loanRepo.GetByID(loanID);
             var customerID = loan.CustomerID;
-            var account = await _accountsService.GetAllAccountsByUserID(customerID);
-            var account2 = account.SingleOrDefault(a => a.AccountType == accountType);
+            var account = await _accountsService.ViewAllYourAccounts(customerID);
+            var account2 = account.SingleOrDefault(a => a.AccountNumber == accountNumber);
+            if (account2.Balance < amount)
+                throw new InsufficientFundsException("No SUfficient Balance to repay the loan");
             account2.Balance -= amount;
             loan.LoanAmount -= amount;
-            if(loan.LoanAmount==0)
-            {
+            await _AccRepo.Update(account2);
+
+            if (loan.LoanAmount == 0)
                 loan.Status = "Repayed";
-            }
+            else
+                loan.Status = "Amount Pending";
+            await _loanRepo.Update(loan);
             return loan;
         }
     }

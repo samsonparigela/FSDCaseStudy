@@ -12,7 +12,7 @@ namespace MavericksBank.Interfaces
         public Task<List<LoanPolicies>> GetDifferentLoanPolicies();
         public Task<List<Loan>> GetAllAvailedLoans(int ID);
         public Task<Loan> GetLoanByID(int ID);
-        public Task<Loan> RepayLoan(int loanID, string accountType, int amount);
+        public Task<Loan> RepayLoan(int loanID, int accountNumber, int amount);
         public Task<Accounts> GetLoanAmountToAccount(int LoanID, int AccID);
 
 
