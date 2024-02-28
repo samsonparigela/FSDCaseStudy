@@ -8,7 +8,7 @@ namespace MavericksBank.Models.DTO
 
         public string UserName { set; get; } = string.Empty;
         public string Password { set; get; } = string.Empty;
-        public string UserType { set; get; } = string.Empty;
+        public string UserType = "Customer";
         public string Name { set; get; } = string.Empty;
         public DateTime DOB { set; get; }
         public int Age { set; get; }

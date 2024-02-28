@@ -8,17 +8,16 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace MavericksBank.Services
 {
-	public class TokenService:ITokenService
+    public class TokenService : ITokenService
     {
         private readonly string _keyString;
         private readonly SymmetricSecurityKey _key;
-
         public TokenService(IConfiguration configuration)
         {
             _keyString = configuration["SecretKey"].ToString();
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_keyString));
         }
-        public async Task<string> GenerateToken(CustomerLoginDTO user)
+        public async Task<string> GenerateToken(LoginDTO user)
         {
             string token = string.Empty;
             var claims = new List<Claim>

@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using MavericksBank.Exceptions;
 using MavericksBank.Interfaces;
 using MavericksBank.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 
@@ -14,6 +18,7 @@ namespace MavericksBank.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("MavericksBankPolicy")]
     public class CustomerTransactionController : Controller
     {
         private readonly ILogger<CustomerTransactionController> _logger;
@@ -24,49 +29,92 @@ namespace MavericksBank.Controllers
             _service = service;
         }
 
+        [Authorize(Roles = "Customer")]
         [Route("Deposit Money")]
         [HttpPost]
-        public async Task<Transactions> DepositMoney(int accountNumber, int amount)
+        public async Task<ActionResult<Transactions>> DepositMoney(int accountNumber, int amount)
         {
-            var transaction =await _service.DepositMoney(accountNumber, amount);
-            _logger.LogInformation("Money Deposited");
-            return transaction;
+            try
+            {
+                var transaction = await _service.DepositMoney(accountNumber, amount);
+                _logger.LogInformation("Money Deposited");
+                return transaction;
+            }
+            catch(AccountTransactionException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
 
+        [Authorize(Roles = "Customer")]
         [Route("Transfer Money")]
         [HttpPost]
-        public async Task<Transactions> TransferMoney(int amount, int destAccountID, int accountNumber)
+        public async Task<ActionResult<Transactions>> TransferMoney(int amount, int destAccountID, int accountNumber)
         {
-            var transaction = await _service.TransferMoney(amount, destAccountID, accountNumber);
-            _logger.LogInformation("Money Transferred");
-            return transaction;
+            try
+            {
+                var transaction = await _service.TransferMoney(amount, destAccountID, accountNumber);
+                _logger.LogInformation("Money Transferred");
+                return transaction;
+            }
+            catch (AccountTransactionException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
 
+        [Authorize(Roles = "Customer")]
         [Route("Withdraw Money")]
         [HttpPost]
-        public async Task<Transactions> WithdrawMoney(int amount, int accountID)
+        public async Task<ActionResult<Transactions>> WithdrawMoney(int amount, int accountID)
         {
-            var transaction = await _service.WithdrawMoney(amount, accountID);
-            _logger.LogInformation("Money Withdrawn");
-            return transaction;
+            try
+            {
+                var transaction = await _service.WithdrawMoney(amount, accountID);
+                _logger.LogInformation("Money Withdrawn");
+                return transaction;
+            }
+            catch (AccountTransactionException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
 
         [Route("Get All Transactions")]
         [HttpGet]
-        public async Task<List<Transactions>> GetAllTransactions(int AID)
+        public async Task<ActionResult<List<Transactions>>> GetAllTransactions(int AID)
         {
-            var transaction = await _service.GetAllTransactions(AID);
-            _logger.LogInformation("All Transactions retrieved");
-            return transaction;
+            try
+            {
+                var transaction = await _service.GetAllTransactions(AID);
+                _logger.LogInformation("All Transactions retrieved");
+                return transaction;
+            }
+            catch (NoAccountFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
 
         [Route("Get Transactions ByID")]
         [HttpGet]
-        public async Task<Transactions> GetTransactionsByID(int TID)
+        public async Task<ActionResult<Transactions>> GetTransactionsByID(int TID)
         {
-            var transaction = await _service.GetTransactionsByID(TID);
-            _logger.LogInformation($"Transaction {TID} retrieved");
-            return transaction;
+            try
+            {
+                var transaction = await _service.GetTransactionsByID(TID);
+                _logger.LogInformation($"Transaction {TID} retrieved");
+                return transaction;
+            }
+            catch (NoTransactionsFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

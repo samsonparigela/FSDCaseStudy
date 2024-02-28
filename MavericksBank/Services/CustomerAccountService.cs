@@ -36,7 +36,12 @@ namespace MavericksBank.Services
 
         public async Task<AccountsCreateDTO> OpenAccount(AccountsCreateDTO account)
         {
+            var accounts = await _AccRepo.GetAll();
+            var account2 = accounts.Where(a => a.AccountNumber == account.AccountNumber);
             var myAccount = new RegisterToAccount(account).GetAccount();
+
+
+
             await _AccRepo.Add(myAccount);
 
             var myBeneficiaryAccount = new Beneficiaries();
@@ -59,7 +64,9 @@ namespace MavericksBank.Services
                 if (account.Balance != 0)
                     throw new AccountDeletionException($"There is of Balance of {account.Balance} " +
                         $"in the account. Please withdraw or transfer the amount before closing");
+                var benif = await _BenifRepo.GetByID(account.AccountNumber);
                 account = await _AccRepo.Delete(key);
+                benif = await _BenifRepo.Delete(benif.BeneficiaryAccountNumber);
                 _logger.LogInformation($"Successfully Deleted Account : {key}");
             }
             else
@@ -116,6 +123,7 @@ namespace MavericksBank.Services
             {
                 AccountID.Add(acc.AccountNumber);
                 AllTransactions.Add(transactions.Where(t => t.SAccountID == acc.AccountNumber).ToList());
+                //_logger.LogInformation($"{AllTransactions}");
             }
             //var transacList = from listOfNumList in AllTransactions
             //                  from value in listOfNumList

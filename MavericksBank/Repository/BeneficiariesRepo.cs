@@ -29,6 +29,8 @@ namespace MavericksBank.Repository
         public async Task<Beneficiaries> Delete(int item)
         {
             Beneficiaries beneficiary = await GetByID(item);
+            if (beneficiary == null)
+                throw new NoBeneficiariesFoundException();
             _context.Remove(beneficiary);
             _context.SaveChanges();
             _logger.LogInformation($"Beneficiary {item} Deleted");
@@ -56,6 +58,8 @@ namespace MavericksBank.Repository
         public async Task<Beneficiaries> Update(Beneficiaries item)
         {
             var beneficiaries = await GetByID(item.BeneficiaryAccountNumber);
+            if (beneficiaries == null)
+                throw new NoBeneficiariesFoundException();
             _context.Entry<Beneficiaries>(item).State = EntityState.Modified;
             _context.SaveChanges();
             _logger.LogInformation($"Beneficiary {item} Updated");

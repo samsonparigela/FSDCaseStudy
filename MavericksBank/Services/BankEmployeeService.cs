@@ -16,27 +16,36 @@ namespace MavericksBank.Services
         private readonly ILogger<BankEmployeeService> _logger;
         private readonly IRepository<BankEmployee,int> _empRepo;
         private readonly IRepository<Users,string> _usersRepo;
+        private readonly ITokenService _tokenService;
+
         public BankEmployeeService(ILogger<BankEmployeeService> logger, IRepository<BankEmployee, int> empRepo,
-            IRepository<Users, string> usersRepo)
+            IRepository<Users, string> usersRepo,ITokenService tokenService)
 		{
             _logger = logger;
             _empRepo = empRepo;
             _usersRepo = usersRepo;
+            _tokenService = tokenService;
 		}
 
-        public async Task<EmpLoginDTO> Register(EmpRegisterDTO EmpRegister)
+        public async Task<LoginDTO> Register(EmpRegisterDTO EmpRegister)
         {
             var user = new RegisterToEmpUser(EmpRegister).GetUser();
-            user = await _usersRepo.Add(user);
+            var x = await _usersRepo.GetByID(user.UserName);
+            if (x != null)
+            {
+                throw new UserExistsException("User Already Exists");
+            }
+            user = await _usersRepo.Add(user);            
 
             var employee = new RegisterToEmployee(EmpRegister).GetUser();
             employee.UserID = user.UserID;
             employee = await _empRepo.Add(employee);
 
-            EmpLoginDTO empLogin = new EmpLoginDTO
+            LoginDTO empLogin = new LoginDTO
             {
                 UserName = EmpRegister.UserName,
                 UserType = EmpRegister.UserType,
+                userID = employee.UserID,
                 Password = ""
             };
 
@@ -44,17 +53,27 @@ namespace MavericksBank.Services
         }
 
 
-        public async Task<EmpLoginDTO> Login(EmpLoginDTO EmpLogin)
+        public async Task<LoginDTO> Login(LoginDTO EmpLogin)
         {
             var user =await _usersRepo.GetByID(EmpLogin.UserName);
+
+            var employees = await _empRepo.GetAll();
+            var emp = employees.Where(e => e.UserID == user.UserID).ToList().SingleOrDefault();
+
+            if (user == null)
+                throw new InvalidUserException();
             var password = getEncryptedPassword(EmpLogin.Password,user.Key);
             if(comparePasswords(password, user.Password))
             {
+                _logger.LogInformation("Successfully Logged In");
+
                 EmpLogin.Password = "";
                 EmpLogin.UserType = user.UserType;
+                EmpLogin.token = await _tokenService.GenerateToken(EmpLogin);
+                EmpLogin.userID = emp.EmployeeID;
                 return EmpLogin;
             }
-
+            _logger.LogInformation("Successfully Logged In");
             throw new InvalidUserException();
         }
 

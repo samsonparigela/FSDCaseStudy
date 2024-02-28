@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using MavericksBank.Exceptions;
 using MavericksBank.Interfaces;
 using MavericksBank.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -13,6 +17,7 @@ namespace MavericksBank.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("MavericksBankPolicy")]
     public class BankEmpLoanController : Controller
     {
         private readonly ILogger<BankEmpLoanController> _logger;
@@ -23,86 +28,165 @@ namespace MavericksBank.Controllers
             _service = service;
         }
 
-        [Route("Approve or Disapprove a Loan")]
+        [Authorize(Roles = "Bank Employee")]
+        [Route("ApproveOrDisapproveALoan")]
         [HttpPut]
-        public async Task<Loan> ApproveOrDisapproveLoan(int LID)
+        public async Task<ActionResult<Loan>> ApproveOrDisapproveLoan(int LID)
         {
-            var loan = await _service.ApproveOrDisapproveLoan(LID);
-            _logger.LogInformation("Loan Approved/Disapproved");
-            return loan;
+            try
+            {
+                var loan = await _service.ApproveOrDisapproveLoan(LID);
+                _logger.LogInformation("Loan Approved/Disapproved");
+                return loan;
+            }
+            catch(NoLoanFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
-        [Route("Get all Loans")]
+        [Authorize(Roles = "Bank Employee")]
+        [Route("GetAllLoans")]
         [HttpGet]
-        public async Task<List<Loan>> GetAllLoansApplied()
+        public async Task<ActionResult<List<Loan>>> GetAllLoansApplied()
         {
-            var loans = await _service.GetAllLoansApplied();
-            _logger.LogInformation("Applied Loans Retrived");
-            return loans;
+            try
+            {
+                var loans = await _service.GetAllLoansApplied();
+                _logger.LogInformation("Applied Loans Retrived");
+                return loans;
+            }
+            catch (NoLoanFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
-        [Route("Get all LoanPolicies")]
+
+        [Route("GetAllLoanPolicies")]
         [HttpGet]
-        public async Task<List<LoanPolicies>> GetAllLoanPolicies()
+        public async Task<ActionResult<List<LoanPolicies>>> GetAllLoanPolicies()
         {
-            var loanPolicy = await _service.GetDifferentLoanPolicies();
-            _logger.LogInformation("Applied Loans Retrived");
-            return loanPolicy;
+            try
+            {
+                var loanPolicy = await _service.GetDifferentLoanPolicies();
+                _logger.LogInformation("Applied Loans Retrived");
+                return loanPolicy;
+            }
+            catch (NoLoanFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
-        [Route("Add Loan Policies")]
+        [Authorize(Roles = "Bank Employee")]
+        [Route("AddLoanPolicies")]
         [HttpPost]
-        public async Task<LoanPolicies> AddLoanPolicies(LoanPolicies policies)
+        public async Task<ActionResult<LoanPolicies>> AddLoanPolicies(LoanPolicies policies)
         {
-            var loanPolicy = await _service.AddLoanPolicies(policies);
-            _logger.LogInformation("Added Loan Policy");
-            return loanPolicy;
+            try
+            {
+                var loanPolicy = await _service.AddLoanPolicies(policies);
+                _logger.LogInformation("Added Loan Policy");
+                return loanPolicy;
+            }
+            catch (NoLoanFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
-        [Route("Delete Loan Policies")]
+        [Authorize(Roles = "Bank Employee")]
+        [Route("DeleteLoanPolicies")]
         [HttpDelete]
-        public async Task<LoanPolicies> DeleteLoanPolicies(int ID)
+        public async Task<ActionResult<LoanPolicies>> DeleteLoanPolicies(int ID)
         {
-            var loanPolicy = await _service.DeleteLoanPolicies(ID);
-            _logger.LogInformation("Deleted Loan Policy");
-            return loanPolicy;
+            try
+            {
+                var loanPolicy = await _service.DeleteLoanPolicies(ID);
+                _logger.LogInformation("Deleted Loan Policy");
+                return loanPolicy;
+            }
+            catch (NoLoanFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
-        [Route("Update Loan Policies")]
+        [Authorize(Roles = "Bank Employee")]
+        [Route("UpdateLoanPolicies")]
         [HttpPut]
-        public async Task<LoanPolicies> UpdateLoanPolicies(LoanPolicies policies)
+        public async Task<ActionResult<LoanPolicies>> UpdateLoanPolicies(LoanPolicies policies)
         {
-            var loanPolicy = await _service.UpdateLoanPolicies(policies);
-            _logger.LogInformation("Updated Loan Policy");
-            return loanPolicy;
+            try
+            {
+                var loanPolicy = await _service.UpdateLoanPolicies(policies);
+                _logger.LogInformation("Updated Loan Policy");
+                return loanPolicy;
+            }
+            catch (NoLoanFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
 
-        [Route("Get all Loans by a Customer")]
+        [Route("GetAllLoansbyACustomer")]
         [HttpGet]
-        public async Task<List<Loan>> GetAllLoansAppliedByACustomer(int CID)
+        public async Task<ActionResult<List<Loan>>> GetAllLoansAppliedByACustomer(int CID)
         {
-            var loans = await _service.GetAllLoansAppliedByACustomer(CID);
-            _logger.LogInformation("Applied Loans Retrived");
-            return loans;
+            try
+            {
+                var loans = await _service.GetAllLoansAppliedByACustomer(CID);
+                _logger.LogInformation("Applied Loans Retrived");
+                return loans;
+            }
+            catch (NoCustomerFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
-        [Route("Get all Loans that need approval")]
+        [Authorize(Roles = "Bank Employee")]
+        [Route("GetAllLoansThatNeedApproval")]
         [HttpGet]
-        public async Task<List<Loan>> GetAllLoansThatNeedApproval()
+        public async Task<ActionResult<List<Loan>>> GetAllLoansThatNeedApproval()
         {
-            var loans = await _service.GetAllLoansThatNeedApproval();
-            _logger.LogInformation("Approval Loans Retrived");
-            return loans;
+            try
+            {
+                var loans = await _service.GetAllLoansThatNeedApproval();
+                _logger.LogInformation("Approval Loans Retrived");
+                return loans;
+            }
+            catch (NoLoanFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
-        [Route("Check customer Creditworthiness")]
+        [Route("CheckCustomerCreditworthiness")]
         [HttpGet]
-        public async Task<bool> GetCustomerCreditworthiness(int CID)
+        public async Task<ActionResult<bool>> GetCustomerCreditworthiness(int CID)
         {
-            bool creditWorthy = await _service.GetCustomerCreditworthiness(CID);
-            _logger.LogInformation("Creditworthiness is checked");
-            return creditWorthy;
+            try
+            {
+                bool creditWorthy = await _service.GetCustomerCreditworthiness(CID);
+                _logger.LogInformation("Creditworthiness is checked");
+                return creditWorthy;
+            }
+            catch (NoCustomerFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
 
         }
     }

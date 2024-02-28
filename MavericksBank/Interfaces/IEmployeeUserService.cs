@@ -6,8 +6,8 @@ namespace MavericksBank.Interfaces
 {
 	public interface IEmployeeUserService
 	{
-        public Task<EmpLoginDTO> Register(EmpRegisterDTO EmpRegister);
-        public Task<EmpLoginDTO> Login(EmpLoginDTO EmpLogin);
+        public Task<LoginDTO> Register(EmpRegisterDTO EmpRegister);
+        public Task<LoginDTO> Login(LoginDTO EmpLogin);
         public Task<EmpUpdateDTO> UpdateEmployee(EmpUpdateDTO bankEmployee);
         public Task<BankEmployee> DeleteEmployee(int key);
         public Task<BankEmployee> GetEmployeeByID(int key);

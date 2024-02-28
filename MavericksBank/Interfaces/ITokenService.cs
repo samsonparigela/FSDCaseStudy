@@ -5,7 +5,7 @@ namespace MavericksBank.Interfaces
 {
 	public interface ITokenService
 	{
-        public Task<string> GenerateToken(CustomerLoginDTO user);
+        public Task<string> GenerateToken(LoginDTO user);
     }
 }
 

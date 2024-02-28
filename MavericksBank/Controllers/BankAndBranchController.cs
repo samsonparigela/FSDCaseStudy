@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using MavericksBank.Exceptions;
 using MavericksBank.Interfaces;
 using MavericksBank.Mappers;
 using MavericksBank.Models;
 using MavericksBank.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -14,6 +18,7 @@ namespace MavericksBank.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("MavericksBankPolicy")]
     public class BankAndBranchController : ControllerBase
     {
         private readonly ILogger<BankAndBranchController> _logger;
@@ -27,105 +32,205 @@ namespace MavericksBank.Controllers
             _service2 = service2;
         }
 
-
-        [Route("Add Bank")]
+        [Authorize(Roles = "Bank Employee")]
+        [Route("AddBank")]
         [HttpPost]
-        public async Task<BankCreateDTO> AddBankAsync(BankCreateDTO bank)
+        public async Task<ActionResult<BankCreateDTO>> AddBankAsync(BankCreateDTO bank)
         {
-            var myBank = await _service1.AddBank(bank);
-            _logger.LogInformation("Bank Created");
-            return myBank;
+            try
+            {
+                var myBank = await _service1.AddBank(bank);
+                _logger.LogInformation("Bank Created");
+                return myBank;
+            }
+            catch(NoBankFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
+
         }
 
 
         [Route("GetAllBanks")]
         [HttpGet]
-        public async Task<List<Banks>> GetAllBanksAsync()
+        public async Task<ActionResult<List<Banks>>> GetAllBanksAsync()
         {
-            var banks = await _service1.GetAllBanks();
-            _logger.LogInformation($"All Banks Retrieved");
-            return banks;
+            try
+            {
+                var banks = await _service1.GetAllBanks();
+                _logger.LogInformation($"All Banks Retrieved");
+                return banks;
+            }
+            catch (NoBankFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
         [Route("GetBankByID")]
         [HttpGet]
-        public async Task<Banks> GetBankByIDAsync(int ID)
+        public async Task<ActionResult<Banks>> GetBankByIDAsync(int ID)
         {
-            var bank = await _service1.GetBankbyID(ID);
-            _logger.LogInformation($"Bank with ID {ID} Retrieved");
-            return bank;
+            try
+            {
+                var bank = await _service1.GetBankbyID(ID);
+                _logger.LogInformation($"Bank with ID {ID} Retrieved");
+                return bank;
+            }
+            catch (NoBankFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
+
+
         }
 
-        [Route("Update Bank")]
+        [Authorize(Roles = "Bank Employee")]
+        [Route("UpdateBank")]
         [HttpPut]
-        public async Task<BankUpdateDTO> UpdateBankAsync(BankUpdateDTO bank)
+        public async Task<ActionResult<BankUpdateDTO>> UpdateBankAsync(BankUpdateDTO bank)
         {
-            bank = await _service1.UpdateBank(bank);
-            _logger.LogInformation("Bank Updated");
-            return bank;
+            try
+            {
+                bank = await _service1.UpdateBank(bank);
+                _logger.LogInformation("Bank Updated");
+                return bank;
+            }
+            catch (NoBankFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
+
         }
 
-        [Route("Delete Bank")]
+        [Authorize(Roles = "Bank Employee")]
+        [Route("DeleteBank")]
         [HttpDelete]
-        public async Task<Banks> DeleteAccountAsync(int ID)
+        public async Task<ActionResult<Banks>> DeleteAccountAsync(int ID)
         {
-            var bank = await _service1.DeleteBank(ID);
-            _logger.LogInformation("Bank Deleted");
-            return bank;
+            try
+            {
+                var bank = await _service1.DeleteBank(ID);
+                _logger.LogInformation("Bank Deleted");
+                return bank;
+            }
+            catch (NoBankFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
+
         }
 
-        [Route("Add Branch")]
+        [Authorize(Roles = "Bank Employee")]
+        [Route("AddBranch")]
         [HttpPost]
-        public async Task<BranchCreateDTO> AddBranchAsync(BranchCreateDTO branch)
+        public async Task<ActionResult<BranchCreateDTO>> AddBranchAsync(BranchCreateDTO branch)
         {
-            var myBranch = await _service2.AddBranch(branch);
-            _logger.LogInformation("Branch Created");
-            return myBranch;
+            try
+            {
+                var myBranch = await _service2.AddBranch(branch);
+                _logger.LogInformation("Branch Created");
+                return myBranch;
+            }
+            catch (NoBranchFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
         [Route("GetAllBranchByBankID")]
         [HttpGet]
-        public async Task<List<Branches>> GetAllBranchByIDAsync(int ID)
+        public async Task<ActionResult<List<Branches>>> GetAllBranchByIDAsync(int ID)
         {
-            var branches = await _service2.GetAllBranchesByID(ID);
-            _logger.LogInformation($"All Branches of Bank {ID} Retrieved");
-            return branches;
+            try
+            {
+                var branches = await _service2.GetAllBranchesByID(ID);
+                _logger.LogInformation($"All Branches of Bank {ID} Retrieved");
+                return branches;
+            }
+            catch (NoBranchFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
+
         }
 
         [Route("GetAllBranches")]
         [HttpGet]
-        public async Task<List<Branches>> GetAllBranchAsync()
+        public async Task<ActionResult<List<Branches>>> GetAllBranchAsync()
         {
-            var branches = await _service2.GetAllBranches();
-            _logger.LogInformation($"All Branches in the DB Retrieved");
-            return branches;
+            try
+            {
+                var branches = await _service2.GetAllBranches();
+                _logger.LogInformation($"All Branches in the DB Retrieved");
+                return branches;
+            }
+            catch (NoBranchFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
+
         }
 
         [Route("GetBranchByID")]
         [HttpGet]
-        public async Task<Branches> GetBranchByIDAsync(string ID)
+        public async Task<ActionResult<Branches>> GetBranchByIDAsync(string ID)
         {
-            var branch = await _service2.GetBranchbyID(ID);
-            _logger.LogInformation($"Branch with ID {ID} Retrieved");
-            return branch;
+            try
+            {
+                var branch = await _service2.GetBranchbyID(ID);
+                _logger.LogInformation($"Branch with ID {ID} Retrieved");
+                return branch;
+            }
+            catch (NoBranchFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
-        [Route("Update Branch")]
+        [Authorize(Roles = "Bank Employee")]
+        [Route("UpdateBranch")]
         [HttpPut]
-        public async Task<BranchUpdateDTO> UpdateBranchAsync(BranchUpdateDTO branch)
+        public async Task<ActionResult<BranchUpdateDTO>> UpdateBranchAsync(BranchUpdateDTO branch)
         {
-            branch = await _service2.UpdateBranch(branch);
-            _logger.LogInformation("Branch Updated");
-            return branch;
+            try
+            {
+                branch = await _service2.UpdateBranch(branch);
+                _logger.LogInformation("Branch Updated");
+                return branch;
+            }
+            catch (NoBranchFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
-        [Route("Delete Branch")]
+        [Authorize(Roles = "Bank Employee")]
+        [Route("DeleteBranch")]
         [HttpDelete]
-        public async Task<Branches> DeleteBranchAsync(string ID)
+        public async Task<ActionResult<Branches>> DeleteBranchAsync(string ID)
         {
-            var branch = await _service2.DeleteBranch(ID);
-            _logger.LogInformation("Branch Deleted");
-            return branch;
+            try
+            {
+                var branch = await _service2.DeleteBranch(ID);
+                _logger.LogInformation("Branch Deleted");
+                return branch;
+            }
+            catch (NoBranchFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
     }

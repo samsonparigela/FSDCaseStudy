@@ -112,7 +112,6 @@ namespace MavericksBank.Contexts
                 .HasForeignKey("UserID");
 
 
-
         }
     }
 }

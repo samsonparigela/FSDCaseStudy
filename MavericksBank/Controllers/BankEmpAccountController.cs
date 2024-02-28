@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using MavericksBank.Exceptions;
 using MavericksBank.Interfaces;
 using MavericksBank.Models;
 using MavericksBank.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -14,6 +18,7 @@ namespace MavericksBank.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("MavericksBankPolicy")]
     public class BankEmpAccountController : Controller
     {
         private readonly ILogger<BankEmpAccountController> _logger;
@@ -24,101 +29,207 @@ namespace MavericksBank.Controllers
             _service = service;
         }
 
-        [Route("Approve Account Closing")]
+        [Authorize(Roles = "Bank Employee")]
+        [Route("ApproveAccountClosing")]
         [HttpGet]
-        public async Task<Accounts> ApproveAccountClosing(int AID)
+        public async Task<ActionResult<Accounts>> ApproveAccountClosing(int AID)
         {
-            var account = await _service.ApproveAccountClosing(AID);
-            return account;
+            try
+            {
+                var account = await _service.ApproveAccountClosing(AID);
+                return account;
+            }
+            catch(NoBankFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
-        [Route("Get Customer Details for Account")]
+        [Authorize(Roles = "Bank Employee")]
+        [Route("GetCustomerDetailsForAccount")]
         [HttpGet]
-        public async Task<Customer> GetCustomerDetailsforAccount(int AID)
+        public async Task<ActionResult<Customer>> GetCustomerDetailsforAccount(int AID)
         {
+            try
+            { 
             var customer = await _service.GetCustomerDetailsforAccount(AID);
             return customer;
+            }
+            catch (NoBankFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
-        [Route("Approve Account Opening")]
+        [Authorize(Roles = "Bank Employee")]
+        [Route("ApproveAccountOpening")]
         [HttpGet]
-        public async Task<Accounts> ApproveAccountOpening(int AID)
+        public async Task<ActionResult<Accounts>> ApproveAccountOpening(int AID)
         {
-            var account = await _service.ApproveAccountOpening(AID);
-            return account;
+            try
+            {
+                var account = await _service.ApproveAccountOpening(AID);
+                return account;
+            }
+            catch (NoBankFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
-        [Route("Get All Accounts")]
+        [Authorize(Roles = "Bank Employee")]
+        [Route("GetAllAccounts")]
         [HttpGet]
-        public async Task<List<Accounts>> GetAllAccounts()
+        public async Task<ActionResult<List<Accounts>>> GetAllAccounts()
         {
-            var accounts = await _service.GetAllAccounts();
-            return accounts;
+            try
+            {
+                var accounts = await _service.GetAllAccounts();
+                return accounts;
+            }
+            catch (NoBankFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
-        [Route("Get All Accounts For CloseRequest")]
+        [Authorize(Roles = "Bank Employee")]
+        [Route("GetAllAccountsForCloseRequest")]
         [HttpGet]
-        public async Task<List<Accounts>> GetAllAccountsForCloseRequest()
+        public async Task<ActionResult<List<Accounts>>> GetAllAccountsForCloseRequest()
         {
-            var accounts = await _service.GetAllAccountsForCloseRequest();
-            return accounts;
+            try
+            {
+                var accounts = await _service.GetAllAccountsForCloseRequest();
+                return accounts;
+            }
+            catch (NoBankFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
-        [Route("Get All Accounts For OpenRequest")]
+        [Authorize(Roles = "Bank Employee")]
+        [Route("GetAllAccountsForOpenRequest")]
         [HttpGet]
-        public async Task<List<Accounts>> GetAllAccountsForOpenRequest()
+        public async Task<ActionResult<List<Accounts>>> GetAllAccountsForOpenRequest()
         {
-            var accounts = await _service.GetAllAccountsForOpenRequest();
-            return accounts;
+            try
+            {
+                var accounts = await _service.GetAllAccountsForOpenRequest();
+                return accounts;
+            }
+            catch (NoBankFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
-        [Route("Get All Transactions")]
+        [Authorize(Roles = "Bank Employee")]
+        [Route("GetAllTransactions")]
         [HttpGet]
-        public async Task<List<TransactionDTO>> GetAllTransactions()
+        public async Task<ActionResult<List<TransactionDTO>>> GetAllTransactions()
         {
-            var transactions = await _service.GetAllTransactions();
-            return transactions;
+            try
+            {
+                var transactions = await _service.GetAllTransactions();
+                return transactions;
+            }
+            catch (NoBankFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
-        [Route("View Account Details")]
+        [Authorize(Roles = "Bank Employee")]
+        [Route("ViewAccountDetails")]
         [HttpGet]
-        public async Task<Accounts> ViewAccountDetails(int AID)
+        public async Task<ActionResult<Accounts>> ViewAccountDetails(int AID)
         {
-            var account = await _service.ViewAccountDetails(AID);
-            return account;
+            try
+            {
+                var account = await _service.ViewAccountDetails(AID);
+                return account;
+            }
+            catch (NoBankFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
-        [Route("View Transaction Details By Account")]
+
+        [Route("ViewTransactionDetailsByAccount")]
         [HttpGet]
-        public async Task<List<TransactionDTO>> ViewTransactionDetailsByAccount(int AID)
+        public async Task<ActionResult<List<TransactionDTO>>> ViewTransactionDetailsByAccount(int AID)
         {
-            var transactions = await _service.ViewTransactionDetailsByAccount(AID);
-            return transactions;
+            try
+            {
+                var transactions = await _service.ViewTransactionDetailsByAccount(AID);
+                return transactions;
+            }
+            catch (NoBankFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
-        [Route("View Sent Transactions")]
+
+        [Route("ViewSentTransactions")]
         [HttpGet]
-        public async Task<List<TransactionDTO>> ViewSentTransactions(int AID)
+        public async Task<ActionResult<List<TransactionDTO>>> ViewSentTransactions(int AID)
         {
-            var transactions = await _service.ViewSentTransactions(AID);
-            return transactions;
+            try
+            {
+                var transactions = await _service.ViewSentTransactions(AID);
+                return transactions;
+            }
+            catch (NoBankFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
 
         }
 
-        [Route("View Received Transactions")]
+        [Route("ViewReceivedTransactions")]
         [HttpGet]
-        public async Task<List<TransactionDTO>> ViewReceivedTransactions(int AID)
+        public async Task<ActionResult<List<TransactionDTO>>> ViewReceivedTransactions(int AID)
         {
-            var transactions = await _service.ViewReceivedTransactions(AID);
-            return transactions;
+            try
+            {
+                var transactions = await _service.ViewReceivedTransactions(AID);
+                return transactions;
+            }
+            catch (NoBankFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
-        [Route("View Transactions With 5 Highest Amount")]
+        [Route("ViewTransactionsWith5HighestAmount")]
         [HttpGet]
-        public async Task<List<TransactionDTO>> ViewTransactionsWith5HighestAmount()
+        public async Task<ActionResult<List<TransactionDTO>>> ViewTransactionsWith5HighestAmount()
         {
-            var transactions = await _service.ViewTransactionsWith5HighestAmount();
-            return transactions;
+            try
+            {
+                var transactions = await _service.ViewTransactionsWith5HighestAmount();
+                return transactions;
+            }
+            catch (NoBankFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
         }
 
 

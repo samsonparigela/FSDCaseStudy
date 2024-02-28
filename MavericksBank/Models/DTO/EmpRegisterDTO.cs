@@ -9,7 +9,7 @@ namespace MavericksBank.Models.DTO
         public string Password { set; get; } = string.Empty;
         public string Name { set; get; } = string.Empty;
         public string Position { set; get; } = string.Empty;
-        public string UserType { set; get; } = string.Empty;
+        public string UserType = "Bank Employee";
     }
 }
 

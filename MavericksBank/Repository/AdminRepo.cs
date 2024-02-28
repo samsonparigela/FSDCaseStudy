@@ -29,6 +29,8 @@ namespace MavericksBank.Repository
         public async Task<Admin> Delete(int item)
         {
             Admin admin = await GetByID(item);
+            if (admin == null)
+                throw new NoAdminFoundException();
             _context.Remove(admin);
             _context.SaveChanges();
             _logger.LogInformation($"Admin {admin.AdminID} Deleted");
@@ -56,6 +58,8 @@ namespace MavericksBank.Repository
         public async Task<Admin> Update(Admin item)
         {
             var admin = await GetByID(item.AdminID);
+            if (admin == null)
+                throw new NoAdminFoundException();
             _context.Entry<Admin>(item).State = EntityState.Modified;
             _context.SaveChanges();
             _logger.LogInformation($"Admin {item.AdminID} Updated");

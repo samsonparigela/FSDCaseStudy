@@ -99,6 +99,15 @@ internal class Program
         builder.Services.AddScoped<ICustomerLoanService, CustomerLoanService>();
         builder.Services.AddScoped<ITokenService, TokenService>();
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("MavericksBankPolicy", opts =>
+            {
+                opts.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
+            });
+        });
+
+
         builder.Services.AddDbContext<RequestTrackerContext>(opts =>
         {
             opts.UseSqlServer(builder.Configuration.GetConnectionString("requestTrackerConnection"));
@@ -114,6 +123,9 @@ internal class Program
 
         app.UseHttpsRedirection();
 
+        app.UseCors("MavericksBankPolicy");
+
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapControllers();

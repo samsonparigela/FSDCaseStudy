@@ -6,7 +6,7 @@ using MavericksBank.Services;
 
 namespace MavericksBank.Repository
 {
-	public class BankEmpLoanService: IBankEmpLoanService
+    public class BankEmpLoanService : IBankEmpLoanService
     {
         private readonly ILogger<BankEmpLoanService> _logger;
         private readonly IRepository<Loan, int> _LoanRepo;
@@ -18,19 +18,19 @@ namespace MavericksBank.Repository
         public BankEmpLoanService(ILogger<BankEmpLoanService> logger, IRepository<Loan, int> LoanRepo,
             ICustomerAccountService AccService, IRepository<Customer, int> CustRepo,
             ICustomerLoanService LoanService, IRepository<LoanPolicies, int> LoanPolicyRepo)
-		{
+        {
             _logger = logger;
             _LoanRepo = LoanRepo;
             _AccService = AccService;
             _CustRepo = CustRepo;
             _LoanService = LoanService;
             _LoanPolicyRepo = LoanPolicyRepo;
-		}
+        }
 
         public async Task<Loan> ApproveOrDisapproveLoan(int LID)
         {
             var loan = await _LoanRepo.GetByID(LID);
-            if(await GetCustomerCreditworthiness(loan.CustomerID))
+            if (await GetCustomerCreditworthiness(loan.CustomerID))
             {
                 loan.Status = "Approved";
             }
@@ -92,17 +92,22 @@ namespace MavericksBank.Repository
         public async Task<List<Loan>> GetAllLoansThatNeedApproval()
         {
             var loans = await _LoanRepo.GetAll();
-            var Approvalloans = loans.Where(l => l.Status=="Pending").ToList();
+            var Approvalloans = loans.Where(l => l.Status == "Pending").ToList();
             return Approvalloans;
         }
 
         public async Task<bool> GetCustomerCreditworthiness(int CID)
         {
-            var transactions =await _AccService.ViewAllYourTransactions(CID);
+            var transactions = await _AccService.ViewAllYourTransactions(CID);
+            var inbound = transactions.Where(t => t.TransactionType == "Deposit" || t.TransactionType == "Withdraw").ToList().Count();
+            var outbound = transactions.Where(t => t.TransactionType == "Sent").ToList().Count();
+            float ratio=0;
+            if(outbound!=0)
+                ratio = inbound / outbound;
             var loans = await _LoanService.GetAllAppliedLoans(CID);
             int transacCount = transactions.Count();
             int loanCount = loans.Count();
-            if (transacCount > 2 && loanCount < 2)
+            if (transacCount > 2 && ratio > 1 )
                 return true;
             return false;
         }

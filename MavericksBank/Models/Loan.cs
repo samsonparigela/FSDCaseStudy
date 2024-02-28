@@ -8,7 +8,7 @@ namespace MavericksBank.Models
 	{
         public Loan()
         {
-            this.Status = "Pending";
+
         }
 
         public Loan(int loanID, Customer customer, int customerID,

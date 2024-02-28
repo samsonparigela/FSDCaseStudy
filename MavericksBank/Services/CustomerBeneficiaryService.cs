@@ -1,4 +1,5 @@
 ﻿using System;
+using MavericksBank.Exceptions;
 using MavericksBank.Interfaces;
 using MavericksBank.Mappers;
 using MavericksBank.Models;
@@ -18,7 +19,12 @@ namespace MavericksBank.Services
 
         public async Task<AddOrUpdateBenifDTO> AddBeneficiary(AddOrUpdateBenifDTO benifDTO)
         {
+            var benifs = await _benefRepo.GetAll();
+            var benif = benifs.Where(a => a.BeneficiaryAccountNumber == benifDTO.BeneFiciaryNumber);
+            //if (benif != null)
+            //    throw new BeneficiaryAlreadyPresent("Beneficiary ID is already present");
             var beneficiary = new AddBenif(benifDTO).GetBenif();
+
             await _benefRepo.Add(beneficiary);
             _logger.LogInformation("Beneficiary Added");
             return benifDTO;

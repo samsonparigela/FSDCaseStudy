@@ -29,6 +29,8 @@ namespace MavericksBank.Repository
         public async Task<Users> Delete(string key)
         {
             Users user = await GetByID(key);
+            if (user == null)
+                throw new NoUserFoundException();
             _context.Remove(user);
             _context.SaveChanges();
             _logger.LogInformation($"User {user.UserID} Deleted");
@@ -50,12 +52,15 @@ namespace MavericksBank.Repository
             var user = _context.Users.SingleOrDefault(p => p.UserName == key);
             if (user != null)
                 return user;
-            throw new NoUserFoundException();
+            else
+                return null;
         }
 
         public async Task<Users> Update(Users item)
         {
             var user = await GetByID(item.UserName);
+            if (user == null)
+                throw new NoUserFoundException();
             _context.Entry<Users>(item).State = EntityState.Modified;
             _context.SaveChanges();
             _logger.LogInformation($"User {item.UserID} Updated");

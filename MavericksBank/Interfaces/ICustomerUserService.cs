@@ -6,8 +6,8 @@ namespace MavericksBank.Interfaces
 {
 	public interface ICustomerUserService
 	{
-        public Task<CustomerLoginDTO> Register(CustomerRegisterDTO customerRegister);
-        public Task<CustomerLoginDTO> Login(CustomerLoginDTO customerLogin);
+        public Task<LoginDTO> Register(CustomerRegisterDTO customerRegister);
+        public Task<LoginDTO> Login(LoginDTO customerLogin);
         public Task<CustomerNameDTO> UpdateCustomerName(CustomerNameDTO customer);
         public Task<CustomerPhoneAndAddressDTO> UpdateCustomerPhoneAndAddress(CustomerPhoneAndAddressDTO customer);
         public Task<Customer> DeleteCustomer(int key);

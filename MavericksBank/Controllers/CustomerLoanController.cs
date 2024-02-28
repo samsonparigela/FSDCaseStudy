@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using MavericksBank.Exceptions;
 using MavericksBank.Interfaces;
 using MavericksBank.Models;
 using MavericksBank.Models.DTO;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -13,6 +17,7 @@ namespace MavericksBank.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("MavericksBankPolicy")]
     public class CustomerLoanController : Controller
     {
         private readonly ILogger<CustomerLoanController> _logger;
@@ -23,76 +28,143 @@ namespace MavericksBank.Controllers
             _service = service;
         }
 
-        [Route("Apply for a loan")]
+        [Authorize(Roles = "Customer")]
+        [Route("ApplyForALoan")]
         [HttpPost]
-        public async Task<LoanApplyDTO> ApplyForALoan(LoanApplyDTO ApplyLoan)
+        public async Task<ActionResult<LoanApplyDTO>> ApplyForALoan(LoanApplyDTO ApplyLoan)
         {
-            var loan = await _service.ApplyForALoan(ApplyLoan);
-            _logger.LogInformation("Applied for a loan");
-            return loan;
+            try
+            {
+                var loan = await _service.ApplyForALoan(ApplyLoan);
+                _logger.LogInformation("Applied for a loan");
+                return loan;
+            }
+            catch(LoanNotApprovedYetException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
 
-        [Route("Ask For Extension")]
+        [Authorize(Roles = "Customer")]
+        [Route("AskForExtension")]
         [HttpPut]
-        public async Task<LoanExtendDTO> AskForExtension(LoanExtendDTO loanExtend)
+        public async Task<ActionResult<LoanExtendDTO>> AskForExtension(LoanExtendDTO loanExtend)
         {
-            var loanExtension = await _service.AskForExtension(loanExtend);
-            _logger.LogInformation("Asked for a loan extension");
-            return loanExtension;
+            try
+            {
+                var loanExtension = await _service.AskForExtension(loanExtend);
+                _logger.LogInformation("Asked for a loan extension");
+                return loanExtension;
+            }
+            catch (NoLoanFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
 
-        [Route("Get All Applied Loans")]
+        [Route("GetAllAppliedLoans")]
         [HttpGet]
-        public async Task<List<Loan>> GetAllAppliedLoans(int ID)
+        public async Task<ActionResult<List<Loan>>> GetAllAppliedLoans(int ID)
         {
-            var loans = await _service.GetAllAppliedLoans(ID);
-            _logger.LogInformation("Retrieved all applied loans");
-            return loans;
+            try
+            {
+                var loans = await _service.GetAllAppliedLoans(ID);
+                _logger.LogInformation("Retrieved all applied loans");
+                return loans;
+            }
+            catch (NoLoanFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
 
-        [Route("Get All Availed Loans")]
+        [Route("GetAllAvailedLoans")]
         [HttpGet]
-        public async Task<List<Loan>> GetAllAvailedLoans(int ID)
+        public async Task<ActionResult<List<Loan>>> GetAllAvailedLoans(int ID)
         {
-            var loans = await _service.GetAllAvailedLoans(ID);
-            _logger.LogInformation("Retrieved all Availed loans");
-            return loans;
+            try
+            {
+                var loans = await _service.GetAllAvailedLoans(ID);
+                _logger.LogInformation("Retrieved all Availed loans");
+                return loans;
+            }
+            catch (NoLoanFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
 
-        [Route("Get Different Loan Policies")]
+        [Route("GetDifferentLoanPolicies")]
         [HttpGet]
-        public async Task<List<LoanPolicies>> GetDifferentLoanPolicies()
+        public async Task<ActionResult<List<LoanPolicies>>> GetDifferentLoanPolicies()
         {
-            var loanPolicies = await _service.GetDifferentLoanPolicies();
-            _logger.LogInformation("Retrieved all loan Policies");
-            return loanPolicies;
+            try
+            {
+                var loanPolicies = await _service.GetDifferentLoanPolicies();
+                _logger.LogInformation("Retrieved all loan Policies");
+                return loanPolicies;
+            }
+            catch (NoLoanFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
 
-        [Route("Get Loan By ID")]
+        [Route("GetLoanByID")]
         [HttpGet]
-        public async Task<Loan> GetLoanByID(int ID)
+        public async Task<ActionResult<Loan>> GetLoanByID(int ID)
         {
-            var loan = await _service.GetLoanByID(ID);
-            _logger.LogInformation("Retrieved loan");
-            return loan;
+            try
+            {
+                var loan = await _service.GetLoanByID(ID);
+                _logger.LogInformation("Retrieved loan");
+                return loan;
+            }
+            catch (NoLoanFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
 
-        [Route("Get LoanAmount To Account")]
+        [Authorize(Roles = "Customer")]
+        [Route("GetLoanAmountToAccount")]
         [HttpPut]
-        public async Task<Accounts> GetLoanAmountToAccount(int LoanID, int AccID)
+        public async Task<ActionResult<Accounts>> GetLoanAmountToAccount(int LoanID, int AccID)
         {
-            var loanAmountTransfer = await _service.GetLoanAmountToAccount(LoanID,AccID);
-            _logger.LogInformation("Loan amount credited to account");
-            return loanAmountTransfer;
+            try
+            {
+                var loanAmountTransfer = await _service.GetLoanAmountToAccount(LoanID, AccID);
+                _logger.LogInformation("Loan amount credited to account");
+                return loanAmountTransfer;
+            }
+            catch (NoLoanFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
 
-        [Route("Repay Loan")]
+        [Route("RepayLoan")]
         [HttpPut]
-        public async Task<Loan> RepayLoan(int loanID, int accountNumber, int amount)
+        public async Task<ActionResult<Loan>> RepayLoan(int loanID, int accountNumber, int amount)
         {
-            var loanRepay = await _service.RepayLoan(loanID, accountNumber, amount);
-            _logger.LogInformation("Loan Repaid");
-            return loanRepay;
+            try
+            {
+                var loanRepay = await _service.RepayLoan(loanID, accountNumber, amount);
+                _logger.LogInformation("Loan Repaid");
+                return loanRepay;
+            }
+            catch (NoLoanFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

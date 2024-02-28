@@ -28,8 +28,15 @@ namespace MavericksBank.Services
 
         }
 
-        public async Task<CustomerLoginDTO> Register(CustomerRegisterDTO customerRegister)
+        public async Task<LoginDTO> Register(CustomerRegisterDTO customerRegister)
         {
+            //var users = await _UserRepo.GetAll();
+            var x = await _UserRepo.GetByID(customerRegister.UserName);
+            //var user = users.Where(u => u.UserName == customerRegister.UserName).ToList();
+            if(x!=null)
+            {
+                throw new UserExistsException("User Already Exists");
+            }
             var myUser = new RegisterToUser(customerRegister).GetUser();
             myUser = await _UserRepo.Add(myUser);
 
@@ -37,19 +44,21 @@ namespace MavericksBank.Services
             myCustomer.UserID = myUser.UserID;
             myCustomer = await _CustomerRepo.Add(myCustomer);
 
-            CustomerLoginDTO result = new CustomerLoginDTO
+            LoginDTO result = new LoginDTO
             {
                 UserName = myUser.UserName,
-                UserType = myUser.UserType,
+                UserType = "Customer",
             };
             _logger.LogInformation("Successfully Registered");
             return result;
         }
 
 
-        public async Task<CustomerLoginDTO> Login(CustomerLoginDTO customerLogin)
+        public async Task<LoginDTO> Login(LoginDTO customerLogin)
         {
             var user = await _UserRepo.GetByID(customerLogin.UserName);
+            var customers = await _CustomerRepo.GetAll();
+            var cust = customers.Where(c => c.UserID == user.UserID).ToList().SingleOrDefault();
             if (user == null)
                 throw new InvalidUserException();
             var password = GetEncryptedPassword(customerLogin.Password,user.Key);
@@ -58,7 +67,10 @@ namespace MavericksBank.Services
                 customerLogin.Password = "";
                 customerLogin.UserType = user.UserType;
                 customerLogin.token = await _tokenService.GenerateToken(customerLogin);
+                customerLogin.userID = cust.CustomerID;
             }
+            else
+                throw new InvalidUserException();
             _logger.LogInformation("Successfully Loggedin");
             return customerLogin;
         }
@@ -108,8 +120,10 @@ namespace MavericksBank.Services
         {
             var user = await _CustomerRepo.GetByID(customer.ID);
             user.Name = customer.Name;
+            user.Phone = customer.phoneNumber;
+            user.Address = customer.Address;
             await _CustomerRepo.Update(user);
-            _logger.LogInformation($"Successfully Updated Customer Name with ID : {customer.ID}");
+            _logger.LogInformation($"Successfully Updated Customer with ID : {customer.ID}");
             return customer;
         }
 

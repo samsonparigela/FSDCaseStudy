@@ -29,6 +29,8 @@ namespace MavericksBank.Repository
         public async Task<LoanPolicies> Delete(int item)
         {
             LoanPolicies loanPolicy = await GetByID(item);
+            if (loanPolicy == null)
+                throw new NoLoanFoundException();
             _context.Remove(loanPolicy);
             _context.SaveChanges();
             _logger.LogInformation($"Loan Policy {loanPolicy.LoanPolicyID} Deleted");
@@ -56,6 +58,8 @@ namespace MavericksBank.Repository
         public async Task<LoanPolicies> Update(LoanPolicies item)
         {
             var loan = await GetByID(item.LoanPolicyID);
+            if (loan == null)
+                throw new NoLoanFoundException();
             _context.Entry<LoanPolicies>(item).State = EntityState.Modified;
             _context.SaveChanges();
             _logger.LogInformation($"Loan Policy {item.LoanPolicyID} Updated");

@@ -13,7 +13,7 @@ namespace MavericksBank.Mappers
 		{
 			myUser = new Users();
             myUser.UserName = empRegister.UserName;
-            myUser.UserType = empRegister.UserType;
+            myUser.UserType = "Bank Employee";
 			GetEncryptedPassword(empRegister.Password);
 		}
 

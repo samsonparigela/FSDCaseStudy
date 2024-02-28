@@ -29,6 +29,8 @@ namespace MavericksBank.Repository
         public async Task<BankEmployee> Delete(int item)
         {
             BankEmployee bankEmployee = await GetByID(item);
+            if (bankEmployee == null)
+                throw new NoBankEmployeeFoundException();
             _context.Remove(bankEmployee);
             _context.SaveChanges();
             _logger.LogInformation($"BankEmployee {item} Deleted");
@@ -56,6 +58,8 @@ namespace MavericksBank.Repository
         public async Task<BankEmployee> Update(BankEmployee item)
         {
             var bankEmployee = await GetByID(item.EmployeeID);
+            if (bankEmployee == null)
+                throw new NoBankEmployeeFoundException();
             _context.Entry<BankEmployee>(item).State = EntityState.Modified;
             _context.SaveChanges();
             _logger.LogInformation($"BankEmployee {item.EmployeeID} Updated");

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Security.Cryptography;
+using MavericksBank.Exceptions;
 using MavericksBank.Interfaces;
 using MavericksBank.Mappers;
 using MavericksBank.Models;
 using MavericksBank.Models.DTO;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MavericksBank.Services
 {
@@ -24,11 +26,13 @@ namespace MavericksBank.Services
 
         public async Task<Accounts> ApproveAccountClosing(int AID)
         {
-            var account = await _AccRepo.GetByID(AID);
-            account.Status = "Account Closing Approved";
-            await _AccRepo.Update(account);
-            _logger.LogInformation("Account Closing Approved");
-            return account;
+
+                var account = await _AccRepo.GetByID(AID);
+                account.Status = "Account Closing Approved";
+                await _AccRepo.Update(account);
+                _logger.LogInformation("Account Closing Approved");
+                return account;
+
         }
         public async Task<Customer> GetCustomerDetailsforAccount(int AID)
         {
@@ -111,7 +115,7 @@ namespace MavericksBank.Services
         public async Task<List<TransactionDTO>> ViewSentTransactions(int AID)
         {
             var transactions = await _TransacRepo.GetAll();
-            var filteredtransactions = transactions.Where(t => t.SAccountID==AID).ToList();
+            var filteredtransactions = transactions.Where(t =>t.SAccountID == AID && t.TransactionType == "Sent").ToList();
             _logger.LogInformation($"Retrieved All Transactions of Account {AID}");
             List<TransactionDTO> DTOList = new List<TransactionDTO>();
             foreach (Transactions transac in filteredtransactions)
@@ -125,7 +129,7 @@ namespace MavericksBank.Services
         public async Task<List<TransactionDTO>> ViewReceivedTransactions(int AID)
         {
             var transactions = await _TransacRepo.GetAll();
-            var filteredtransactions = transactions.Where(t => t.BeneficiaryAccountNumber== AID).ToList();
+            var filteredtransactions = transactions.Where(t => t.SAccountID == AID && (t.TransactionType == "Deposit" || t.TransactionType=="Withdraw")).ToList();
             _logger.LogInformation($"Retrieved All Transactions of Account {AID}");
             List<TransactionDTO> DTOList = new List<TransactionDTO>();
             foreach (Transactions transac in filteredtransactions)
