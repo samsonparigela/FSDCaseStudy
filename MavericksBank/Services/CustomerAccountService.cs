@@ -37,7 +37,11 @@ namespace MavericksBank.Services
         public async Task<AccountsCreateDTO> OpenAccount(AccountsCreateDTO account)
         {
             var accounts = await _AccRepo.GetAll();
-            var account2 = accounts.Where(a => a.AccountNumber == account.AccountNumber);
+
+            var yourAccount = await ViewAllYourAccounts(account.customerID);
+            var accountNumber = (account.customerID.ToString()+ DateTime.Now.ToString("MMyyyy") + yourAccount.Count() + 1).ToString();
+            account.AccountNumber = int.Parse(accountNumber);
+
             var myAccount = new RegisterToAccount(account).GetAccount();
 
 
