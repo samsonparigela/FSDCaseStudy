@@ -1,0 +1,98 @@
+    .login-container {
+        padding: 50px;
+      }
+      .login-form {
+        background-color: #f8f9fa;
+        padding: 40px;
+        border-radius: 10px;
+      }
+      .login-form img {
+        width: 100%;
+        border-radius: 10px;
+        margin-bottom: 20px;
+      }
+      .signup-form {
+        background-color: #f8f9fa;
+        padding: 50px;
+        border-radius: 10px;
+      }
+      .signup-form img {
+        width: 100%;
+        border-radius: 10px;
+        margin-bottom: 20px;
+      }
+      .jj {
+        background-color: #faf0e6;
+        /* background-image: url('./Images/m2.jpg'); 
+        background-size: cover;
+        background-repeat: repeat-y;
+        background-position: center; */
+        height: 100vh;
+        margin: 0;
+        padding: 0;
+      }
+      .navbar {
+        background-color: rgba(255, 255, 255, 0.8); /* Background color for the navigation bar */
+      }
+      .jumbotron {
+        background-color: #faf0e6; /* Background color for the jumbotron */
+        padding: 2rem;
+      }
+      .jumbotron h1 {
+        color: #333; /* Text color for the jumbotron heading */
+      }
+      .section {
+        padding: 50px 0;
+        background-color: #faf0e6; /* Background color for sections */
+      }
+      .section-heading {
+        text-align: center;
+        background-color: #17a2b8;
+      }
+      .service-icon {
+        font-size: 3rem;
+      }
+  
+      .footer {
+        background-color: #faf0e6;
+        padding: 20px 0;
+        text-align: center;
+      }
+      .custom-bg-color {
+        background-color:  #faf0e6; /* Your hexadecimal color code */
+      }
+      .custom-bg-color2 {
+        background-color:  #faf0e6; /* Your hexadecimal color code */
+      }
+      .flex-container {
+        display: flex;
+    }
+    
+    .flex-child {
+        flex: 1;
+        
+    }  
+    
+    .flex-child:first-child {
+        margin-right: 20px;
+    } 
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.5); /* White background with opacity */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .alert {
+      background-color: white; /* White background for the alert */
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+     

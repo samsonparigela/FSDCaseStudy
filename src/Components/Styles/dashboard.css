@@ -1,0 +1,14 @@
+.welcome-container {
+    padding: 50px;
+  }
+  jj {
+    background-image: url('./n2.jpg'); /* Path to your background image */
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+  .transparent-card {
+    background-color: rgba(255, 255, 255, 0.5); /* Adjust the last value (0.5) for opacity */
+  }
