@@ -1,42 +1,83 @@
+import axios from "axios";
+import { error } from "jquery";
 import { useEffect, useState } from "react"
 
 export default function GetLoanAmountToAccount(){
 
     const [accountNumber,setAccountNumber] = useState();
     const [loanID,setLoanID] = useState();    
-    const [transac,setTransac] = useState();
+    const [transac,setTransac] = useState({'balance':0});
     const [flag,setFlag] = useState(0);
 
-    const customerID = sessionStorage.getItem("CID");
+    const token = sessionStorage.getItem("Token");
 
-    useEffect(()=>{
-        const fetchLoans = async () => {
-        const token = sessionStorage.getItem('Token');
-        const httpHeader = { 
-            method:'PUT',
-            body: JSON.stringify({
-                'loanID':loanID,
-                'AccID':accountNumber
-            }),
-            headers: {
-                'Content-Type':'application/json',
-                'accept' : 'text/plain',
-                'Authorization': 'Bearer ' + token
-            }
-        };
+    var customerID = sessionStorage.getItem("CID");
+    
+    const url1 = 'https://localhost:7075/api/CustomerLoan/GetAllApprovedLoans?ID='+customerID;
+    const url2 ='https://localhost:7075/api/CustomerAccount/View All your Accounts?ID='+customerID;
+  
+    const [options,setOptions]= useState([])
+    const [selectedOption, setSelectedOption] = useState(null);
 
-            fetch("https://localhost:7075/api/CustomerLoan/GetLoanAmountToAccount?LoanID="+loanID+"&AccID="+accountNumber,
-            httpHeader)
-            .then(r=>r.json())
-            .then(r=>setTransac(r))
+    const [options2,setOptions2]= useState([])
+    const [selectedOption2, setSelectedOption2] = useState(null);
+      
+    const handleChange = (event) => {
+      setSelectedOption(event.target.value);
+      setLoanID(parseInt(event.target.value))
+          
+    };
+
+    const handleChange2 = (event) => {
+        setSelectedOption2(event.target.value);
+        setAccountNumber(String(event.target.value))
+            
+    };
+
+    useEffect(() => {
+        var func =async()=>{
+            const response = await axios.get(url1, {headers: {
+                'Authorization': 'Bearer '+token,
+                'Content-Type': 'application/json'
+            },});
+        setOptions(response.data);
+        }
+        func()
+    },[]);
+
+    useEffect(() => {
+        var func =async()=>{
+            const response = await axios.get(url2, {headers: {
+                'Authorization': 'Bearer '+token,
+                'Content-Type': 'application/json'
+            },});
+        
+            let filteredList = response.data.filter(obj => obj.status == "Approved");
+            setOptions2(filteredList);
+        }
+        func()
+    },[])
+
+
+    const fetchLoans = async () => {
+
+        try{
+            var response2 = await axios.put("https://localhost:7075/api/CustomerLoan/GetLoanAmountToAccount?LoanID="+loanID+"&AccID="+accountNumber, 
+            null,{headers: {
+                'Authorization': 'Bearer '+token,
+                'Content-Type': 'application/json'
+            },});
+            setTransac(response2.data)
+        }catch(err){
+            alert(err.response.data)
+        }
     }
-        fetchLoans();
-    },[flag]);
 
     function flagmethod(){
-        if(flag==0)
-        setFlag(1);
-
+        if(flag==0){
+            fetchLoans();
+            setFlag(1);
+        }
         else
         setFlag(0);
     }
@@ -50,17 +91,35 @@ export default function GetLoanAmountToAccount(){
                                     <div class="card-body"></div>
             <h1>Get Loan Amount Deposited</h1>
             <div class="form-group">
-                <label for="input3">Loan ID</label>
-                <input type="text" class="form-control" id="input1" placeholder="Enter Loan ID"
-                value={loanID} onChange={(e)=>setLoanID(e.target.value)}/>
+            <div>
+                                            <label htmlFor="input1">Loan ID</label>
+                                            <br/>
+                                            <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <option value="">Select an option</option> {/* Default option */}
+                                                {options.map((options) => (
+                                                <option key={options.loanID} value={options.loanID}>
+                                                    {options.loanID}
+                                                </option>
+                                                ))}
+                                            </select>
+                                        </div>
 
 
-                <label for="input3">Account Number</label>
-                <input type="text" class="form-control" id="input2" placeholder="Enter Account Nummber"
-                value={accountNumber} onChange={(e)=>setAccountNumber(e.target.value)}/>
-
+                                        <div>
+                                            <label htmlFor="input2">Account Number</label>
+                                            <br/>
+                                            <select value={selectedOption2} onChange={handleChange2} class="browser-default custom-select">
+                                            <option value="">Select an option</option> {/* Default option */}
+                                                {options2.map((options) => (
+                                                <option key={options.accountNumber} value={options.accountNumber}>
+                                                    {options.accountNumber}
+                                                </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <br/>
                 <button type="button" class="btn btn-success" data-toggle="button" 
-                aria-pressed="false" autocomplete="off" onClick={flagmethod}>
+                aria-pressed="false" onClick={flagmethod}>
                 Deposit
                 </button>
             </div>
@@ -72,8 +131,7 @@ export default function GetLoanAmountToAccount(){
                   </tr>
                 </thead>
                 <tbody>
-                    {console.log(transac)}
-                    <tr key={transac.balance}>
+                    <tr>
                       <td>{transac.balance}</td>
                     </tr>
                 </tbody>

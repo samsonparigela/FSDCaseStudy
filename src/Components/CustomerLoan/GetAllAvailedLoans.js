@@ -9,7 +9,7 @@ export default function GetAllAvailedLoans(){
     const fetchLoans = async () => {
       try {
         const token = sessionStorage.getItem('Token');
-        const response = await fetch('https://localhost:7075/api/CustomerLoan/GetAllAvailedLoans?ID='+customerID, {
+        const response = await fetch('https://localhost:7075/api/CustomerLoan/GetAllAppliedLoans?ID='+customerID, {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer '+token,
@@ -20,7 +20,8 @@ export default function GetAllAvailedLoans(){
 
         if (response.ok) {
           const loansData = await response.json();
-          setLoans(loansData);
+          let filteredList = loansData.filter(obj => obj.status !== "Disapproved" && obj.status !== "Repayed");
+          setLoans(filteredList);
         } else {
           console.error('Failed to fetch Loans');
         }
@@ -36,7 +37,6 @@ export default function GetAllAvailedLoans(){
     setFlag(1)
   else
   setFlag(0)
-    console.log(flag);
   }
   return (
     <div>
@@ -47,9 +47,9 @@ export default function GetAllAvailedLoans(){
                                     <div class="card-body"></div>
 
 <div>
-      <h1>All your availed loans</h1>
+      <h1>All your approved and deposited loans</h1>
       <button type="button" class="btn btn-success" data-toggle="button" 
-      aria-pressed="false" autocomplete="off" onClick={flagmethod}>
+      aria-pressed="false" onClick={flagmethod}>
       Get all your Loans
       </button>
       {flag==1? 
@@ -60,6 +60,7 @@ export default function GetAllAvailedLoans(){
             <th>Loan Amount</th>
             <th>Loan Purpose</th>
             <th>Status</th>
+            <th>Repay Amount</th>
             {/* Add more table headers as needed */}
           </tr>
         </thead>
@@ -70,6 +71,7 @@ export default function GetAllAvailedLoans(){
               <td>{l.loanAmount}</td>
               <td>{l.loanPurpose}</td>
               <td>{l.status}</td>
+              <td>{l.calculateFinalAmount}</td>
             </tr>
           ))}
         </tbody>

@@ -44,10 +44,12 @@ export default function ViewProfile(){
                         <div class="card custom-bg-color">
                             <div class="card-body">
       <h1>Your Profile</h1>
+      <br/>
       <button type="button" class="btn btn-success" data-toggle="button" 
       aria-pressed="false" onClick={fetchProfile}>
       View
       </button>
+      <br/>
       {flag==1? 
       <table className="table">
         <thead>

@@ -1,16 +1,62 @@
 import { useEffect, useState } from "react"
-
+import axios from "axios";
 export default function RepayLoan(){
 
-    const [accountNumber,setAccountNumber] = useState();
-    const [amount,setAmount] = useState();
+    const [accountNumber,setAccountNumber] = useState();   
+
+    const token = sessionStorage.getItem("Token");
+    var customerID = sessionStorage.getItem("CID");
+    
+    const url1 = 'https://localhost:7075/api/CustomerLoan/GetAllAppliedLoans?ID='+customerID;
+    const url2 ='https://localhost:7075/api/CustomerAccount/View All your Accounts?ID='+customerID;
+  
+    const [options,setOptions]= useState([])
+    const [selectedOption, setSelectedOption] = useState(null);
+
+    const [options2,setOptions2]= useState([])
+    const [selectedOption2, setSelectedOption2] = useState(null);
+      
+    const handleChange = (event) => {
+      setSelectedOption(event.target.value);
+      setLoanID(parseInt(event.target.value))
+          
+    };
+
+    const handleChange2 = (event) => {
+        setSelectedOption2(event.target.value);
+        setAccountNumber(String(event.target.value))
+            
+    };
+
+    useEffect(() => {
+        var func =async()=>{
+            const response = await axios.get(url1, {headers: {
+                'Authorization': 'Bearer '+token,
+                'Content-Type': 'application/json'
+            },});
+            let filteredList = response.data.filter(obj => obj.status == "Deposited");
+        setOptions(filteredList);
+        }
+        func()
+    },[]);
+
+    useEffect(() => {
+        var func =async()=>{
+            const response = await axios.get(url2, {headers: {
+                'Authorization': 'Bearer '+token,
+                'Content-Type': 'application/json'
+            },});
+            let filteredList = response.data.filter(obj => obj.status == "Approved");
+        setOptions2(filteredList);
+        }
+        func()
+    },[])
+
+    const [amount,setAmount] = useState(0);
     const [loanID,setLoanID] = useState();    
     const [loan,setLoan] = useState({});
     const [flag,setFlag] = useState(0);
 
-    const customerID = sessionStorage.getItem("CID");
-    console.log(sessionStorage);
-    useEffect(()=>{
         const fetchLoans = async () => {
         const token = sessionStorage.getItem('Token');
         const httpHeader = { 
@@ -24,18 +70,23 @@ export default function RepayLoan(){
                 'Authorization': 'Bearer ' + token
             }
         };
+        if(isNaN(amount)){
+            alert("Enter Number");
+            return null;
+        }
 
             fetch("https://localhost:7075/api/CustomerLoan/RepayLoan?loanID="+loanID+"&accountNumber="+accountNumber+"&amount="+amount,
             httpHeader)
             .then(r=>r.json())
             .then(r=>setLoan(r))
     }
-        fetchLoans();
-    },[flag]);
 
     function flagmethod(){
-        if(flag==0)
-        setFlag(1);
+        if(flag==0){
+            fetchLoans();
+            setFlag(1);
+        }
+        
 
         else
         setFlag(0);
@@ -50,22 +101,42 @@ export default function RepayLoan(){
                                     <div class="card-body"></div>
             <h1>Repay the loan</h1>
             <div class="form-group">
-                <label for="input3">Loan ID</label>
-                <input type="text" class="form-control" id="input1" placeholder="Enter Loan ID"
-                value={loanID} onChange={(e)=>setLoanID(e.target.value)}/>
+            <div>
+                                            <label htmlFor="input1">Loan ID</label>
+                                            <br/>
+                                            <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <option value="">Select an option</option> {/* Default option */}
+                                                {options.map((options) => (
+                                                    
+                                                <option key={options.loanID} value={options.loanID}>
+                                                    {options.loanID}
+                                                </option>
+                                                ))}
+                                            </select>
+                                        </div>
 
 
-                <label for="input3">Account Number</label>
-                <input type="text" class="form-control" id="input2" placeholder="Enter Account Nummber"
-                value={accountNumber} onChange={(e)=>setAccountNumber(e.target.value)}/>
+                                        <div>
+                                            <label htmlFor="input2">Account Number</label>
+                                            <br/>
+                                            <select value={selectedOption2} onChange={handleChange2} class="browser-default custom-select">
+                                            <option value="">Select an option</option>
+                                                {options2.map((options) => (
+                                                <option key={options.accountNumber} value={options.accountNumber}>
+                                                    {options.accountNumber}
+                                                </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <br/>
 
 
-                <label for="input3">Amount</label>
+                <label htmlFor="input3">Amount</label>
                 <input type="text" class="form-control" id="input2" placeholder="Enter Amount"
                 value={amount} onChange={(e)=>setAmount(e.target.value)}/>
-
+                <br/>
                 <button type="button" class="btn btn-success" data-toggle="button" 
-                aria-pressed="false" autocomplete="off" onClick={flagmethod}>
+                aria-pressed="false" onClick={flagmethod}>
                 Repay
                 </button>
             </div>
@@ -74,12 +145,13 @@ export default function RepayLoan(){
                 <thead>
                   <tr>
                     <th>Status</th>
+                    <th>Amount Pending</th>
                   </tr>
                 </thead>
                 <tbody>
-                    {console.log(loan)}
                     <tr key={loan.status}>
                       <td>{loan.status}</td>
+                      <td>{loan.calculateFinalAmount}</td>
                     </tr>
                 </tbody>
                 </table>      

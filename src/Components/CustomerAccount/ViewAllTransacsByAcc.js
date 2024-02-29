@@ -32,7 +32,8 @@ export default function ViewAllTransacsByAcc(){
     })
     .then(response => response.json())
     .then(data => {
-    setOptions(data);
+      let filteredList = data.filter(obj => obj.status !== "Pending" && obj.status !== "Account Closing Approved");
+    setOptions(filteredList);
     });
 
     for (let i = 0; i < options.length; i++) {
@@ -109,6 +110,7 @@ export default function ViewAllTransacsByAcc(){
                                             <label htmlFor="input1">Account Number</label>
                                             <br/>
                                             <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <option value="">Select an option</option>
                                                 {options.map((options) => (
                                                 <option key={options.accountNumber} value={options.accountNumber}>
                                                     {options.accountNumber}
@@ -116,6 +118,7 @@ export default function ViewAllTransacsByAcc(){
                                                 ))}
                                             </select>
                                         </div>
+                                        <br/>
           <button type="button" class="btn btn-success" data-toggle="button" 
           aria-pressed="false" onClick={flagmethod}>
           Get all your Transactions

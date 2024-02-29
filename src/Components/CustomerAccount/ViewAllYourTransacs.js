@@ -6,7 +6,6 @@ export default function ViewAllYourTransacs(){
         const [transacs, setTransacs] = useState([]);
         var customerID = sessionStorage.getItem("CID");
 
-        useEffect(() => {
         const fetchTransacs = async () => {
           try {
             const token = sessionStorage.getItem('Token');
@@ -29,12 +28,13 @@ export default function ViewAllYourTransacs(){
             console.error('Error fetching orders:', error);
           }
         }
-        fetchTransacs();
-      },[]);
       var [flag,setFlag] = useState(0);
       var flagmethod = (e) =>{
-        if(flag==0)
-        setFlag(1)
+        if(flag==0){
+          fetchTransacs()
+          setFlag(1)
+        }
+        
       else
       setFlag(0)
       }

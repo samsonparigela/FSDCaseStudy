@@ -2,8 +2,39 @@ import React, { useState, useEffect } from 'react';
 import './style.css'
 export default function GetAllLoansbyACustomer(){
 
+  var customerID = sessionStorage.getItem("BID");
+  const token = sessionStorage.getItem("Token");
+
+  const [options,setOptions]= useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
+    
+  const handleChange = (event) => {
+    setSelectedOption(event.target.value);
+    setCustomerID(String(event.target.value))
+        
+  };
+
+  var [flag,setFlag] = useState(0);
+
+  useEffect(() => {
+    var func =async()=>{
+        const response2 = await fetch('https://localhost:7075/api/Customer/GetAll', {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer '+token,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+      let filteredList = data;
+    setOptions(filteredList);
+    });
+
+    }
+    func()
+  },[])
     const [loans, setLoans] = useState([]);
-    var bankEmpID = sessionStorage.getItem("BID");
     var [flag,setFlag] = useState(0);
     var [customerID,setCustomerID] =useState("");
 
@@ -29,7 +60,6 @@ export default function GetAllLoansbyACustomer(){
           method: 'GET',
           headers: {
             'Authorization': 'Bearer '+token,
-            body: JSON.stringify(bankEmpID), // Include your authorization token
             'Content-Type': 'application/json'
           }
         });
@@ -67,9 +97,18 @@ export default function GetAllLoansbyACustomer(){
                                         
       <h1>All Loans by Customer</h1>
       <div class="form-group">
-                                    <label htmlFor="accountName">Customer ID</label>
-                                    <input type="text" class="form-control"  id="accountNumber" placeholder="Enter CustomerID"
-                                    value={customerID} onChange={(e)=>setCustomerID(e.target.value)}/>
+      <div>
+                                            <label htmlFor="input1">Customer ID</label>
+                                            <br/>
+                                            <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <option value="">Select an option</option>
+                                                {options.map((options) => (
+                                                <option key={options.customerID} value={options.customerID}>
+                                                    {options.customerID}
+                                                </option>
+                                                ))}
+                                            </select>
+                                        </div>
                                 </div>
       <button type="button" class="btn btn-success" data-toggle="button" 
       aria-pressed="false" onClick={flagmethod}>

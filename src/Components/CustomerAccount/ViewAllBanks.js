@@ -6,7 +6,6 @@ export default function ViewAllBanks(){
         const [banks, setBanks] = useState([]);
         var customerID = sessionStorage.getItem("CID");
 
-        useEffect(() => {
         const fetchBanks = async () => {
           try {
             const token = sessionStorage.getItem('Token');
@@ -29,12 +28,13 @@ export default function ViewAllBanks(){
             console.error('Error fetching orders:', error);
           }
         }
-        fetchBanks();
-      },[]);
       var [flag,setFlag] = useState(0);
       var flagmethod = (e) =>{
-        if(flag==0)
-        setFlag(1)
+        if(flag==0){
+          fetchBanks()
+          setFlag(1)
+        }
+        
       else
       setFlag(0)
       }

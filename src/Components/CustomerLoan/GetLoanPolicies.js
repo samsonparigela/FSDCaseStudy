@@ -36,7 +36,6 @@ export default function GetLoanPolicies(){
     setFlag(1)
   else
   setFlag(0)
-    console.log(flag);
   }
   return (
     <div>
@@ -50,7 +49,7 @@ export default function GetLoanPolicies(){
 <div>
       <h1>Loan Policies</h1>
       <button type="button" class="btn btn-success" data-toggle="button" 
-      aria-pressed="false" autocomplete="off" onClick={flagmethod}>
+      aria-pressed="false" onClick={flagmethod}>
       Get Policies
       </button>
       {flag==1? 
@@ -60,7 +59,6 @@ export default function GetLoanPolicies(){
             <th>Loan Policy ID</th>
             <th>Tenure in months</th>
             <th>Interest</th>
-            <th>Loan Amount</th>
           </tr>
         </thead>
         <tbody>
@@ -69,7 +67,6 @@ export default function GetLoanPolicies(){
                <td>{l.loanPolicyID}</td>
               <td>{l.tenureInMonths}</td>
               <td>{l.interest}</td>
-              <td>{l.loanAmount}</td>
             </tr>
           ))}
         </tbody>

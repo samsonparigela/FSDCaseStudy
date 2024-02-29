@@ -2,6 +2,38 @@ import React, { useState, useEffect } from 'react';
 import './style.css'
 export default function ApproveLoan(){
 
+    const token = sessionStorage.getItem("Token");
+  
+    const [options,setOptions]= useState([]);
+    const [selectedOption, setSelectedOption] = useState(null);
+      
+    const handleChange = (event) => {
+      setSelectedOption(event.target.value);
+      setLoanID(String(event.target.value))
+          
+    };
+  
+    var [flag,setFlag] = useState(0);
+  
+    useEffect(() => {
+      var func =async()=>{
+          const response2 = await fetch('https://localhost:7075/api/BankEmpLoan/GetAllLoans', {
+          method: 'GET',
+          headers: {
+              'Authorization': 'Bearer '+token,
+              'Content-Type': 'application/json'
+          }
+      })
+      .then(response => response.json())
+      .then(data => {
+        let filteredList = data.filter(obj => obj.status === "Pending" || obj.status === "Extend Request");
+      setOptions(filteredList);
+      });
+  
+      }
+      func()
+    },[])
+
     const [loanID, setLoanID] = useState();
     const [loan,setLoan] = useState({})
     var bankEmpID = sessionStorage.getItem("BID");
@@ -65,13 +97,21 @@ export default function ApproveLoan(){
                     <div class="col-md-12 mb-4">
                         <div class="card custom-bg-color">
                             <div class="card-body">
-                                                    
-                                <h1>Approve Loan</h1>
-                                <div class="form-group">
-                                    <label htmlFor="accountName">Loan ID</label>
-                                    <input type="text" class="form-control"  id="accountNumber" placeholder="Enter LoanID"
-                                    value={loanID} onChange={(e)=>setLoanID(e.target.value)}/>
+                            <h1>Approve Loan</h1>     
+                                <div>
+                                    <label htmlFor="input1">Loan ID</label>
+                                    <br/>
+                                    <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                    <option value="">Select an option</option>
+                                        {options.map((option) => (
+                                        <option key={option.loanID} value={option.loanID}>
+                                            {option.loanID}
+                                            
+                                        </option>
+                                        ))}
+                                    </select>
                                 </div>
+                                <br/>
                                 <button type="button" class="btn btn-success" data-toggle="button" 
                                 aria-pressed="false" onClick={flagmethod}>
                                 Approve

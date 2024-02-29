@@ -1,41 +1,52 @@
 import React, { useState, useEffect } from 'react';
 export default function ViewAllBranches(){
 
+  var customerID = sessionStorage.getItem("CID");
+  const token = sessionStorage.getItem("Token");
+
+  const [options,setOptions]= useState([])
+  const [bankID, setBankID] = useState(1);
+  const [selectedOption, setSelectedOption] = useState(null);
+    
+  const handleChange = (event) => {
+    setBankID((event.target.value))
+    setSelectedOption(event.target.value);
+    
+        
+  };
     
         const [branches, setBranches] = useState([]);
-        const [branchID, setBranchID] = useState(0);
         var [flag,setFlag] = useState(0);
 
-        const validateInput = ({ branchID }) => {
-          if (!branchID.trim()) {
-            return false;
-          }
-          return true;
-        };
-
-        const fetchBranches = async () => {
-          const validInput = validateInput({branchID})
-      if(!validInput){
-        alert("Branch ID cannot be null");
-        return null;
-      }
-          try {
-            const response = await fetch('https://localhost:7075/api/CustomerAccount/View All Branches?BID='+branchID, {
+        useEffect(() => {
+          var func =async()=>{
+              const response2 = await fetch('https://localhost:7075/api/CustomerAccount/View All Banks', {
               method: 'GET',
               headers: {
-                body: JSON.stringify(branchID), // Include your authorization token
+                  'Authorization': 'Bearer '+token,
+                  body: JSON.stringify(customerID), 
+                  'Content-Type': 'application/json'
+              }
+          })
+          .then(response => response.json())
+          .then(data => {
+          setOptions(data);
+          });
+      
+          }
+          func()
+        },[])
+        const fetchBranches = async () => {
+            const response = await fetch('https://localhost:7075/api/CustomerAccount/View All Branches?BID='+bankID, {
+              method: 'GET',
+              headers: {
+                body: JSON.stringify(bankID), // Include your authorization token
                 'Content-Type': 'application/json'
               }
-            });
-            if (response.ok) {
-              const ordersData = await response.json();
-              setBranches(ordersData);
-            } else {
-              console.error('Failed to fetch orders');
-            }
-          } catch (error) {
-            console.error('Error fetching orders:', error);
-          }
+            })
+            .then(r=>r.json())
+            .then(r=>setBranches(r));
+           
         }
         const flagmethod = (e) =>{
           e.preventDefault()
@@ -59,9 +70,19 @@ export default function ViewAllBranches(){
     <div>
           <h1>All Branches Available</h1>
           <div class="form-group">
-                            <label htmlFor="input1">Bank ID</label>
-                            <input type="text" class="form-control" id="input1" placeholder="Enter Bank ID"
-                             value={branchID} onChange={(e)=>setBranchID(e.target.value)} autoComplete="on"/>
+          <div>
+                                            <label htmlFor="input1">Account Number</label>
+                                            <br/>
+                                            <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <option value="">Select an option</option>
+                                                {options.map((options) => (
+                                                <option key={options.bankID} value={options.bankID}>
+                                                    {options.bankID}
+                                                </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <br/>
           <button type="button" class="btn btn-success" data-toggle="button" 
           aria-pressed="false" onClick={flagmethod}>
           Get all Branches

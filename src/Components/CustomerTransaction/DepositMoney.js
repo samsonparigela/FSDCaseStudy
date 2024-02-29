@@ -33,7 +33,8 @@ export default function DepositMoney(){
         })
         .then(response => response.json())
         .then(data => {
-        setOptions(data);
+            let filteredList = data.filter(obj => obj.status !== "Pending" && obj.status !== "Account Closing Approved");
+        setOptions(filteredList);
         });
 
         for (let i = 0; i < options.length; i++) {
@@ -70,7 +71,10 @@ export default function DepositMoney(){
             alert("Account number or amount cannot be null");
             return null;
         }
-
+        if(isNaN(amount)){
+            alert("Enter Number");
+            return null;
+        }
         const response = await fetch("https://localhost:7075/api/CustomerTransaction/Deposit Money?accountNumber="+accountNumber+"&amount="+amount,{
             method:'POST',
             headers:{
@@ -111,6 +115,7 @@ export default function DepositMoney(){
                                             <label htmlFor="input1">Account Number</label>
                                             <br/>
                                             <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <option value="">Select an option</option>
                                                 {options.map((options) => (
                                                 <option key={options.accountNumber} value={options.accountNumber}>
                                                     {options.accountNumber}

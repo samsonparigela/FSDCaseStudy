@@ -3,6 +3,39 @@ import './style.css'
 
 export default function GetAllTransacsRecieved(){
 
+  var customerID = sessionStorage.getItem("BID");
+  const token = sessionStorage.getItem("Token");
+
+  const [options,setOptions]= useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
+    
+  const handleChange = (event) => {
+    setSelectedOption(event.target.value);
+    setAccountNumber(String(event.target.value))
+        
+  };
+
+  var [flag,setFlag] = useState(0);
+
+  useEffect(() => {
+    var func =async()=>{
+        const response2 = await fetch('https://localhost:7075/api/BankEmpAccount/GetAllAccounts', {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer '+token,
+            body: JSON.stringify(customerID), 
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+      let filteredList = data.filter(obj => obj.status !== "Pending");
+    setOptions(filteredList);
+    });
+
+    }
+    func()
+  },[])
     const [transacs, setTransacs] = useState([]);
     const [accountNumber,setAccountNumber] = useState("");
     var [flag2,setFlag2] = useState(0);
@@ -14,7 +47,6 @@ export default function GetAllTransacsRecieved(){
       return true;
     };
 
-    var customerID = sessionStorage.getItem("BID");
 
     const fetchTransacs = async () => {
 
@@ -70,9 +102,18 @@ export default function GetAllTransacsRecieved(){
                                         
       <h1>Transactions Recieved</h1>
       <div class="form-group">
-                                            <label htmlFor="accountName">Account Number</label>
-                                            <input type="text" class="form-control"  id="accountNumber" placeholder="Enter your Account Number"
-                                            value={accountNumber} onChange={(e)=>setAccountNumber(e.target.value)}/>
+      <div>
+                                            <label htmlFor="input1">Account Number</label>
+                                            <br/>
+                                            <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <option value="">Select an option</option>
+                                                {options.map((options) => (
+                                                <option key={options.accountNumber} value={options.accountNumber}>
+                                                    {options.accountNumber}
+                                                </option>
+                                                ))}
+                                            </select>
+                                        </div>
                                         </div>
       <button type="button" class="btn btn-success" data-toggle="button" 
       aria-pressed="false" onClick={flagmethod}>

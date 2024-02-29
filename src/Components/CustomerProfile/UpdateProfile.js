@@ -84,7 +84,7 @@ export default function UpdateProfile(){
                 <label htmlFor="input3">Address</label>
                 <input type="text" class="form-control" id="input3" placeholder="Enter Address"
                 value={address} onChange={(e)=>setAddress(e.target.value)} required/>
-
+                <br/>
                 <button type="button" class="btn btn-success" data-toggle="button" 
                 aria-pressed="false" onClick={flagmethod}>
                 Update Profile

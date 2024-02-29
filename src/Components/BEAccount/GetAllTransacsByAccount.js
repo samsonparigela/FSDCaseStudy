@@ -3,9 +3,43 @@ import './style.css'
 
 export default function GetAllTransacsByAccount(){
 
+
+  var customerID = sessionStorage.getItem("BID");
+  const token = sessionStorage.getItem("Token");
+
+  const [options,setOptions]= useState([])
+  const [selectedOption, setSelectedOption] = useState(null);
+    
+  const handleChange = (event) => {
+    setSelectedOption(event.target.value);
+    setAccountNumber(String(event.target.value))
+        
+  };
+
+  var [flag,setFlag] = useState(0);
+
+  useEffect(() => {
+    var func =async()=>{
+        const response2 = await fetch('https://localhost:7075/api/BankEmpAccount/GetAllAccounts', {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer '+token,
+            body: JSON.stringify(customerID), 
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+      let filteredList = data.filter(obj => obj.status !== "Pending");
+    setOptions(filteredList);
+    });
+
+    }
+    func()
+  },[])
+
     const [transacs, setTransacs] = useState([]);
     const [accountNumber,setAccountNumber] = useState("");
-    var [flagg,setFlagg] = useState(0);
 
     const validateInput = ({ accountNumber }) => {
       if (!accountNumber.trim()) {
@@ -14,7 +48,6 @@ export default function GetAllTransacsByAccount(){
       return true;
     };
 
-    var customerID = sessionStorage.getItem("BID");
     const fetchTransacs = async () => {
 
       const validInput = validateInput({accountNumber})
@@ -46,13 +79,13 @@ export default function GetAllTransacsByAccount(){
     }
   
   var flagmethod = (e) =>{
-    if(flagg==0){
+    if(flag==0){
       fetchTransacs();
-      setFlagg(1);
+      setFlag(1);
     }
     
   else
-  setFlagg(0)
+  setFlag(0)
   }
   return (
     <div style={{ width: '100%', backgroundColor: 'lightblue' }}>
@@ -68,15 +101,24 @@ export default function GetAllTransacsByAccount(){
                                         
       <h1>Transactions By An account</h1>
       <div class="form-group">
-                                            <label htmlFor="accountName">Account Number</label>
-                                            <input type="text" class="form-control"  id="accountNumber" placeholder="Enter your Account Number"
-                                            value={accountNumber} onChange={(e)=>setAccountNumber(e.target.value)}/>
+      <div>
+                                            <label htmlFor="input1">Account Number</label>
+                                            <br/>
+                                            <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <option value="">Select an option</option>
+                                                {options.map((options) => (
+                                                <option key={options.accountNumber} value={options.accountNumber}>
+                                                    {options.accountNumber}
+                                                </option>
+                                                ))}
+                                            </select>
+                                        </div>
                                         </div>
       <button type="button" class="btn btn-success" data-toggle="button" 
       aria-pressed="false" onClick={flagmethod}>
       Get all Transactions
       </button>
-      {flagg==1? 
+      {flag==1? 
       <table className="table">
       <thead>
         <tr>

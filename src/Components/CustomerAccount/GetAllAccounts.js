@@ -5,11 +5,7 @@ export default function GetAllAccounts(){
     const [orders, setOrders] = useState([]);
     var customerID = sessionStorage.getItem("CID");
     var [flag,setFlag] = useState(0);
-    useEffect(() => {
-      
     const fetchOrders = async () => {
-      if(flag==0)
-      return;
       try {
         const token = sessionStorage.getItem('Token');
         const response = await fetch('https://localhost:7075/api/CustomerAccount/View All your Accounts?ID='+customerID, {
@@ -31,14 +27,14 @@ export default function GetAllAccounts(){
         console.error('Error fetching orders:', error);
       }
     }
-    fetchOrders();
-  },[flag]);
   var flagmethod = (e) =>{
-    if(flag==0)
-    setFlag(1)
+    if(flag==0){
+      fetchOrders()
+      setFlag(1)
+    }
+
   else
   setFlag(0)
-    console.log(flag);
   }
   return (
     <div style={{ width: '100%', backgroundColor: 'lightblue' }}>

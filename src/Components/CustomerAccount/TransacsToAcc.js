@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import pic1 from './j4.jpeg'
 export default function TransacsToAcc(){
+  
   var customerID = sessionStorage.getItem("CID");
   const token = sessionStorage.getItem("Token");
 
@@ -38,7 +39,8 @@ export default function TransacsToAcc(){
           })
           .then(response => response.json())
           .then(data => {
-          setOptions(data);
+            let filteredList = data.filter(obj => obj.status !== "Pending" && obj.status !== "Account Closing Approved");
+            setOptions(filteredList);;
           });
       
           for (let i = 0; i < options.length; i++) {
@@ -107,6 +109,7 @@ export default function TransacsToAcc(){
                                             <label htmlFor="input1">Account Number</label>
                                             <br/>
                                             <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <option value="">Select an option</option>
                                                 {options.map((options) => (
                                                 <option key={options.accountNumber} value={options.accountNumber}>
                                                     {options.accountNumber}
@@ -114,6 +117,7 @@ export default function TransacsToAcc(){
                                                 ))}
                                             </select>
                                         </div>
+                                        <br/>
           <button type="button" class="btn btn-success" data-toggle="button" 
           aria-pressed="false" onClick={flagmethod}>
           Get all your Transactions

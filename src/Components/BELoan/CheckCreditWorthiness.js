@@ -2,6 +2,38 @@ import React, { useState, useEffect } from 'react';
 import './style.css'
 export default function CheckCreditWorthiness(){
 
+    const token = sessionStorage.getItem("Token");
+  
+    const [options,setOptions]= useState([]);
+    const [selectedOption, setSelectedOption] = useState(null);
+      
+    const handleChange = (event) => {
+      setSelectedOption(event.target.value);
+      setCustomerID(String(event.target.value))
+          
+    };
+  
+    var [flag,setFlag] = useState(0);
+  
+    useEffect(() => {
+      var func =async()=>{
+          const response2 = await fetch('https://localhost:7075/api/Customer/GetAll', {
+          method: 'GET',
+          headers: {
+              'Authorization': 'Bearer '+token,
+              'Content-Type': 'application/json'
+          }
+      })
+      .then(response => response.json())
+      .then(data => {
+        let filteredList = data;
+      setOptions(filteredList);
+      });
+  
+      }
+      func()
+    },[])
+
     const [customerID, setCustomerID] = useState();
     var [worthy, setWorthy] = useState("");
 
@@ -30,7 +62,6 @@ export default function CheckCreditWorthiness(){
                 method: 'GET',
                 headers: {
                     'Authorization': 'Bearer '+token,
-                    body: JSON.stringify(customerID), // Include your authorization token
                     'Content-Type': 'application/json'
                 }
                 });
@@ -68,9 +99,18 @@ export default function CheckCreditWorthiness(){
                                                     
                                 <h1>Check Creditworthy</h1>
                                 <div class="form-group">
-                                    <label htmlFor="accountName">Customer ID</label>
-                                    <input type="text" class="form-control"  id="accountNumber" placeholder="Enter CustomerID"
-                                    value={customerID} onChange={(e)=>setCustomerID(e.target.value)}/>
+                                         <div>
+                                            <label htmlFor="input1">Customer ID</label>
+                                            <br/>
+                                            <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <option value="">Select an option</option>
+                                                {options.map((options) => (
+                                                <option key={options.customerID} value={options.customerID}>
+                                                    {options.customerID}
+                                                </option>
+                                                ))}
+                                            </select>
+                                        </div>
                                 </div>
                                 <button type="button" class="btn btn-success" data-toggle="button" 
                                 aria-pressed="false" onClick={flagmethod}>

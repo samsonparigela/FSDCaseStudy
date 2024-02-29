@@ -38,7 +38,8 @@ export default function GetAllTransacsRecieved(){
       })
       .then(response => response.json())
       .then(data => {
-      setOptions(data);
+        let filteredList = data.filter(obj => obj.status !== "Pending" && obj.status !== "Account Closing Approved");
+        setOptions(filteredList);
       });
     }
       func()
@@ -98,6 +99,7 @@ export default function GetAllTransacsRecieved(){
                                             <label htmlFor="input1">Account Number</label>
                                             <br/>
                                             <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <option value="">Select an option</option>
                                                 {options.map((options) => (
                                                 <option key={options.accountNumber} value={options.accountNumber}>
                                                     {options.accountNumber}

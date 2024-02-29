@@ -9,7 +9,7 @@ export default function GetLoansThatNeedApproval(){
     const fetchLoans = async () => {
       try {
         const token = sessionStorage.getItem('Token');
-        const response = await fetch('https://localhost:7075/api/BankEmpLoan/GetAllLoansThatNeedApproval', {
+        const response = await fetch('https://localhost:7075/api/BankEmpLoan/GetAllLoans', {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer '+token,
@@ -20,7 +20,8 @@ export default function GetLoansThatNeedApproval(){
 
         if (response.ok) {
           const loansData = await response.json();
-          setLoans(loansData);
+          let filteredList = loansData.filter(obj => obj.status === "Pending" || obj.status === "Extend Request");
+          setLoans(filteredList);
         } else {
           console.error('Failed to fetch');
         }

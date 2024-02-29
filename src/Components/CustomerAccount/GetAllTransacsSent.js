@@ -6,7 +6,6 @@ export default function GetAllTransacsSent(){
   const token = sessionStorage.getItem("Token");
 
   const [options,setOptions]= useState([])
-  const [accountNumbers, setAccountNumbers] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
     
   const handleChange = (event) => {
@@ -37,20 +36,10 @@ export default function GetAllTransacsSent(){
       })
       .then(response => response.json())
       .then(data => {
-      setOptions(data);
+        let filteredList = data.filter(obj => obj.status !== "Pending" && obj.status !== "Account Closing Approved");
+        setOptions(filteredList);;
       });
   
-      for (let i = 0; i < options.length; i++) {
-          const element = options[i].accountNumber;
-          const jsonelement = {
-              label : element,
-              value : element
-          }
-          if (!accountNumbers.includes(element)) {
-              accountNumbers.push(jsonelement)
-              setAccountNumbers(accountNumbers)
-            }
-          }
       }
       func()
     },[])
@@ -109,6 +98,7 @@ const flagmethod = (e) =>{
                                             <label htmlFor="input1">Account Number</label>
                                             <br/>
                                             <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <option value="">Select an option</option>
                                                 {options.map((options) => (
                                                 <option key={options.accountNumber} value={options.accountNumber}>
                                                     {options.accountNumber}

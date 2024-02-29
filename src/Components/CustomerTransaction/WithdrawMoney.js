@@ -1,3 +1,5 @@
+import axios from "axios";
+import { data } from "jquery";
 import { useEffect, useState } from "react";
 
 export default function WithdrawMoney(){
@@ -32,7 +34,8 @@ export default function WithdrawMoney(){
         })
         .then(response => response.json())
         .then(data => {
-        setOptions(data);
+            let filteredList = data.filter(obj => obj.status !== "Pending" && obj.status !== "Account Closing Approved");
+            setOptions(filteredList);;
         });
 
         for (let i = 0; i < options.length; i++) {
@@ -65,19 +68,26 @@ export default function WithdrawMoney(){
               alert("Account number or amount cannot be null");
               return null;
             }
-            const response = await fetch("https://localhost:7075/api/CustomerTransaction/Withdraw Money?amount="+amount+"&accountID="+accountNumber,{
-                method:'POST',
+            if(isNaN(amount)){
+                alert("Enter Number");
+                return null;
+            }
+            try{
+            const response = await axios.post("https://localhost:7075/api/CustomerTransaction/Withdraw Money?amount="+amount+"&accountID="+accountNumber,
+            null,{
                 headers:{
                     'Authorization':'Bearer '+token,
-                    body: JSON.stringify(customerID), // Include your authorization token
                     'Content-Type': 'application/json'
                 }
-            });
-
-            if(response.ok){
-                const data = await response.json();
-                setTransacs(data)
             }
+  
+            );
+            setTransacs(response.data)
+        }catch(e){
+            alert(e.response.data)
+        }
+
+            
         }
 
 
@@ -105,6 +115,7 @@ export default function WithdrawMoney(){
                                             <label htmlFor="input1">Account Number</label>
                                             <br/>
                                             <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <option value="">Select an option</option>
                                                 {options.map((options) => (
                                                 <option key={options.accountNumber} value={options.accountNumber}>
                                                     {options.accountNumber}
@@ -116,7 +127,7 @@ export default function WithdrawMoney(){
                 <label htmlFor="input2">Amount</label>
                 <input type="text" class="form-control" id="input2" placeholder="Enter Amount"
                 value={amount} onChange={(e)=>setAmount(e.target.value)}/>
-
+                <br/>
                 <button type="button" class="btn btn-success" data-toggle="button" 
                 aria-pressed="false" onClick={flagmethod}>
                 Withdraw

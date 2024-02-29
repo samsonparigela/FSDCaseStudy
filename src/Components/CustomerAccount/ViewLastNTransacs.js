@@ -24,6 +24,10 @@ export default function ViewLastNTransacs(){
           }
           try {
             const token = sessionStorage.getItem('Token');
+            if(isNaN(num)){
+              alert("Enter Number");
+              return null;
+          }
             const response = await fetch('https://localhost:7075/api/CustomerAccount/View Last N Transactions?ID='+customerID+'&n=' + num, {
               method: 'GET',
               headers: {
@@ -69,6 +73,7 @@ export default function ViewLastNTransacs(){
                             <label htmlFor="input1">N Value</label>
                             <input type="text" class="form-control" id="input1" placeholder="Enter Account Number"
                              value={num} onChange={(e)=>setNum(e.target.value)}/>
+                             <br/>
           <button type="button" class="btn btn-success" data-toggle="button" 
           aria-pressed="false" onClick={flagmethod}>
           Get all your Transactions

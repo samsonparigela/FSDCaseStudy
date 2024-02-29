@@ -36,7 +36,6 @@ export default function GetAllAppliedLoans(){
     setFlag(1)
   else
   setFlag(0)
-    console.log(flag);
   }
   return (
     <div>
@@ -50,7 +49,7 @@ export default function GetAllAppliedLoans(){
 <div>
       <h1>All your applied loans</h1>
       <button type="button" class="btn btn-success" data-toggle="button" 
-      aria-pressed="false" autocomplete="off" onClick={flagmethod}>
+      aria-pressed="false" onClick={flagmethod}>
       Get all your Loans
       </button>
       {flag==1? 
@@ -61,7 +60,7 @@ export default function GetAllAppliedLoans(){
             <th>Loan Amount</th>
             <th>Loan Purpose</th>
             <th>Status</th>
-            {/* Add more table headers as needed */}
+            <th>Repay Amount</th>
           </tr>
         </thead>
         <tbody>
@@ -71,6 +70,7 @@ export default function GetAllAppliedLoans(){
               <td>{l.loanAmount}</td>
               <td>{l.loanPurpose}</td>
               <td>{l.status}</td>
+              <td>{l.calculateFinalAmount}</td>
             </tr>
           ))}
         </tbody>

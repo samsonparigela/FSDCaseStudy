@@ -1,23 +1,59 @@
 import { useEffect, useState } from "react"
-
+import axios from "axios";
 export default function AskForExtension(){
 
-    const [tenure,setTenure] = useState();
     const [loanID,setLoanID] = useState();    
-    const [loan,setLoan] = useState({});
     const [flag,setFlag] = useState(0);
 
-    const customerID = sessionStorage.getItem("CID");
+    const token = sessionStorage.getItem("Token");
+    var customerID = sessionStorage.getItem("CID");
+    
+    const url1 = 'https://localhost:7075/api/CustomerLoan/GetAllAppliedLoans?ID='+customerID;
+  
+    const [options,setOptions]= useState([])
+    const [selectedOption, setSelectedOption] = useState(null);
 
-    useEffect(()=>{
+    const [options2,setOptions2]= useState([])
+    const [selectedOption2, setSelectedOption2] = useState(null);
+      
+    const handleChange = (event) => {
+      setSelectedOption(event.target.value);
+      setLoanID(parseInt(event.target.value))
+          
+    };
+
+    const handleChange2 = (event) => {
+        setSelectedOption2(event.target.value);
+        setTenure((event.target.value))
+            
+    };
+
+    useEffect(() => {
+        var func =async()=>{
+            const response = await axios.get(url1, {headers: {
+                'Authorization': 'Bearer '+token,
+                'Content-Type': 'application/json'
+            },});
+            let filteredList = response.data.filter(obj => obj.status == "Deposited");
+            setOptions(filteredList);
+        }
+        func()
+    },[]);
+
+    const [tenure,setTenure] = useState();  
+    const [loan,setLoan] = useState({});
+    
         const fetchLoans = async () => {
-        const token = sessionStorage.getItem('Token');
+
+        const Body = {
+                'loanID': loanID,
+                'tenureInMonths': tenure,
+                'status':'Extend Request'
+        }
+        
         const httpHeader = { 
             method:'PUT',
-            body: JSON.stringify({
-                'loanID':loanID,
-                'tenureInMonths':tenure
-            }),
+            body:JSON.stringify(Body),
             headers: {
                 'Content-Type':'application/json',
                 'accept' : 'text/plain',
@@ -29,13 +65,12 @@ export default function AskForExtension(){
             .then(r=>r.json())
             .then(r=>setLoan(r))
     }
-        fetchLoans();
-    },[flag]);
 
     function flagmethod(){
-        if(flag==0)
-        setFlag(1);
-
+        if(flag==0){
+            fetchLoans();
+            setFlag(1);
+        }
         else
         setFlag(0);
     }
@@ -49,17 +84,36 @@ export default function AskForExtension(){
                                     <div class="card-body"></div>
             <h1>Ask for loan extension</h1>
             <div class="form-group">
-                <label for="input3">Loan ID</label>
-                <input type="text" class="form-control" id="input1" placeholder="Enter Loan ID"
-                value={loanID} onChange={(e)=>setLoanID(e.target.value)}/>
+            <div>
+                                            <label htmlFor="input1">Loan ID</label>
+                                            <br/>
+                                            <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <option value="">Select an option</option> {/* Default option */}
+                                                {options.map((options) => (
+                                                <option key={options.loanID} value={options.loanID}>
+                                                    {options.loanID}
+                                                </option>
+                                                ))}
+                                            </select>
+                                        </div>
 
 
-                <label for="input3">Tenure In Months</label>
-                <input type="text" class="form-control" id="input2" placeholder="Enter Tenure"
-                value={tenure} onChange={(e)=>setTenure(e.target.value)}/>
+                                        <div>
+                                            <label htmlFor="input1">Tenure in Months</label>
+                                            <br/>
+                                            <select value={selectedOption2} onChange={handleChange2} class="browser-default custom-select">
+                                            <option value="">Select an option</option>
+                                                <option value="1">1 Month</option>
+                                                <option value="2">2 Months</option>
+                                                <option value="3">3 Months</option>
+                                                <option value="4">4 Months</option>
+                                                <option value="5">5 Months</option>
+                                                <option value="6">6 Months</option>
 
+                                            </select>
+                                        </div>
                 <button type="button" class="btn btn-success" data-toggle="button" 
-                aria-pressed="false" autocomplete="off" onClick={flagmethod}>
+                aria-pressed="false" onClick={flagmethod}>
                 Apply
                 </button>
             </div>
@@ -68,17 +122,14 @@ export default function AskForExtension(){
                     <thead>
                         <tr>
                           <th>Loan ID</th>
-                          <th>Customer ID</th>
-                          <th>Tenure In Months</th>
+                          <th>status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {console.log(loan)}
                         
                         <tr key={loan.loanID}>
                             <td>{loan.loanID}</td>
-                            <td>{customerID}</td>
-                            <td>{loan.tenureInMonths}</td>
+                            <td>{loan.status}</td>
                         </tr>
                     </tbody>
                 </table>      
