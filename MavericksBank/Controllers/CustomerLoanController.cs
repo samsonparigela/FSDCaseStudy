@@ -98,6 +98,23 @@ namespace MavericksBank.Controllers
             }
         }
 
+        [Route("GetAllApprovedLoans")]
+        [HttpGet]
+        public async Task<ActionResult<List<Loan>>> GetAllApprovedLoans(int ID)
+        {
+            try
+            {
+                var loans = await _service.GetAllApprovedLoans(ID);
+                _logger.LogInformation("Retrieved all Availed loans");
+                return loans;
+            }
+            catch (NoLoanFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
+
         [Route("GetDifferentLoanPolicies")]
         [HttpGet]
         public async Task<ActionResult<List<LoanPolicies>>> GetDifferentLoanPolicies()

@@ -102,6 +102,28 @@ namespace MavericksBank.Controllers
             }
         }
 
+
+
+        [Authorize(Roles = "Customer")]
+        [Route("ViewBenifiaryAccounts")]
+        [HttpGet]
+        public async Task<ActionResult<List<int>>> ViewAllYourBenifAccounts(int ID)
+        {
+            try
+            {
+                var accounts = await _service.ViewAllYourBenifAccounts(ID);
+                _logger.LogInformation($"Benificiary accounts Retrieved");
+                return accounts;
+            }
+            catch (NoCustomerFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
+        }
+
+
+
         [Route("View All Banks")]
         [HttpGet]
         public async Task<ActionResult<List<Banks>>> ViewAllBanks()

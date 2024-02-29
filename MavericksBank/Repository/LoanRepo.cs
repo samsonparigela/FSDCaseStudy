@@ -30,7 +30,7 @@ namespace MavericksBank.Repository
         {
             Loan loan = await GetByID(item);
             if (loan == null)
-                throw new NoLoanFoundException();
+                throw new NoLoanFoundException("No loan found to delete");
             _context.Remove(loan);
             _context.SaveChanges();
             _logger.LogInformation($"Loan {loan.LoanID} Deleted");
@@ -43,7 +43,7 @@ namespace MavericksBank.Repository
             var loan = _context.Loans.ToList();
             if (loan != null)
                 return loan;
-            throw new NoLoanFoundException();
+            throw new NoLoanFoundException("Error retrieving loans");
         }
 
         public async Task<Loan> GetByID(int key)
@@ -52,14 +52,14 @@ namespace MavericksBank.Repository
             var loan = _context.Loans.SingleOrDefault(p => p.LoanID == key);
             if (loan != null)
                 return loan;
-            throw new NoLoanFoundException();
+            throw new NoLoanFoundException($"Error retrieving loan!{key} doesnot exist");
         }
 
         public async Task<Loan> Update(Loan item)
         {
             var loan = await GetByID(item.LoanID);
             if (loan == null)
-                throw new NoLoanFoundException();
+                throw new NoLoanFoundException($"Error Updating loan. Loan with {item.LoanID} doesnot exit");
             _context.Entry<Loan>(item).State = EntityState.Modified;
             _context.SaveChanges();
             _logger.LogInformation($"Loan {item.LoanID} Updated");

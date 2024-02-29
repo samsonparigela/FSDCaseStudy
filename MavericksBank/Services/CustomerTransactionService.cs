@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Principal;
 using MavericksBank.Exceptions;
 using MavericksBank.Interfaces;
 using MavericksBank.Models;
@@ -22,8 +23,14 @@ namespace MavericksBank.Services
         public async Task<Accounts> GetByAccountNumber(int accountNumber)
         {
             var account = await _AccRepo.GetAll();
-            var myAccount = account.SingleOrDefault(p => p.AccountNumber == accountNumber);
-            return myAccount;
+            foreach(Accounts accounts in account)
+            {
+                if (accounts.AccountNumber == accountNumber)
+                {
+                    return accounts;
+                }
+            }
+            return null;
 
         }
 
@@ -93,10 +100,10 @@ namespace MavericksBank.Services
         public async Task<Transactions> WithdrawMoney(int amount,int accountID)
         {
             var account = await _AccRepo.GetByID(accountID);
-            if (account.Status == "Pending")
-                throw new AccountTransactionException("Account is not active yet");
             if (amount > account.Balance)
                 throw new InsufficientFundsException("No Sufficient Funds to do the transaction");
+            if (account.Status == "Pending")
+                throw new AccountTransactionException("Account is not active yet");
             account.Balance -= amount;
             await _AccRepo.Update(account);
             var transaction = new Transactions();

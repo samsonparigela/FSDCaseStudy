@@ -47,6 +47,24 @@ namespace MavericksBank.Controllers
         }
 
         [Authorize(Roles = "Bank Employee")]
+        [Route("ApproveOrDisapproveLoanExtend")]
+        [HttpPut]
+        public async Task<ActionResult<Loan>> ApproveOrDisapproveLoanExtend(int LID,string approval)
+        {
+            try
+            {
+                var loan = await _service.ApproveOrDisapproveLoanExtend(LID,approval);
+                _logger.LogInformation("Loan Extend Approved/Disapproved");
+                return loan;
+            }
+            catch (NoLoanFoundException ex)
+            {
+                _logger.LogCritical(ex.Message);
+                return NotFound(ex.Message);
+            }
+        }
+
+        [Authorize(Roles = "Bank Employee")]
         [Route("GetAllLoans")]
         [HttpGet]
         public async Task<ActionResult<List<Loan>>> GetAllLoansApplied()

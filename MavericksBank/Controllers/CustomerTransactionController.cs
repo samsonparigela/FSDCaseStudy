@@ -63,6 +63,12 @@ namespace MavericksBank.Controllers
                 _logger.LogCritical(ex.Message);
                 return BadRequest(ex.Message);
             }
+            catch (InsufficientFundsException ex)
+            {
+                string msg = ex.Message;
+                _logger.LogCritical(ex.Message);
+                return BadRequest(msg);
+            }
         }
 
         [Authorize(Roles = "Customer")]
@@ -78,8 +84,15 @@ namespace MavericksBank.Controllers
             }
             catch (AccountTransactionException ex)
             {
+                string msg = ex.Message;
                 _logger.LogCritical(ex.Message);
-                return BadRequest(ex.Message);
+                return BadRequest(msg);
+            }
+            catch (InsufficientFundsException ex)
+            {
+                string msg = ex.Message;
+                _logger.LogCritical(ex.Message);
+                return BadRequest(msg);
             }
         }
 

@@ -6,20 +6,6 @@ namespace MavericksBank.Models
 {
 	public class Accounts:IEquatable<Accounts>
 	{
-        public Accounts()
-        {
-            Status = "Pending";
-        }
-        public Accounts(int customerID, string accountType,
-            float balance, int accountNumber, string status, string iFSCCode)
-        {
-            CustomerID = customerID;
-            AccountType = accountType;
-            Balance = balance;
-            AccountNumber = accountNumber;
-            Status = status;
-            IFSCCode = iFSCCode;
-        }
 
         [Key]
         [DatabaseGeneratedAttribute(DatabaseGeneratedOption.None)]
@@ -39,6 +25,17 @@ namespace MavericksBank.Models
         public string Status { set; get; }
         public string AccountType { set; get; }
         public float Balance { set; get; }
+
+        public Accounts(int customerID, string accountType,
+    float balance, int accountNumber, string status, string iFSCCode)
+        {
+            CustomerID = customerID;
+            AccountType = accountType;
+            Balance = balance;
+            AccountNumber = accountNumber;
+            Status = status;
+            IFSCCode = iFSCCode;
+        }
 
         //Navigations
 

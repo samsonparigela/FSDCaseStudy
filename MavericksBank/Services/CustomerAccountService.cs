@@ -37,9 +37,11 @@ namespace MavericksBank.Services
         public async Task<AccountsCreateDTO> OpenAccount(AccountsCreateDTO account)
         {
             var accounts = await _AccRepo.GetAll();
+            Random random = new Random();
+            int randomNumber = random.Next(1, 101);
 
             var yourAccount = await ViewAllYourAccounts(account.customerID);
-            var accountNumber = (account.customerID.ToString()+ DateTime.Now.ToString("MMyyyy") + yourAccount.Count() + 1).ToString();
+            var accountNumber = (account.customerID.ToString()+ DateTime.Now.ToString("MMyyyy") + randomNumber + 1).ToString();
             account.AccountNumber = int.Parse(accountNumber);
 
             var myAccount = new RegisterToAccount(account).GetAccount();
@@ -174,6 +176,19 @@ namespace MavericksBank.Services
             accounts = accounts.Where(d => d.CustomerID == ID).ToList();
             _logger.LogInformation($"Successfully Retrieved all accounts of Customer : {ID}");
             return accounts;
+        }
+
+        public async Task<List<int>> ViewAllYourBenifAccounts(int ID)
+        {
+            List<int> benifAccounts = new List<int>();
+            var benifs = await _BenifRepo.GetAll();
+            var yourBenifs= benifs.Where(d => d.CustomerID == ID && d.BeneficiaryName!="Self").ToList();
+            foreach(Beneficiaries benif in yourBenifs)
+            {
+                benifAccounts.Add(benif.BeneficiaryAccountNumber);
+            }
+            _logger.LogInformation($"Successfully Retrieved all Benificiary accounts of Customer : {ID}");
+            return benifAccounts;
         }
 
         public async Task<List<Banks>> ViewAllBanks()

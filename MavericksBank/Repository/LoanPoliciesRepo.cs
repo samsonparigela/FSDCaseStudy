@@ -4,6 +4,7 @@ using MavericksBank.Exceptions;
 using MavericksBank.Interfaces;
 using MavericksBank.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace MavericksBank.Repository
 {
@@ -29,8 +30,6 @@ namespace MavericksBank.Repository
         public async Task<LoanPolicies> Delete(int item)
         {
             LoanPolicies loanPolicy = await GetByID(item);
-            if (loanPolicy == null)
-                throw new NoLoanFoundException();
             _context.Remove(loanPolicy);
             _context.SaveChanges();
             _logger.LogInformation($"Loan Policy {loanPolicy.LoanPolicyID} Deleted");
@@ -43,7 +42,7 @@ namespace MavericksBank.Repository
             var loanPolicies = _context.LoanPolicies.ToList();
             if (loanPolicies != null)
                 return loanPolicies;
-            throw new NoLoanFoundException();
+            throw new NoLoanFoundException("No Loan policies exist");
         }
 
         public async Task<LoanPolicies> GetByID(int key)
@@ -52,14 +51,14 @@ namespace MavericksBank.Repository
             var loanPolicy = _context.LoanPolicies.SingleOrDefault(p => p.LoanPolicyID == key);
             if (loanPolicy != null)
                 return loanPolicy;
-            throw new NoLoanFoundException();
+            throw new NoLoanFoundException($"No loanpolicy exist with ID {key}");
         }
 
         public async Task<LoanPolicies> Update(LoanPolicies item)
         {
             var loan = await GetByID(item.LoanPolicyID);
             if (loan == null)
-                throw new NoLoanFoundException();
+                throw new NoLoanFoundException($"Cannot update. Loan {item.LoanPolicyID} doesnot exist");
             _context.Entry<LoanPolicies>(item).State = EntityState.Modified;
             _context.SaveChanges();
             _logger.LogInformation($"Loan Policy {item.LoanPolicyID} Updated");

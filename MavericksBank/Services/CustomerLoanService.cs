@@ -32,7 +32,9 @@ namespace MavericksBank.Services
         public async Task<LoanApplyDTO> ApplyForALoan(LoanApplyDTO ApplyLoan)
         {
             var loan = new AddToLoan(ApplyLoan).GetLoan();
+            var loanPolicy = await _loanPolicyRepo.GetByID(ApplyLoan.LoanPolicyID);
             loan.Status = "Pending";
+            loan.CalculateFinalAmount = ApplyLoan.LoanAmount + (ApplyLoan.LoanAmount * (loanPolicy.Interest / 100));
             await _loanRepo.Add(loan);
             _logger.LogInformation("Loan is Applied Successfully");
             return ApplyLoan;
@@ -41,10 +43,10 @@ namespace MavericksBank.Services
         public async Task<LoanExtendDTO> AskForExtension(LoanExtendDTO loanExtend)
         {
             var loan = await _loanRepo.GetByID(loanExtend.LoanID);
-            if (loan.Status != "Approved")
+            if (loan.Status != "Deposited")
                 throw new LoanNotApprovedYetException($"Loan is {loan.Status}");
             loan.TenureInMonths=loanExtend.TenureInMonths;
-            loan.Status = loanExtend.Status;
+            loan.Status = "Extend Request";
             loan = await _loanRepo.Update(loan);
             _logger.LogInformation("Loan is Asked for Extension Successfully");
             return loanExtend;
@@ -66,6 +68,14 @@ namespace MavericksBank.Services
             return loans;
         }
 
+        public async Task<List<Loan>> GetAllApprovedLoans(int ID)
+        {
+            var loans = await _loanRepo.GetAll();
+            loans = loans.Where(d => d.CustomerID == ID && d.Status == "Approved").ToList();
+            _logger.LogInformation("All Approved Loans retrieved Successfully");
+            return loans;
+        }
+
         public async Task<List<LoanPolicies>> GetDifferentLoanPolicies()
         {
             var loanPolicies = await _loanPolicyRepo.GetAll();
@@ -84,7 +94,10 @@ namespace MavericksBank.Services
         {
             var loan = await _loanRepo.GetByID(LoanID);
             var account = await _AccRepo.GetByID(AccID);
-            if (loan.Status == "Approved")
+            if (loan.Status == "Repayed" || loan.Status == "Deposited")
+                throw new NoLoanFoundException("Loan is already availed");
+
+            else if (loan.Status == "Approved")
             {
                 account.Balance += loan.LoanAmount;
 
@@ -104,13 +117,11 @@ namespace MavericksBank.Services
                 loan.Status = "Deposited";
                 await _loanRepo.Update(loan);
                 _logger.LogInformation($"Loan Amount Added to Account Successfully");
-                return account;
+                
             }
             if(loan.Status=="Pending")
                 throw new LoanNotApprovedYetException("Loan is yet to be approved");
-            else
-                throw new LoanNotApprovedYetException("Loan is already Availed!");
-
+            return account;
         }
 
         public async Task<Loan> RepayLoan(int loanID,int accountNumber,int amount)
@@ -122,7 +133,7 @@ namespace MavericksBank.Services
             var customerID = loan.CustomerID;
             var account = await _accountsService.ViewAllYourAccounts(customerID);
             var account2 = account.SingleOrDefault(a => a.AccountNumber == accountNumber);
-            if (loan.LoanAmount == 0)
+            if (loan.CalculateFinalAmount == 0)
             {
                 loan.Status = "Repayed";
                 return loan;
@@ -131,7 +142,7 @@ namespace MavericksBank.Services
             if (account2.Balance < amount)
                 throw new InsufficientFundsException("No SUfficient Balance to repay the loan");
             account2.Balance -= amount;
-            loan.LoanAmount -= amount;
+            loan.CalculateFinalAmount -= amount;
             await _AccRepo.Update(account2);
 
             var transaction = new Transactions();
@@ -145,7 +156,7 @@ namespace MavericksBank.Services
 
             transaction = await _TransacRepo.Add(transaction);
 
-            if (loan.LoanAmount == 0)
+            if (loan.CalculateFinalAmount == 0)
                 loan.Status = "Repayed";
             else
                 loan.Status = "Amount Pending";

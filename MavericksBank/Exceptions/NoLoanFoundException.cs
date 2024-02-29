@@ -4,9 +4,9 @@ namespace MavericksBank.Exceptions
 	public class NoLoanFoundException : Exception
     {
         string _message;
-        public NoLoanFoundException()
+        public NoLoanFoundException(string message)
         {
-            _message = "No Loan Found! Try Again";
+            _message = message;
         }
         public override string Message => _message;
     }

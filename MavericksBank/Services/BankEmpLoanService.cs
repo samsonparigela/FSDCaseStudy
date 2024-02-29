@@ -42,6 +42,15 @@ namespace MavericksBank.Repository
             return loan;
         }
 
+        public async Task<Loan> ApproveOrDisapproveLoanExtend(int LID,string approval)
+        {
+            var loan = await _LoanRepo.GetByID(LID);
+            if(approval=="Approve Extension")
+            loan.Status = "Deposited";
+            loan = await _LoanRepo.Update(loan);
+            return loan;
+        }
+
         public async Task<List<Loan>> GetAllLoansApplied()
         {
             var loans = await _LoanRepo.GetAll();

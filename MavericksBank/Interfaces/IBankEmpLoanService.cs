@@ -14,6 +14,7 @@ namespace MavericksBank.Interfaces
         public Task<List<LoanPolicies>> GetDifferentLoanPolicies();
         public Task<LoanPolicies> DeleteLoanPolicies(int ID);
         public Task<LoanPolicies> UpdateLoanPolicies(LoanPolicies policies);
+        public Task<Loan> ApproveOrDisapproveLoanExtend(int LID, string approval);
 
     }
 }

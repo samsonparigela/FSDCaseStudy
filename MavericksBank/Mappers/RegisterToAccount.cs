@@ -9,13 +9,12 @@ namespace MavericksBank.Mappers
 		Accounts account;
 		public RegisterToAccount(AccountsCreateDTO createDTO)
 		{
-			account = new Accounts();
-			account.AccountNumber = createDTO.AccountNumber;
-			account.CustomerID = createDTO.customerID;
-			account.Balance = createDTO.Balance;
-			account.AccountType = createDTO.AccountType;
-			account.IFSCCode = createDTO.IFSCCode;
-		}
+			account = new Accounts(account.CustomerID,account.AccountType,account.Balance,
+				account.AccountNumber,"Pending",account.IFSCCode)
+			{
+
+			};
+        }
 		public Accounts GetAccount()
 		{
 			return account;

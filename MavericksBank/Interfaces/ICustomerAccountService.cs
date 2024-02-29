@@ -20,6 +20,7 @@ namespace MavericksBank.Interfaces
         public Task<List<TransactionDTO>> ViewAllTransactionsInThisMonth(int CID);
         public Task<List<Banks>> ViewAllBanks();
         public Task<List<Branches>> ViewBankBranches(int BID);
+        public Task<List<int>> ViewAllYourBenifAccounts(int ID);
 
 
 
