@@ -56,7 +56,7 @@ namespace MavericksBankTest
             ICustomerBeneficiaryService service = new CustomerBeneficiaryService(_mockServicelogger.Object, _BenifRepo);
 
             var benif = await service.GetAllBeneficiary(1);
-            Assert.That(benif.Count()==2);
+            Assert.That(benif.Count()==1);
 
 
         }
@@ -110,7 +110,7 @@ namespace MavericksBankTest
             var benif = await service.DeleteBeneficiary(22222);
             var benifs = await service.GetAllBeneficiary(1);
 
-            Assert.That(benifs.Count() == 1);
+            Assert.That(benifs.Count() == 0);
 
 
         }

@@ -54,7 +54,27 @@ public class CustomerTransactionServiceTest
                 AccountType="Savings",
                 Balance=10000,
                 IFSCCode="SBI1",
-            }
+            },
+             new Accounts
+            {
+                AccountNumber=22456,
+                CustomerID=1,
+                Status="Pending",
+                AccountType="Savings",
+                Balance=10000,
+                IFSCCode="SBI1",
+            },
+             new Accounts
+            {
+                AccountNumber=21456,
+                CustomerID=1,
+                Status="Account Closing Approve6",
+                AccountType="Savings",
+                Balance=10000,
+                IFSCCode="SBI1",
+            },
+
+
         };
 
         foreach (Accounts acc in accounts)
@@ -63,7 +83,8 @@ public class CustomerTransactionServiceTest
             context.SaveChanges();
         }
         var count = await _AccRepo.GetAll();
-        Assert.That(4 == count.Count());
+        Console.WriteLine(count + "GGGGGGG");
+        Assert.That(6 == count.Count());
     }
 
     [Test]
@@ -131,6 +152,7 @@ public class CustomerTransactionServiceTest
         var transactions = await service.GetAllTransactions(12345);
         Console.WriteLine(transactions.Count());
         //Assert
+
         Assert.That( 0== transactions.Count());
 
     }

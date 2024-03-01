@@ -33,6 +33,7 @@ namespace MavericksBank.Services
         {
             var loan = new AddToLoan(ApplyLoan).GetLoan();
             var loanPolicy = await _loanPolicyRepo.GetByID(ApplyLoan.LoanPolicyID);
+            Console.WriteLine(loanPolicy+"KKKK");
             loan.Status = "Pending";
             loan.CalculateFinalAmount = ApplyLoan.LoanAmount + (ApplyLoan.LoanAmount * (loanPolicy.Interest / 100));
             await _loanRepo.Add(loan);
@@ -43,10 +44,17 @@ namespace MavericksBank.Services
         public async Task<LoanExtendDTO> AskForExtension(LoanExtendDTO loanExtend)
         {
             var loan = await _loanRepo.GetByID(loanExtend.LoanID);
-            if (loan.Status != "Deposited")
+            if (loan.Status != "Deposited" || loan.Status != "Pending")
+            {
+                if (loan.Status == "Pending")
+                    goto here;
                 throw new LoanNotApprovedYetException($"Loan is {loan.Status}");
+            }
+             here:   
+
             loan.TenureInMonths=loanExtend.TenureInMonths;
             loan.Status = "Extend Request";
+
             loan = await _loanRepo.Update(loan);
             _logger.LogInformation("Loan is Asked for Extension Successfully");
             return loanExtend;

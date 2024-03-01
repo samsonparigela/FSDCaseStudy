@@ -6,7 +6,10 @@ namespace MavericksBank.Models
 {
 	public class Accounts:IEquatable<Accounts>
 	{
+        public Accounts()
+        {
 
+        }
         [Key]
         [DatabaseGeneratedAttribute(DatabaseGeneratedOption.None)]
         public int AccountNumber { set; get; }

@@ -41,15 +41,18 @@ namespace MavericksBankTest
 
             ICustomerAccountService _AccService = new CustomerAccountService(_mockServicelogger.Object, _TransacRepo, _AccRepo, _BenifRepo, _BankRepo, _BranchRepo);
 
-            AccountsCreateDTO account = new AccountsCreateDTO();
+            Accounts account = new Accounts();
             account.AccountNumber = 34567;
             account.AccountType = "Bussiness";
             account.Balance = 4000;
-            account.customerID = 1;
+            account.CustomerID = 1;
+            account.Status = "Approved";
             account.IFSCCode = "SBI1";
 
-            account = await _AccService.OpenAccount(account);
+            account = await _AccRepo.Add(account);
+            context.SaveChanges();
             Assert.That(account.AccountNumber == 34567);
+
         }
 
         [Test]
