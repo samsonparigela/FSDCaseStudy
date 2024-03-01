@@ -1,4 +1,4 @@
-import './Styles/dashboard.css';
+import './style.css'
 import pic1 from './Images/n3.jpg';
 import pic2 from './Images/n5.jpg';
 import pic3 from './Images/n7.jpg';
@@ -8,6 +8,9 @@ import Navbar from './Navbar';
 import Defaultbar from './Defaultbar';
 export default function Dashboard(){
   var logout = ()=> {
+    if(!window.confirm("Sure to logout?")){
+      return null;
+    }
     alert("Logged out successfully");
     localStorage.clear();
     sessionStorage.clear();
@@ -15,10 +18,8 @@ export default function Dashboard(){
     window.location.href = '/Home';
 
 }
-// var isLoggedIn = true;
     return(
         <div class="j">
-              {/* {isLoggedIn?<Navbar />:<Defaultbar />} */}
             <div class="navbar-toggle-icon">
   <div class="row">
     <div class="col-lg-6 offset-lg-3">

@@ -36,6 +36,7 @@ export default function Login()
             sessionStorage.setItem("UserName",r.userName);
             sessionStorage.setItem("Token",r.token);
             sessionStorage.setItem("CID",r.userID);
+            sessionStorage.setItem("IsLoggedIn",true);
             console.log(sessionStorage);
             setIsLoggedIn(true);
             alert("Logged In Successfully "+r.userName);

@@ -4,7 +4,7 @@ import GetAllLoans from './GetAllLoans'
 import GetAllLoansbyACustomer from './GetAllLoansByACustomer'
 import GetAllLoanPolicies from './GetLoanPolicies'
 import GetLoansThatNeedApproval from './GetLoansThatNeedApproval'
-
+import ApproveLoanExtend from './ApproveLoanExtend'
 export default function BELoans(){
     return(
         <div>
@@ -17,6 +17,9 @@ export default function BELoans(){
             <CheckCreditWorthiness />
             <ApproveLoan />
         </div>  
+        {/* <div style={{ display: 'flex' }}>
+            <ApproveLoanExtend />
+        </div>   */}
         <div style={{ display: 'flex' }}>
             <GetAllLoansbyACustomer />
             <GetAllLoanPolicies />

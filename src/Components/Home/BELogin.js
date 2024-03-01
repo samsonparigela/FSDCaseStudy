@@ -30,22 +30,20 @@ export default function BELogin()
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify(user)
         };
-        console.log(user);
         fetch("https://localhost:7075/api/BankEmployee/Login",requestOptions)
         .then(r=>r.json())
         .then(r=>{
+
             sessionStorage.setItem("UserName",r.userName);
             sessionStorage.setItem("Token",r.token);
             sessionStorage.setItem("BID",r.userID);
-            console.log(sessionStorage);
             setIsLoggedIn(true);
+            sessionStorage.setItem("IsLoggedIn",true);
             alert("Logged In Successfully "+r.userName);
             navigate('/BEDashboard');
         })
         .catch(e=>{
-            console.log(e);
-            console.log("Ayya");
-            setErrorMessage("Invalid Username or Password");
+            setErrorMessage("Invalid Username or Password "+e.message);
             setIsLoggedIn(false);
         })
     };

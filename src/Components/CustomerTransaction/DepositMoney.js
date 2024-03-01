@@ -36,18 +36,6 @@ export default function DepositMoney(){
             let filteredList = data.filter(obj => obj.status !== "Pending" && obj.status !== "Account Closing Approved");
         setOptions(filteredList);
         });
-
-        for (let i = 0; i < options.length; i++) {
-            const element = options[i].accountNumber;
-            const jsonelement = {
-                label : element,
-                value : element
-            }
-            if (!accountNumbers.includes(element)) {
-                accountNumbers.push(jsonelement)
-                setAccountNumbers(accountNumbers)
-              }
-            }
         }
         func()
     },[])
@@ -73,6 +61,9 @@ export default function DepositMoney(){
         }
         if(isNaN(amount)){
             alert("Enter Number");
+            return null;
+        }
+        if(!window.confirm(`Do you want to deposit ${amount} rupees into ${accountNumber} ?`)){
             return null;
         }
         const response = await fetch("https://localhost:7075/api/CustomerTransaction/Deposit Money?accountNumber="+accountNumber+"&amount="+amount,{

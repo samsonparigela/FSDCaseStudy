@@ -88,6 +88,9 @@ export default function TransferMoney(){
                 alert("Enter Number");
                 return null;
             }
+            if(!window.confirm(`Do you want to transfer ${amount} Rupees from ${accountNumber1} to ${accountNumber2}?`)){
+                return null;
+            }
             try{
             const response = await axios.post("https://localhost:7075/api/CustomerTransaction/Transfer Money?amount="+amount+"&destAccountID="+accountNumber2+"&accountNumber="+accountNumber1,
             null,{

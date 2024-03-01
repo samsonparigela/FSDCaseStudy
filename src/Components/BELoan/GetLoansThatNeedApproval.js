@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './style.css'
 export default function GetLoansThatNeedApproval(){
 
+  
     const [loans, setLoans] = useState([]);
     var bankEmpID = sessionStorage.getItem("BID");
     var [flag,setFlag] = useState(0);

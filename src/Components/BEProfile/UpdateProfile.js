@@ -57,7 +57,7 @@ export default function UpdateProfile(){
                 <label htmlFor="input3">Position</label>
                 <input type="text" class="form-control" id="input3" placeholder="Enter Position"
                 value={position} onChange={(e)=>setPosition(e.target.value)}/>
-
+                <br/>
                 <button type="button" class="btn btn-success" data-toggle="button" 
                 aria-pressed="false" onClick={fetchProfile}>
                 Update Profile

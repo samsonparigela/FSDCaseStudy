@@ -72,6 +72,9 @@ export default function WithdrawMoney(){
                 alert("Enter Number");
                 return null;
             }
+            if(!window.confirm(`Do you want to withdraw ${amount} rupees from ${accountNumber} ?`)){
+                return null;
+            }
             try{
             const response = await axios.post("https://localhost:7075/api/CustomerTransaction/Withdraw Money?amount="+amount+"&accountID="+accountNumber,
             null,{

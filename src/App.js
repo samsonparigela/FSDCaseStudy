@@ -1,31 +1,32 @@
 import './App.css';
-import Navbar from './Components/Navbar';
-import Defaultbar from './Components/Defaultbar';
+import Navbar from './Components/Home/Navbar';
+import Defaultbar from './Components/Home/Defaultbar';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
-import HomePage from './Components/HomePage';
-import Error from './Components/Error';
-import Login from './Components/Login'
-import Dashboard from './Components/Dashboard';
+import HomePage from './Components/Home/HomePage';
+import Error from './Components/Home/Error';
+import Login from './Components/Home/Login'
+import Dashboard from './Components/Home/Dashboard';
 import Accounts from './Components/CustomerAccount/Accounts';
 import Transactions from './Components/CustomerTransaction/Transactions';
 import Loans from './Components/CustomerLoan/Loans';
 import Beneficiaries from './Components/CustomerBeneficiary/Beneficiaries'
 import Profile from './Components/CustomerProfile/Profile';
 import BEAccount from './Components/BEAccount/Account';
-import BELogin from './Components/BELogin'
+import BELogin from './Components/Home/BELogin'
 import BELoans from './Components/BELoan/BELoans';
 import BEProfile from './Components/BEProfile/Profile';
 import BEDashboard from './Components/BEDashboard/BEDashboard';
-import ForgotPassword from './Components/ForgotPassword';
+import ForgotPassword from './Components/Home/ForgotPassword';
 import BERegister from './Components/Home/BERegister';
 import CustomerRegister from './Components/Home/CustomerRegister';
 
 
 export default function App() {
-  var isLoggedIn = sessionStorage.getItem("Token")
+  const IsLoggedIn = sessionStorage.getItem("IsLoggedIn");
   return (
     <div>
-    {isLoggedIn?<Navbar />:<Defaultbar />}
+
+    {IsLoggedIn?<Navbar/>:<Defaultbar/>}
       <BrowserRouter>
       <Routes>
         <Route path='/Home' element={<HomePage />}/>
