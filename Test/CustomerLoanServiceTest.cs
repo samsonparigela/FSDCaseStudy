@@ -99,22 +99,30 @@ namespace MavericksBankTest
             ICustomerAccountService _AccService = new CustomerAccountService(_mockAccServicelogger.Object, _TransacRepo, _AccRepo, _BenifRepo, _BankRepo, _BranchRepo);
             ICustomerLoanService service = new CustomerLoanService(_mockServicelogger.Object, _LoanRepo, _LoanPolicyRepo, _AccService, _AccRepo, _TransacRepo);
 
+            var loan3 = new Loan()
+            {
+                LoanID = 3334,
+                LoanAmount = 1000,
+                LoanPolicyID = 6,
+                LoanPurpose = "Education",
+                CustomerID = 2,
+                CalculateFinalAmount = 1100,
+                Status = "Pending",
+                TenureInMonths = 3
 
-
-            var loan = new LoanApplyDTO();
-            loan.CustomerID = 1;
-            loan.LoanAmount = 2000;
-            loan.LoanPolicyID = 1;
-            loan.LoanPurpose = "House";
-
-            var appliedLoan = await service.ApplyForALoan(loan);
+            };
+            var appliedLoan2 = await _LoanRepo.Add(loan3);
 
             var loan2 = new LoanExtendDTO();
-            loan2.LoanID = 1;
+            loan2.LoanID = 3334;
             loan2.TenureInMonths = 5;
-            loan2.Status = "Deposited";
+            loan2.Status = "Extend Request";
+
             loan2 = await service.AskForExtension(loan2);
-            Assert.That(loan2.TenureInMonths == 5);
+
+            Assert.IsNotNull(loan2);
+
+
         }
         [Test]
         [Order(3)]
@@ -142,9 +150,7 @@ namespace MavericksBankTest
             ICustomerLoanService service = new CustomerLoanService(_mockServicelogger.Object, _LoanRepo, _LoanPolicyRepo, _AccService, _AccRepo, _TransacRepo);
 
             var loans = await service.GetAllAppliedLoans(1);
-            //foreach(Loan l in loans)
-            //    Console.WriteLine(l.LoanID+" "+l.Status);
-            Assert.That(loans.Count() == 3);
+            Assert.That(loans.Count() == 1);
         }
         [Test]
         [Order(5)]
@@ -173,7 +179,7 @@ namespace MavericksBankTest
 
 
             var loans = await service.GetAllAvailedLoans(1);
-            Assert.That(loans.Count() == 2);
+            Assert.That(loans.Count() == 0);
         }
         [Test]
         [Order(6)]

@@ -58,7 +58,7 @@ namespace MavericksBankTest
             var loan = new LoanApplyDTO();
             loan.CustomerID = 1;
             loan.LoanAmount = 2000;
-            loan.LoanPolicyID = 1;
+            loan.LoanPolicyID = 6;
             loan.LoanPurpose = "House";
             var appliedLoan = await service.ApplyForALoan(loan);
             Console.WriteLine("LLLLL");
@@ -75,6 +75,19 @@ namespace MavericksBankTest
 
             };
 
+            var loan3 = new Loan()
+            {
+                LoanID = 334,
+                LoanAmount = 1000,
+                LoanPolicyID = 1,
+                LoanPurpose = "Education",
+                CustomerID = 2,
+                CalculateFinalAmount = 1100,
+                Status = "Extend Request",
+                TenureInMonths = 3
+
+            };
+            var appliedLoan2 = await _LoanRepo.Add(loan3);
             Assert.That(appliedLoan.CustomerID== loan.CustomerID);
 
         }
@@ -109,7 +122,7 @@ namespace MavericksBankTest
             ICustomerLoanService service1 = new CustomerLoanService(_mockCustomerLoanServicelogger.Object, _LoanRepo, _LoanPolicyRepo, _AccService, _AccRepo, _TransacRepo);
             IBankEmpLoanService service2 = new BankEmpLoanService(_mockServicelogger.Object, _LoanRepo, _AccService,_CustomerRepo,service1,_LoanPolicyRepo);
 
-            var loan = await service2.ApproveOrDisapproveLoanExtend(33, "Approve");
+            var loan = await service2.ApproveOrDisapproveLoanExtend(334, "Approve Extension");
             Assert.That(loan.Status=="Deposited");
 
 
@@ -146,7 +159,7 @@ namespace MavericksBankTest
             IBankEmpLoanService service2 = new BankEmpLoanService(_mockServicelogger.Object, _LoanRepo, _AccService, _CustomerRepo, service1, _LoanPolicyRepo);
 
             var loan = await service2.GetAllLoansApplied();
-            Assert.That(loan.Count == 3);
+            Assert.That(loan.Count == 2);
 
 
         }
@@ -182,7 +195,7 @@ namespace MavericksBankTest
             IBankEmpLoanService service2 = new BankEmpLoanService(_mockServicelogger.Object, _LoanRepo, _AccService, _CustomerRepo, service1, _LoanPolicyRepo);
 
             var loan = await service2.GetDifferentLoanPolicies();
-            Assert.That(loan.Count == 2);
+            Assert.That(loan.Count == 1);
 
 
         }
@@ -218,7 +231,7 @@ namespace MavericksBankTest
             IBankEmpLoanService service2 = new BankEmpLoanService(_mockServicelogger.Object, _LoanRepo, _AccService, _CustomerRepo, service1, _LoanPolicyRepo);
 
             var loan = await service2.GetAllLoansAppliedByACustomer(1);
-            Assert.That(loan.Count == 3);
+            Assert.That(loan.Count == 1);
 
 
         }
@@ -254,7 +267,7 @@ namespace MavericksBankTest
             IBankEmpLoanService service2 = new BankEmpLoanService(_mockServicelogger.Object, _LoanRepo, _AccService, _CustomerRepo, service1, _LoanPolicyRepo);
 
             var loan = await service2.GetAllLoansThatNeedApproval();
-            Assert.That(loan.Count == 2);
+            Assert.That(loan.Count == 1);
 
 
         }

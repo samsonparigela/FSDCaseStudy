@@ -1,265 +1,295 @@
 ﻿using System;
-using MavericksBank.Contexts;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Moq;
 using MavericksBank.Interfaces;
 using MavericksBank.Models;
 using MavericksBank.Models.DTO;
-using MavericksBank.Repository;
 using MavericksBank.Services;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Moq;
+using NUnit.Framework;
 
 namespace MavericksBankTest
 {
-    public class BEAccMngmtServiceTest
+    [TestFixture]
+    public class BankEmpAccMngmntServiceTests
     {
-        RequestTrackerContext context;
+        private BankEmpAccMngmntService _bankEmpAccMngmntService;
+        private Mock<IRepository<Accounts, int>> _accountRepositoryMock;
+        private Mock<IRepository<Transactions, int>> _transactionRepositoryMock;
+        private Mock<IRepository<Customer, int>> _customerRepositoryMock;
+        private Mock<ILogger<BankEmpAccMngmntService>> _loggerMock;
 
         [SetUp]
         public void Setup()
         {
-            var options = new DbContextOptionsBuilder<RequestTrackerContext>().UseInMemoryDatabase("dummy2Database").Options;
-            context = new RequestTrackerContext(options);
+            _accountRepositoryMock = new Mock<IRepository<Accounts, int>>();
+            _transactionRepositoryMock = new Mock<IRepository<Transactions, int>>();
+            _customerRepositoryMock = new Mock<IRepository<Customer, int>>();
+            _loggerMock = new Mock<ILogger<BankEmpAccMngmntService>>();
+
+            _bankEmpAccMngmntService = new BankEmpAccMngmntService(
+                _loggerMock.Object,
+                _accountRepositoryMock.Object,
+                _transactionRepositoryMock.Object,
+                _customerRepositoryMock.Object
+            );
         }
 
         [Test]
-        [Order(1)]
-        public async Task ApplyForALoanTest()
+        public async Task ApproveAccountClosing()
         {
-            var _mockLoanlogger = new Mock<ILogger<LoanRepo>>();
-            var _mockServicelogger = new Mock<ILogger<CustomerLoanService>>();
-            var _mockAccServicelogger = new Mock<ILogger<CustomerAccountService>>();
-            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
-            var _mockLoanPolicylogger = new Mock<ILogger<LoanPoliciesRepo>>();
-            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
-            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
-            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
-            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
+            // Arrange
+            var accountId = 1;
+            var account = new Accounts { AccountNumber = accountId, Status = "Pending" };
 
-            IRepository<Loan, int> _LoanRepo = new LoanRepo(_mockLoanlogger.Object, context);
-            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
-            IRepository<LoanPolicies, int> _LoanPolicyRepo = new LoanPoliciesRepo(_mockLoanPolicylogger.Object, context);
-            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
-            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
-            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
-            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
+            _accountRepositoryMock.Setup(repo => repo.GetByID(accountId)).ReturnsAsync(account);
 
-            ICustomerAccountService _AccService = new CustomerAccountService(_mockAccServicelogger.Object, _TransacRepo, _AccRepo, _BenifRepo, _BankRepo, _BranchRepo);
-            ICustomerLoanService service = new CustomerLoanService(_mockServicelogger.Object, _LoanRepo, _LoanPolicyRepo, _AccService, _AccRepo, _TransacRepo);
-            var loanPolicy = new LoanPolicies()
+            // Act
+            var result = await _bankEmpAccMngmntService.ApproveAccountClosing(accountId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Account Closing Approved", result.Status);
+        }
+
+        [Test]
+        public async Task GetCustomerDetailsforAccount()
+        {
+            // Arrange
+            var accountId = 1;
+            var account = new Accounts { AccountNumber = accountId, CustomerID = 1 };
+            var customer = new Customer { CustomerID = 1, Name = "John Doe", Address = "123 Main St", Phone = "555-5555" };
+
+            _accountRepositoryMock.Setup(repo => repo.GetAll()).ReturnsAsync(new List<Accounts> { account });
+            _customerRepositoryMock.Setup(repo => repo.GetByID(account.CustomerID)).ReturnsAsync(customer);
+
+            // Act
+            var result = await _bankEmpAccMngmntService.GetCustomerDetailsforAccount(accountId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(customer.CustomerID, result.CustomerID);
+            Assert.AreEqual(customer.Name, result.Name);
+            Assert.AreEqual(customer.Address, result.Address);
+            Assert.AreEqual(customer.Phone, result.Phone);
+        }
+
+        [Test]
+        public async Task ApproveAccountOpening()
+        {
+            // Arrange
+            var accountId = 1;
+            var account = new Accounts { AccountNumber = accountId, Status = "Pending" };
+
+            _accountRepositoryMock.Setup(repo => repo.GetByID(accountId)).ReturnsAsync(account);
+
+            // Act
+            var result = await _bankEmpAccMngmntService.ApproveAccountOpening(accountId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("Approved", result.Status);
+        }
+
+        [Test]
+        public async Task GetAllAccounts()
+        {
+            // Arrange
+            var accounts = new List<Accounts>
             {
-                LoanAmount = 2000,
-                LoanPolicyID = 1,
-                Interest = 10,
-                TenureInMonths = 3
+                new Accounts { AccountNumber = 1, Status = "Active" },
+                new Accounts { AccountNumber = 2, Status = "Closed" },
+                // Add more accounts as needed
             };
-            await _LoanPolicyRepo.Add(loanPolicy);
-            var loan = new LoanApplyDTO();
-            loan.CustomerID = 1;
-            loan.LoanAmount = 2000;
-            loan.LoanPolicyID = 1;
-            loan.LoanPurpose = "House";
-            var appliedLoan = await service.ApplyForALoan(loan);
 
-            var loan2 = new Loan()
+            _accountRepositoryMock.Setup(repo => repo.GetAll()).ReturnsAsync(accounts);
+
+            // Act
+            var result = await _bankEmpAccMngmntService.GetAllAccounts();
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(accounts.Count, result.Count);
+        }
+
+        [Test]
+        public async Task GetAllAccountsForCloseRequest()
+        {
+            // Arrange
+            var accounts = new List<Accounts>
             {
-                LoanID = 33,
-                LoanAmount = 1000,
-                LoanPolicyID = 1,
-                LoanPurpose = "Education",
-                CustomerID = 1,
-                CalculateFinalAmount = 1100,
-                Status = "Deposited",
-                TenureInMonths = 3
-
+                new Accounts { AccountNumber = 1, Status = "Close Request" },
+                new Accounts { AccountNumber = 2, Status = "Active" },
+                new Accounts { AccountNumber = 3, Status = "Close Request" },
             };
 
-            await _LoanRepo.Add(loan2);
+            _accountRepositoryMock.Setup(repo => repo.GetAll()).ReturnsAsync(accounts);
 
+            // Act
+            var result = await _bankEmpAccMngmntService.GetAllAccountsForCloseRequest();
 
-            Assert.That(appliedLoan.CustomerID == loan.CustomerID);
-
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.Count);
         }
 
         [Test]
-        [Order(2)]
-        public async Task ApproveLoanExtendTest()
+        public async Task GetAllAccountsForOpenRequest()
         {
-            var _mockLoanlogger = new Mock<ILogger<LoanRepo>>();
-            var _mockServicelogger = new Mock<ILogger<BankEmpLoanService>>();
-            var _mockCustomerLoanServicelogger = new Mock<ILogger<CustomerLoanService>>();
-            var _mockAccServicelogger = new Mock<ILogger<CustomerAccountService>>();
-            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
-            var _mockLoanPolicylogger = new Mock<ILogger<LoanPoliciesRepo>>();
-            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
-            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
-            var _mockCustomerlogger = new Mock<ILogger<CustomerRepo>>();
-            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
-            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            // Arrange
+            var accounts = new List<Accounts>
+            {
+                new Accounts { AccountNumber = 1, Status = "Pending" },
+                new Accounts { AccountNumber = 2, Status = "Active" },
+                new Accounts { AccountNumber = 3, Status = "Pending" },
+            };
 
-            IRepository<Loan, int> _LoanRepo = new LoanRepo(_mockLoanlogger.Object, context);
-            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
-            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
-            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
-            IRepository<LoanPolicies, int> _LoanPolicyRepo = new LoanPoliciesRepo(_mockLoanPolicylogger.Object, context);
-            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
-            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
-            IRepository<Customer, int> _CustomerRepo = new CustomerRepo(_mockCustomerlogger.Object, context);
+            _accountRepositoryMock.Setup(repo => repo.GetAll()).ReturnsAsync(accounts);
 
+            // Act
+            var result = await _bankEmpAccMngmntService.GetAllAccountsForOpenRequest();
 
-            ICustomerAccountService _AccService = new CustomerAccountService(_mockAccServicelogger.Object, _TransacRepo, _AccRepo, _BenifRepo, _BankRepo, _BranchRepo);
-            ICustomerLoanService service1 = new CustomerLoanService(_mockCustomerLoanServicelogger.Object, _LoanRepo, _LoanPolicyRepo, _AccService, _AccRepo, _TransacRepo);
-            IBankEmpLoanService service2 = new BankEmpLoanService(_mockServicelogger.Object, _LoanRepo, _AccService, _CustomerRepo, service1, _LoanPolicyRepo);
-
-            var loan = await service2.ApproveOrDisapproveLoanExtend(33, "Approve");
-            Assert.That(loan.Status == "Deposited");
-
-
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(2, result.Count);
         }
 
         [Test]
-        [Order(3)]
-        public async Task GetAllLoansAppliedTest()
+        public async Task GetAllTransactions()
         {
-            var _mockLoanlogger = new Mock<ILogger<LoanRepo>>();
-            var _mockServicelogger = new Mock<ILogger<BankEmpLoanService>>();
-            var _mockCustomerLoanServicelogger = new Mock<ILogger<CustomerLoanService>>();
-            var _mockAccServicelogger = new Mock<ILogger<CustomerAccountService>>();
-            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
-            var _mockLoanPolicylogger = new Mock<ILogger<LoanPoliciesRepo>>();
-            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
-            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
-            var _mockCustomerlogger = new Mock<ILogger<CustomerRepo>>();
-            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
-            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            // Arrange
+            var transactions = new List<Transactions>
+            {
+                new Transactions { TransactionID = 1, Amount = 100, TransactionType = "Deposit" },
+                new Transactions { TransactionID = 2, Amount = 50, TransactionType = "Withdraw" },
+                // Add more transactions as needed
+            };
 
-            IRepository<Loan, int> _LoanRepo = new LoanRepo(_mockLoanlogger.Object, context);
-            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
-            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
-            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
-            IRepository<LoanPolicies, int> _LoanPolicyRepo = new LoanPoliciesRepo(_mockLoanPolicylogger.Object, context);
-            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
-            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
-            IRepository<Customer, int> _CustomerRepo = new CustomerRepo(_mockCustomerlogger.Object, context);
+            _transactionRepositoryMock.Setup(repo => repo.GetAll()).ReturnsAsync(transactions);
 
+            // Act
+            var result = await _bankEmpAccMngmntService.GetAllTransactions();
 
-            ICustomerAccountService _AccService = new CustomerAccountService(_mockAccServicelogger.Object, _TransacRepo, _AccRepo, _BenifRepo, _BankRepo, _BranchRepo);
-            ICustomerLoanService service1 = new CustomerLoanService(_mockCustomerLoanServicelogger.Object, _LoanRepo, _LoanPolicyRepo, _AccService, _AccRepo, _TransacRepo);
-            IBankEmpLoanService service2 = new BankEmpLoanService(_mockServicelogger.Object, _LoanRepo, _AccService, _CustomerRepo, service1, _LoanPolicyRepo);
-
-            var loan = await service2.GetAllLoansApplied();
-            Assert.That(loan.Count == 2);
-
-
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(transactions.Count, result.Count);
+            Assert.IsTrue(result.All(t => t.Amount >= 0));
         }
 
         [Test]
-        [Order(4)]
-        public async Task GetAllLoansPoliciesTest()
+        public async Task ViewAccountDetails()
         {
-            var _mockLoanlogger = new Mock<ILogger<LoanRepo>>();
-            var _mockServicelogger = new Mock<ILogger<BankEmpLoanService>>();
-            var _mockCustomerLoanServicelogger = new Mock<ILogger<CustomerLoanService>>();
-            var _mockAccServicelogger = new Mock<ILogger<CustomerAccountService>>();
-            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
-            var _mockLoanPolicylogger = new Mock<ILogger<LoanPoliciesRepo>>();
-            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
-            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
-            var _mockCustomerlogger = new Mock<ILogger<CustomerRepo>>();
-            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
-            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            // Arrange
+            var accountId = 1;
+            var account = new Accounts { AccountNumber = accountId, Status = "Active" };
 
-            IRepository<Loan, int> _LoanRepo = new LoanRepo(_mockLoanlogger.Object, context);
-            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
-            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
-            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
-            IRepository<LoanPolicies, int> _LoanPolicyRepo = new LoanPoliciesRepo(_mockLoanPolicylogger.Object, context);
-            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
-            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
-            IRepository<Customer, int> _CustomerRepo = new CustomerRepo(_mockCustomerlogger.Object, context);
+            _accountRepositoryMock.Setup(repo => repo.GetByID(accountId)).ReturnsAsync(account);
 
+            // Act
+            var result = await _bankEmpAccMngmntService.ViewAccountDetails(accountId);
 
-            ICustomerAccountService _AccService = new CustomerAccountService(_mockAccServicelogger.Object, _TransacRepo, _AccRepo, _BenifRepo, _BankRepo, _BranchRepo);
-            ICustomerLoanService service1 = new CustomerLoanService(_mockCustomerLoanServicelogger.Object, _LoanRepo, _LoanPolicyRepo, _AccService, _AccRepo, _TransacRepo);
-            IBankEmpLoanService service2 = new BankEmpLoanService(_mockServicelogger.Object, _LoanRepo, _AccService, _CustomerRepo, service1, _LoanPolicyRepo);
-
-            var loan = await service2.GetDifferentLoanPolicies();
-            Assert.That(loan.Count == 1);
-
-
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(account.AccountNumber, result.AccountNumber);
+            Assert.AreEqual(account.Status, result.Status);
         }
 
         [Test]
-        [Order(3)]
-        public async Task GetAllLoansAppliedByCustomerTest()
+        public async Task ViewTransactionDetailsByAccount()
         {
-            var _mockLoanlogger = new Mock<ILogger<LoanRepo>>();
-            var _mockServicelogger = new Mock<ILogger<BankEmpLoanService>>();
-            var _mockCustomerLoanServicelogger = new Mock<ILogger<CustomerLoanService>>();
-            var _mockAccServicelogger = new Mock<ILogger<CustomerAccountService>>();
-            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
-            var _mockLoanPolicylogger = new Mock<ILogger<LoanPoliciesRepo>>();
-            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
-            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
-            var _mockCustomerlogger = new Mock<ILogger<CustomerRepo>>();
-            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
-            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            // Arrange
+            var accountId = 1;
+            var transactions = new List<Transactions>
+            {
+                new Transactions { TransactionID = 1, SAccountID = accountId, Amount = 100, TransactionType = "Deposit" },
+                new Transactions { TransactionID = 2, SAccountID = accountId, Amount = 50, TransactionType = "Withdraw" },
+                // Add more transactions as needed
+            };
 
-            IRepository<Loan, int> _LoanRepo = new LoanRepo(_mockLoanlogger.Object, context);
-            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
-            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
-            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
-            IRepository<LoanPolicies, int> _LoanPolicyRepo = new LoanPoliciesRepo(_mockLoanPolicylogger.Object, context);
-            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
-            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
-            IRepository<Customer, int> _CustomerRepo = new CustomerRepo(_mockCustomerlogger.Object, context);
+            _transactionRepositoryMock.Setup(repo => repo.GetAll()).ReturnsAsync(transactions);
 
+            // Act
+            var result = await _bankEmpAccMngmntService.ViewTransactionDetailsByAccount(accountId);
 
-            ICustomerAccountService _AccService = new CustomerAccountService(_mockAccServicelogger.Object, _TransacRepo, _AccRepo, _BenifRepo, _BankRepo, _BranchRepo);
-            ICustomerLoanService service1 = new CustomerLoanService(_mockCustomerLoanServicelogger.Object, _LoanRepo, _LoanPolicyRepo, _AccService, _AccRepo, _TransacRepo);
-            IBankEmpLoanService service2 = new BankEmpLoanService(_mockServicelogger.Object, _LoanRepo, _AccService, _CustomerRepo, service1, _LoanPolicyRepo);
-
-            var loan = await service2.GetAllLoansAppliedByACustomer(1);
-            Assert.That(loan.Count == 2);
-
-
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(transactions.Count, result.Count);
+            Assert.IsTrue(result.All(t => t.Amount >= 0));
         }
 
         [Test]
-        [Order(3)]
-        public async Task GetAllLoansThatNeedApprovalTest()
+        public async Task ViewSentTransactions()
         {
-            var _mockLoanlogger = new Mock<ILogger<LoanRepo>>();
-            var _mockServicelogger = new Mock<ILogger<BankEmpLoanService>>();
-            var _mockCustomerLoanServicelogger = new Mock<ILogger<CustomerLoanService>>();
-            var _mockAccServicelogger = new Mock<ILogger<CustomerAccountService>>();
-            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
-            var _mockLoanPolicylogger = new Mock<ILogger<LoanPoliciesRepo>>();
-            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
-            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
-            var _mockCustomerlogger = new Mock<ILogger<CustomerRepo>>();
-            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
-            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            // Arrange
+            var accountId = 1;
+            var transactions = new List<Transactions>
+            {
+                new Transactions { TransactionID = 1, SAccountID = accountId, Amount = 100, TransactionType = "Sent" },
+                new Transactions { TransactionID = 2, SAccountID = accountId, Amount = 50, TransactionType = "Sent" },
+                // Add more transactions as needed
+            };
 
-            IRepository<Loan, int> _LoanRepo = new LoanRepo(_mockLoanlogger.Object, context);
-            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
-            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
-            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
-            IRepository<LoanPolicies, int> _LoanPolicyRepo = new LoanPoliciesRepo(_mockLoanPolicylogger.Object, context);
-            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
-            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
-            IRepository<Customer, int> _CustomerRepo = new CustomerRepo(_mockCustomerlogger.Object, context);
+            _transactionRepositoryMock.Setup(repo => repo.GetAll()).ReturnsAsync(transactions);
 
+            // Act
+            var result = await _bankEmpAccMngmntService.ViewSentTransactions(accountId);
 
-            ICustomerAccountService _AccService = new CustomerAccountService(_mockAccServicelogger.Object, _TransacRepo, _AccRepo, _BenifRepo, _BankRepo, _BranchRepo);
-            ICustomerLoanService service1 = new CustomerLoanService(_mockCustomerLoanServicelogger.Object, _LoanRepo, _LoanPolicyRepo, _AccService, _AccRepo, _TransacRepo);
-            IBankEmpLoanService service2 = new BankEmpLoanService(_mockServicelogger.Object, _LoanRepo, _AccService, _CustomerRepo, service1, _LoanPolicyRepo);
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(transactions.Count, result.Count);
+            Assert.IsTrue(result.All(t => t.Amount >= 0)); 
+            Assert.IsTrue(result.All(t => t.TransactionType == "Sent")); 
+        }
 
-            var loan = await service2.GetAllLoansThatNeedApproval();
-            Assert.That(loan.Count == 1);
+        [Test]
+        public async Task ViewReceivedTransactions()
+        {
+            // Arrange
+            var accountId = 1;
+            var transactions = new List<Transactions>
+            {
+                new Transactions { TransactionID = 1, SAccountID = accountId, Amount = 100, TransactionType = "Deposit" },
+                new Transactions { TransactionID = 2, SAccountID = accountId, Amount = 50, TransactionType = "Withdraw" },
+                // Add more transactions as needed
+            };
 
+            _transactionRepositoryMock.Setup(repo => repo.GetAll()).ReturnsAsync(transactions);
 
+            // Act
+            var result = await _bankEmpAccMngmntService.ViewReceivedTransactions(accountId);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(transactions.Count, result.Count);
+            Assert.IsTrue(result.All(t => t.Amount >= 0));
+            Assert.IsTrue(result.All(t => t.TransactionType == "Deposit" || t.TransactionType == "Withdraw")); // Ensure all transactions are either "Deposit" or "Withdraw" type
+        }
+
+        [Test]
+        public async Task ViewTransactionsWith5HighestAmount()
+        {
+            // Arrange
+            var transactions = new List<Transactions>
+            {
+                new Transactions { TransactionID = 1, Amount = 100 },
+                new Transactions { TransactionID = 2, Amount = 200 },
+                new Transactions { TransactionID = 3, Amount = 150 },
+                new Transactions { TransactionID = 4, Amount = 250 },
+                new Transactions { TransactionID = 5, Amount = 50 },
+            };
+
+            _transactionRepositoryMock.Setup(repo => repo.GetAll()).ReturnsAsync(transactions);
+
+            // Act
+            var result = await _bankEmpAccMngmntService.ViewTransactionsWith5HighestAmount();
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(5, result.Count);
+            Assert.AreEqual(250, result[0].Amount);
+            Assert.IsTrue(result.All(t => t.Amount >= 0));
         }
     }
 }
-
