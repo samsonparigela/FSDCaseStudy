@@ -91,7 +91,8 @@ export default function AskForExtension(){
                                             <option value="">Select an option</option> {/* Default option */}
                                                 {options.map((options) => (
                                                 <option key={options.loanID} value={options.loanID}>
-                                                    {options.loanID}
+                                                    {options.loanID}&ensp;&ensp;
+                                                    Loan Amount - {options.loanAmount}
                                                 </option>
                                                 ))}
                                             </select>

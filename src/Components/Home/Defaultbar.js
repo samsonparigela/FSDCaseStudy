@@ -31,6 +31,7 @@ export default function Defaultbar(){
       <Dropdown.Menu>
         <Dropdown.Item href="/Login">Customer</Dropdown.Item>
         <Dropdown.Item href="/BELogin">Bank Employee</Dropdown.Item>
+        <Dropdown.Item href="/AdminLogin">Admin</Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
     <Dropdown>

@@ -109,7 +109,8 @@ export default function RepayLoan(){
                                                 {options.map((options) => (
                                                     
                                                 <option key={options.loanID} value={options.loanID}>
-                                                    {options.loanID}
+                                                    {options.loanID}&ensp;&ensp;
+                                                    Repay Amount - {options.calculateFinalAmount}
                                                 </option>
                                                 ))}
                                             </select>
@@ -123,7 +124,8 @@ export default function RepayLoan(){
                                             <option value="">Select an option</option>
                                                 {options2.map((options) => (
                                                 <option key={options.accountNumber} value={options.accountNumber}>
-                                                    {options.accountNumber}
+                                                    {options.accountNumber}&ensp;&ensp;
+                                                    Balance - {options.balance}
                                                 </option>
                                                 ))}
                                             </select>

@@ -77,7 +77,7 @@ export default function ViewAllBranches(){
                                             <option value="">Select an option</option>
                                                 {options.map((options) => (
                                                 <option key={options.bankID} value={options.bankID}>
-                                                    {options.bankID}
+                                                    {options.bankID}&ensp;&ensp;{options.bankName}
                                                 </option>
                                                 ))}
                                             </select>

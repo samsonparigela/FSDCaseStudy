@@ -1,0 +1,42 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    padding-top: 56px; /* Adjust this if you have a fixed navbar */
+    background-color: #343a40; /* Dark grey background */
+    color: white; /* White text */
+  }
+
+  .sidebar a {
+    padding: 10px;
+    display: block;
+    color: white;
+    transition: background-color 0.3s;
+  }
+
+  .sidebar a:hover {
+    background-color: #6c757d; /* Darker grey on hover */
+  }
+
+  /* Content area */
+  .content {
+    margin-left: 250px; /* Adjust this to match the width of your sidebar */
+    padding: 20px;
+  }
+
+  /* Profile section */
+  #profile {
+    background-color: #007bff; /* Blue background */
+  }
+
+  /* Loans section */
+  #loans {
+    background-color: #28a745; /* Green background */
+  }
+
+  /* Accounts section */
+  #accounts {
+    background-color: #dc3545; /* Red background */
+  }

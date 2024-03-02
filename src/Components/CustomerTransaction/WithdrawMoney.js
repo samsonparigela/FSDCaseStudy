@@ -121,7 +121,7 @@ export default function WithdrawMoney(){
                                             <option value="">Select an option</option>
                                                 {options.map((options) => (
                                                 <option key={options.accountNumber} value={options.accountNumber}>
-                                                    {options.accountNumber}
+                                                    {options.accountNumber}&ensp;&ensp;Balance - {options.balance}
                                                 </option>
                                                 ))}
                                             </select>

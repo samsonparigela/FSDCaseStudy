@@ -184,7 +184,7 @@ export default function OpenAccount(){
                                             <option value="">Select an option</option>
                                                 {options.map(options => (
                                                 <option key={options.bankID} value={options.bankID}>
-                                                    {options.bankID}
+                                                    {options.bankID}&ensp;&ensp;{options.bankName}
                                                     </option>
                                                 ))}
                                             </select>
@@ -197,7 +197,9 @@ export default function OpenAccount(){
                                                 <select value={selectedSubOption} onChange={handleSubChange} class="browser-default custom-select">
                                                 <option value="">Select an option</option>
                                                     {subOptions.map(option => (
-                                                    <option key={option.ifscCode} value={option.ifscCode}>{option.ifscCode}</option>
+                                                    <option key={option.ifscCode} value={option.ifscCode}>
+                                                        {option.ifscCode}&ensp;&ensp;{option.branchName}
+                                                        </option>
                                                     ))}
                                                 </select>
                                                 </div>

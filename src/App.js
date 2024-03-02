@@ -19,6 +19,8 @@ import BEDashboard from './Components/BEDashboard/BEDashboard';
 import ForgotPassword from './Components/Home/ForgotPassword';
 import BERegister from './Components/Home/BERegister';
 import CustomerRegister from './Components/Home/CustomerRegister';
+import AdminLogin from './Components/Home/AdminLogin';
+import AdminDashboard from './Components/AdminDashboard/AdminDashboard';
 
 
 export default function App() {
@@ -32,15 +34,18 @@ export default function App() {
         <Route path='/Home' element={<HomePage />}/>
         <Route path='/Login' element={<Login/>}/>
         <Route path='/BELogin' element={<BELogin/>}/>
+        <Route path='/AdminLogin' element={<AdminLogin/>}/>
         <Route path='/Dashboard' element={<Dashboard/>}/>
         <Route path='/BERegister' element={<BERegister/>}/>
         <Route path='/CustomerRegister' element={<CustomerRegister/>}/>
         <Route path='/BEDashboard' element={<BEDashboard/>}/>
+        <Route path='/AdminDashboard' element={<AdminDashboard/>}/>
         <Route path='/Dashboard/Accounts' element={<Accounts/>}/>
         <Route path='/Dashboard/Loans' element={<Loans/>}/>
         <Route path='/Dashboard/Transactions' element={<Transactions/>}/>
         <Route path='/Dashboard/Beneficiaries' element={<Beneficiaries/>}/>
         <Route path='/BEProfile' element={<BEProfile/>}/>
+        <Route path='/Accounts' element={<Accounts/>}/>
         <Route path='/Dashboard/Profile' element={<Profile/>}/>
         <Route path='/BEAccounts' element={<BEAccount/>}/>
         <Route path='/BELoans' element={<BELoans/>}/>
