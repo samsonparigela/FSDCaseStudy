@@ -1,102 +1,91 @@
 import { useState } from "react";
 import pic from './Images/m10.jpg';
-import './style.css';
-import { Navigate, useNavigate } from "react-router-dom";
-import Gaps from './Gaps';
-import Dashboard from "./Dashboard";
+import { useNavigate } from "react-router-dom";
+import Defaultbar from "./Defaultbar";
 
-export default function Login()
-{
-
-    var [userName,setUserName] = useState("");
-    var [password,setPassword] = useState("");
-    var [isLoggedIn,setIsLoggedIn] = useState("false");
+export default function Login() {
+    const [userName, setUserName] = useState("");
+    const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState('');
 
-    var navigate=useNavigate();
+    const navigate = useNavigate();
 
-    var user={};
-    var Logins = (e) =>{
+    const Logins = (e) => {
         e.preventDefault();
-        user.userName=userName;
-        user.password=password;
-        user.userType="";
-        user.token="";
-        user.userID=0;
 
-        var requestOptions = {
-            method:'POST',
-            headers: {'Content-Type':'application/json'},
+        const user = {
+            userName,
+            password,
+            userType: "",
+            token: "",
+            userID: 0
+        };
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(user)
         };
-        console.log(user);
-        fetch("https://localhost:7075/api/Customer/Login",requestOptions)
-        .then(r=>r.json())
-        .then(r=>{
-            sessionStorage.setItem("UserName",r.userName);
-            sessionStorage.setItem("Token",r.token);
-            sessionStorage.setItem("CID",r.userID);
-            sessionStorage.setItem("IsLoggedIn",true);
-            console.log(sessionStorage);
-            setIsLoggedIn(true);
-            alert("Logged In Successfully "+r.userName);
 
-            navigate('/Dashboard');
-        })
-        .catch(e=>{
-            setErrorMessage("Invalid Username or Password");
-            console.log(e);
-            console.log("Ayya");
-
-            setIsLoggedIn(false);
-        })
+        fetch("https://localhost:7075/api/Customer/Login", requestOptions)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Invalid Username or Password');
+                }
+                return response.json();
+            })
+            .then(data => {
+                sessionStorage.setItem("UserName", data.userName);
+                sessionStorage.setItem("Token", data.token);
+                sessionStorage.setItem("CID", data.userID);
+                sessionStorage.setItem("IsLoggedIn", true);
+                alert("Logged In Successfully " + data.userName);
+                navigate('/Dashboard');
+            })
+            .catch(error => {
+                setErrorMessage(error.message);
+            });
     };
-    return(
-        <div class='custom-bg-color'>
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-6">
-                    <div class="login-container">    
-                        <div class="login-form">
-                            <p>&emsp;&emsp;&emsp;&emsp;
-                            &emsp;&emsp;&emsp;&emsp;
-                             Customer</p>
-                            <img src={pic} alt="Login Image"/>
+
+    return (
+        <div className='custom-bg-color'>
+            <Defaultbar />
+            <div className="container">
+                <div className="row justify-content-center">
+                    <div className="col-lg-6">
+                        <div className="login-container">
+                            <div className="login-form">
+                                <p>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Customer</p>
+                                <img src={pic} alt="Login Image" />
                                 <form>
-                                    <div class="mb-3">
-                                        <label for="username" class="form-label">Username</label>
-                                        <input type="text" class="form-control" value={userName} onChange={(e)=>setUserName(e.target.value)}
-                                        id="username" placeholder="Enter your username"/>
+                                    <div className="mb-3">
+                                        <label htmlFor="username" className="form-label">Username</label>
+                                        <input type="text" className="form-control" value={userName} onChange={(e) => setUserName(e.target.value)}
+                                            id="username" placeholder="Enter your username" />
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="password" class="form-label">Password</label>
-                                        <input type="password" class="form-control" id="password" placeholder="Enter your password"
-                                        value={password} onChange={(e)=>setPassword(e.target.value)}/>
+                                    <div className="mb-3">
+                                        <label htmlFor="password" className="form-label">Password</label>
+                                        <input type="password" className="form-control" id="password" placeholder="Enter your password"
+                                            value={password} onChange={(e) => setPassword(e.target.value)} />
                                     </div>
-                                    <div class="flex-container">
-                                    <div class="flex-child magenta">
-                                    <button type="submit" class="btn btn-primary" onClick={Logins}>Login</button>
+                                    <div className="flex-container">
+                                        <div className="flex-child magenta">
+                                            <button type="submit" className="btn btn-primary" onClick={Logins}>Login</button>
+                                        </div>
+                                        <div className="flex-child green">
+                                            <p className="form__hint"><a className="form__link" href="/ForgotPassword">Forgot password?</a></p>
+                                        </div>
                                     </div>
-<div class="flex-child green">
-        <p className="form__hint"><a className="form__link" href="/ForgotPassword">Forgot password?</a></p>
-      </div>
-      </div>
-      <br/>
-      {errorMessage && (
-  <p className="error"> {errorMessage} </p>)}
+                                    <br />
+                                    {errorMessage && (
+                                        <p className="error"> {errorMessage} </p>
+                                    )}
                                 </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <Gaps />
-        </div>
-
-    )
+    );
 }
-
-
-
-
-

@@ -1,3 +1,4 @@
+import Navbar from '../Home/Navbar';
 import ApplyLoan from './ApplyLoan';
 import AskForExtension from './AskForExtension';
 import GetAllAppliedLoans from './GetAllAppliedLoans';
@@ -10,6 +11,7 @@ import RepayLoan from './RepayLoan';
 export default function Loans(){
     return(
         <div style={{ width: '100%', backgroundColor: 'lightblue' }}>
+            <Navbar/>
             <br/>
             <ApplyLoan />
             <AskForExtension />

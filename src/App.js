@@ -27,8 +27,6 @@ export default function App() {
   const IsLoggedIn = sessionStorage.getItem("IsLoggedIn");
   return (
     <div>
-
-    {IsLoggedIn?<Navbar/>:<Defaultbar/>}
       <BrowserRouter>
       <Routes>
         <Route path='/Home' element={<HomePage />}/>

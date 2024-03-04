@@ -38,14 +38,14 @@ export default function ViewProfile(){
 
 
 <div>
-<div class="container mt-5">
-                <div class="row">
+<div className="container mt-5">
+                <div className="row">
                 <div className="col-md-12 mb-4">
-                        <div class="card custom-bg-color">
-                            <div class="card-body">
+                        <div className="card custom-bg-color">
+                            <div className="card-body">
       <h1>Your Profile</h1>
       <br/>
-      <button type="button" class="btn btn-success" data-toggle="button" 
+      <button type="button" className="btn btn-success" data-toggle="button" 
       aria-pressed="false" onClick={fetchProfile}>
       View
       </button>

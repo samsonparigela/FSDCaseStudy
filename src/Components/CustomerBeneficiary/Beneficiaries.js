@@ -1,3 +1,4 @@
+import Navbar from '../Home/Navbar';
 import AddBeneficiaries from './AddBeneficiaries';
 import DeleteBeneficiaries from './DeleteBeneficiaries';
 import GetAllBeneficiaries from './GetAllBeneficiaries';

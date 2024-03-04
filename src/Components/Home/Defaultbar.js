@@ -1,53 +1,40 @@
-import { Dropdown } from 'react-bootstrap';
+import React from 'react';
+import { Navbar, Nav, Dropdown } from 'react-bootstrap';
 
-export default function Defaultbar(){
-    return(
-        <div>
-            <nav class="navbar navbar-expand-lg navbar-light bg-info">
-  <div class="container">
-    <a class="navbar-brand" href="#">Maverick Bank</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="http://localhost:3000/Home">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="http://localhost:3000/Home">Services</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="http://localhost:3000/Home">About</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="http://localhost:3000/Home">Contact</a>
-        </li>
-        <Dropdown>
-      <Dropdown.Toggle variant="info" id="dropdown-basic">
-        <h7>Login</h7>
-      </Dropdown.Toggle>
-
-      <Dropdown.Menu>
-        <Dropdown.Item href="/Login">Customer</Dropdown.Item>
-        <Dropdown.Item href="/BELogin">Bank Employee</Dropdown.Item>
-        <Dropdown.Item href="/AdminLogin">Admin</Dropdown.Item>
-      </Dropdown.Menu>
-    </Dropdown>
-    <Dropdown>
-      <Dropdown.Toggle variant="info" id="dropdown-basic">
-        Sign Up
-      </Dropdown.Toggle>
-
-      <Dropdown.Menu>
-        <Dropdown.Item href="/CustomerRegister">Customer</Dropdown.Item>
-        <Dropdown.Item href="/BERegister">Bank Employee</Dropdown.Item>
-      </Dropdown.Menu>
-    </Dropdown>
-      </ul>
-    </div>
-  </div>
-</nav>
-        </div>
-    )
+export default function Defaultbar() {
+  return (
+    <Navbar bg="#17a2b8" expand="lg" style={{ backgroundColor: '#17a2b8' }}>
+      <div className="container">
+        <Navbar.Brand href="#" className="mr-auto">Maverick Bank</Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="ml-auto">
+            <Nav.Link href="http://localhost:3000/Home">Home</Nav.Link>
+            <Nav.Link href="http://localhost:3000/Home">Services</Nav.Link>
+            <Nav.Link href="http://localhost:3000/Home">About</Nav.Link>
+            <Nav.Link href="http://localhost:3000/Home">Contact</Nav.Link>
+            <Dropdown>
+              <Dropdown.Toggle variant="#17a2b8" id="dropdown-basic">
+                Login
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item href="/Login">Customer</Dropdown.Item>
+                <Dropdown.Item href="/BELogin">Bank Employee</Dropdown.Item>
+                <Dropdown.Item href="/AdminLogin">Admin</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+            <Dropdown>
+              <Dropdown.Toggle variant="#17a2b8" id="dropdown-basic">
+                Sign Up
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item href="/CustomerRegister">Customer</Dropdown.Item>
+                <Dropdown.Item href="/BERegister">Bank Employee</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </Nav>
+        </Navbar.Collapse>
+      </div>
+    </Navbar>
+  );
 }

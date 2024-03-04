@@ -5,7 +5,6 @@ export default function ViewProfile(){
     const [profile, setProfile] = useState([]);
     var customerID = sessionStorage.getItem("CID");
 
-    useEffect(() => {
     const fetchProfile = async () => {
       try {
         const token = sessionStorage.getItem('Token');
@@ -28,25 +27,25 @@ export default function ViewProfile(){
         console.error('Error fetching:', error);
       } 
     }
-    fetchProfile();
-  },[]);
   var [flag,setFlag] = useState(0);
   var flagmethod = (e) =>{
-    if(flag==0)
-    setFlag(1)
+    if(flag==0){
+      fetchProfile()
+      setFlag(1)
+    }
+   
   else
   setFlag(0)
-    console.log(flag);
   }
   return (
     <div style={{ width: '100%', backgroundColor: 'lightblue' }}>
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-12 mb-4">
-                <div class="card p-4 custom-bg-color">
-                    <div class="card-body">
+    <div className="container mt-5">
+        <div className="row">
+            <div className="col-md-12 mb-4">
+                <div className="card p-4 custom-bg-color">
+                    <div className="card-body">
       <h1>Your Profile</h1>
-      <button type="button" class="btn btn-success" data-toggle="button" 
+      <button type="button" className="btn btn-success" data-toggle="button" 
       aria-pressed="false" onClick={flagmethod}>
       View
       </button>

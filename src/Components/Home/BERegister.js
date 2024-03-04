@@ -2,122 +2,155 @@ import { useState } from "react";
 import pic from './Images/m7.jpg';
 import './style.css';
 import { Navigate, useNavigate } from "react-router-dom";
+import Navbar from "./Navbar";
+import Defaultbar from "./Defaultbar";
 
-export default function BERegister()
-{
+export default function BERegister() {
 
-    var [userName,setUserName] = useState("");
-    var [password,setPassword] = useState("");
-    var [name,setName] = useState("");
-    var [position,setPosition] = useState("");
+    const [userName, setUserName] = useState("");
+    const [password, setPassword] = useState("");
+    const [name, setName] = useState("");
+    const [position, setPosition] = useState("");
 
-    var [isLoggedIn,setIsLoggedIn] = useState("false");
     const [errorMessage, setErrorMessage] = useState('');
 
-    var navigate=useNavigate();
+    const navigate = useNavigate();
 
-    var user={};
-    var Register = (e) =>{
+    const user = {};
 
-        if(userName.length<8){
+    const Register = (e) => {
+
+        if (userName.length < 8) {
             setErrorMessage("The length of username is too short");
             return;
         }
-        
-        if(password.length<8){
+
+        if (password.length < 8) {
             setErrorMessage("The length of password is too short");
             return;
         }
 
-        if(name.length<4){
+        if (name.length < 4) {
             setErrorMessage("The length of Name is too short");
             return;
         }
 
-        if(position.length<5){
-            setErrorMessage("The length of Phone Number is too short");
+        if (position.length < 5) {
+            setErrorMessage("The length of Position is too short");
             return;
         }
 
-
         e.preventDefault();
-        user.userName=userName;
-        user.password=password;
-        user.name=name;
-        user.position=position;;
 
-        var requestOptions = {
-            method:'POST',
-            headers: {'Content-Type':'application/json'},
+        user.userName = userName;
+        user.password = password;
+        user.name = name;
+        user.position = position;
+
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(user)
         };
-        console.log(user);
-        fetch("https://localhost:7075/api/BankEmployee/Register",requestOptions)
-        .then(r=>r.json())
-        .then(r=>{
-            sessionStorage.setItem("UserName",r.userName);
-            alert(r.userName+" Registered In Successfully");
-            navigate('/BELogin');
-        })
-        .catch(e=>{
-            setErrorMessage("Invalid Username or Password");
-            console.log(e);
-            console.log("Ayya");
-            setIsLoggedIn(false);
-        })
+
+        fetch("https://localhost:7075/api/BankEmployee/Register", requestOptions)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Invalid Username or Password');
+                }
+                return response.json();
+            })
+            .then(data => {
+                sessionStorage.setItem("UserName", data.userName);
+                alert(`${data.userName} Registered In Successfully`);
+                navigate('/BELogin');
+            })
+            .catch(error => {
+                setErrorMessage(error.message);
+                console.error('There was an error!', error);
+            });
     };
-    return(
-        <div class='custom-bg-color'>
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-6">
-                    <div class="login-container">    
-                        <div class="login-form">
-                            <p>&emsp;&emsp;&emsp;&emsp;
-                            &emsp;&emsp;&emsp;&emsp;
-                            Bank Employee</p>
-                            <img src={pic} alt="Sign Up Image"/>
+
+    return (
+        <div className='custom-bg-color'>
+            <Defaultbar />
+            <div className="container">
+                <div className="row justify-content-center">
+                    <div className="col-lg-6">
+                        <div className="login-container">
+                            <div className="login-form">
+                                <p>&emsp;&emsp;&emsp;&emsp;
+                                    &emsp;&emsp;&emsp;&emsp;
+                                    Bank Employee</p>
+                                <img src={pic} alt="Sign Up" />
                                 <form>
-                                    <div class="mb-3">
-                                        <label for="username" class="form-label">Username</label>
-                                        <input type="text" class="form-control" value={userName} onChange={(e)=>setUserName(e.target.value)}
-                                        id="username" placeholder="Enter your username" minlength="10" required/>
+                                    <div className="mb-3">
+                                        <label htmlFor="username" className="form-label">Username</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            value={userName}
+                                            onChange={(e) => setUserName(e.target.value)}
+                                            id="username"
+                                            placeholder="Enter your username"
+                                            minLength="10"
+                                            required
+                                        />
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="password" class="form-label">Password</label>
-                                        <input type="password" class="form-control" id="password" placeholder="Enter your password"
-                                        value={password} onChange={(e)=>setPassword(e.target.value)} minlength="10" required/>
+                                    <div className="mb-3">
+                                        <label htmlFor="password" className="form-label">Password</label>
+                                        <input
+                                            type="password"
+                                            className="form-control"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            id="password"
+                                            placeholder="Enter your password"
+                                            minLength="10"
+                                            required
+                                        />
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="username" class="form-label">Name</label>
-                                        <input type="text" class="form-control" value={name} onChange={(e)=>setName(e.target.value)}
-                                        id="name" placeholder="Enter your Name" minlength="4" required/>
+                                    <div className="mb-3">
+                                        <label htmlFor="name" className="form-label">Name</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            value={name}
+                                            onChange={(e) => setName(e.target.value)}
+                                            id="name"
+                                            placeholder="Enter your Name"
+                                            minLength="4"
+                                            required
+                                        />
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="username" class="form-label">Position</label>
-                                        <input type="text" class="form-control" value={position} onChange={(e)=>setPosition(e.target.value)}
-                                        id="position" placeholder="Enter your Position" minlength="5" required/>
+                                    <div className="mb-3">
+                                        <label htmlFor="position" className="form-label">Position</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            value={position}
+                                            onChange={(e) => setPosition(e.target.value)}
+                                            id="position"
+                                            placeholder="Enter your Position"
+                                            minLength="5"
+                                            required
+                                        />
                                     </div>
-                                    <div class="flex-container">
-                                    <div class="flex-child magenta">
-                                    <button type="submit" class="btn btn-primary" onClick={Register}>Register</button>
+                                    <div className="flex-container">
+                                        <div className="flex-child magenta">
+                                            <button type="submit" className="btn btn-primary" onClick={Register}>Register</button>
+                                        </div>
                                     </div>
-      </div>
-      <br/>
-      {errorMessage && (
-  <p className="error"> {errorMessage} </p>)}
+                                    <br />
+                                    {errorMessage && (
+                                        <p className="error">{errorMessage}</p>
+                                    )}
                                 </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        </div>
-
-    )
+    );
 }
-
-
-
-
-

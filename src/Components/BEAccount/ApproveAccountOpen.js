@@ -5,7 +5,7 @@ export default function ApproveAccountOpen(){
     const token = sessionStorage.getItem("Token");
   
     const [options,setOptions]= useState([]);
-    const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedOption, setSelectedOption] = useState("");
       
     const handleChange = (event) => {
       setSelectedOption(event.target.value);
@@ -54,8 +54,6 @@ export default function ApproveAccountOpen(){
         }
 
 
-        console.log(account);
-
             const token = sessionStorage.getItem('Token');
             const httpHeader = { 
                 method:'GET',
@@ -65,7 +63,6 @@ export default function ApproveAccountOpen(){
                     'Authorization': 'Bearer ' + token
                 }
             };
-            console.log(httpHeader);
             fetch('https://localhost:7075/api/BankEmpAccount/ApproveAccountOpening?AID='+accountNumber,httpHeader)
             .then(r=>r.json())
             .then(r=>setStatus(r))
@@ -77,17 +74,17 @@ export default function ApproveAccountOpen(){
     return(
         <div style={{ width: '50%', backgroundColor: 'lightblue' }}>
 
-            <div class="container mt-5">
-                <div class="row">
-                    <div class="col-md-12 mb-4">
-                        <div class="card custom-bg-color">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Approve Account</h5>
-                                        <div class="form-group">
+            <div className="container mt-5">
+                <div className="row">
+                    <div className="col-md-12 mb-4">
+                        <div className="card custom-bg-color">
+                                    <div className="card-body">
+                                        <h5 className="card-title">Approve Account</h5>
+                                        <div className="form-group">
                                         <div>
                                             <label htmlFor="input1">Account Number</label>
                                             <br/>
-                                            <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <select value={selectedOption} onChange={handleChange} className="browser-default custom-select">
                                             <option value="">Select an option</option>
                                                 {options.map((options) => (
                                                 <option key={options.accountNumber} value={options.accountNumber}>
@@ -98,7 +95,7 @@ export default function ApproveAccountOpen(){
                                         </div>
                                         </div>
 
-                                        <button type="submit" class="btn btn-primary" onClick={Open}>Open Account</button>
+                                        <button type="submit" className="btn btn-primary" onClick={Open}>Open Account</button>
                                         <h3>{status.status}</h3>
                             </div>
                     </div>

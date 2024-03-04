@@ -8,7 +8,7 @@ const token = sessionStorage.getItem("Token");
 
   const [options,setOptions]= useState([])
   var [flag,setFlag] = useState(0);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState("");
   var [account1,setAccount1] = useState({
     accountNumber:null,
     ifscCode:null,
@@ -96,18 +96,18 @@ const token = sessionStorage.getItem("Token");
 
     return(
         <div style={{ width: '50%', backgroundColor: 'lightblue' }}>
-            <div class="container mt-5">
-            <div class="row"></div>
-            <div class="col-md-12 mb-4">
-                <div class="card custom-bg-color">
+            <div className="container mt-5">
+            <div className="row"></div>
+            <div className="col-md-12 mb-4">
+                <div className="card custom-bg-color">
 
-                    <div class="card-body">
-                        <h1 class="card-title">Delete Account</h1>
-                        <div class="form-group">
+                    <div className="card-body">
+                        <h1 className="card-title">Delete Account</h1>
+                        <div className="form-group">
                         <div>
                                             <label htmlFor="input1">Account Number</label>
                                             <br/>
-                                            <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <select value={selectedOption} onChange={handleChange} className="browser-default custom-select">
                                             <option value="">Select an option</option>
                                                 {options.map((options) => (
                                                 <option key={options.accountNumber} value={options.accountNumber}>
@@ -117,7 +117,7 @@ const token = sessionStorage.getItem("Token");
                                             </select>
                                         </div>
                             <br/>
-                            <button type="submit" class="btn btn-success" onClick={flagmethod} >Close Account</button>
+                            <button type="submit" className="btn btn-success" onClick={flagmethod} >Close Account</button>
                         </div>
                         {flag==1? 
           <table className="table">

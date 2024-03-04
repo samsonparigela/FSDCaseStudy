@@ -6,7 +6,7 @@ export default function AddBanks(){
   const [loans, setCustomers] = useState();
   const token = sessionStorage.getItem("Token");
   const [options,setOptions]= useState([]);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState("");
     
   const handleChange = (event) => {
     setSelectedOption(event.target.value);
@@ -88,19 +88,19 @@ export default function AddBanks(){
 
 
 <div>
-<div class="container mt-5">
-                <div class="row">
-                    <div class="col-md-12 mb-4">
-                        <div class="card custom-bg-color">
-                                    <div class="card-body">
+<div className="container mt-5">
+                <div className="row">
+                    <div className="col-md-12 mb-4">
+                        <div className="card custom-bg-color">
+                                    <div className="card-body">
                                     <h1>Add Branch</h1>
-                                    <div class="form-group">
+                                    <div className="form-group">
       <div>
 
       <div>
                                             <label htmlFor="input1">Bank ID</label>
                                             <br/>
-                                            <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <select value={selectedOption} onChange={handleChange} className="browser-default custom-select">
                                             <option value="">Select an option</option>
                                                 {options.map((options) => (
                                                 <option key={options.bankID} value={options.bankID}>
@@ -111,22 +111,22 @@ export default function AddBanks(){
                                         </div>
 
                                             <label htmlFor="input1">IFSC Code</label>
-                            <input type="text" class="form-control" id="input1" placeholder="Enter IFSC Code"
+                            <input type="text" className="form-control" id="input1" placeholder="Enter IFSC Code"
                              value={ifscCode} onChange={(e)=>setIfscCode(e.target.value)}/>
 
 <label htmlFor="input1">Branch Name</label>
-                            <input type="text" class="form-control" id="input1" placeholder="Enter Branch Name"
+                            <input type="text" className="form-control" id="input1" placeholder="Enter Branch Name"
                              value={branchName} onChange={(e)=>setBranchName(e.target.value)}/>
 
 <label htmlFor="input1">City</label>
-                            <input type="text" class="form-control" id="input1" placeholder="Enter City"
+                            <input type="text" className="form-control" id="input1" placeholder="Enter City"
                              value={city} onChange={(e)=>setCity(e.target.value)}/>
                             
                                         </div>
                                         </div>
                                         
 
-      <button type="button" class="btn btn-success" data-toggle="button" 
+      <button type="button" className="btn btn-success" data-toggle="button" 
       aria-pressed="false" onClick={flagmethod}>
       Add Branch
       </button>

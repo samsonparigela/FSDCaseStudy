@@ -41,24 +41,24 @@ export default function UpdateProfile(){
 
     return(
         <div style={{ width: '50%', backgroundColor: 'lightblue' }}>
-            <div class="container mt-5">
-                <div class="row">
-                    <div class="col-md-12 mb-4">
-                        <div class="card p-4 custom-bg-color">
-                            <div class="card-body"></div>
+            <div className="container mt-5">
+                <div className="row">
+                    <div className="col-md-12 mb-4">
+                        <div className="card p-4 custom-bg-color">
+                            <div className="card-body"></div>
             <h1>Update Profile</h1>
-            <div class="form-group">
+            <div className="form-group">
 
                 <label htmlFor="input3">Name</label>
-                <input type="text" class="form-control" id="input2" placeholder="Enter new Name"
+                <input type="text" className="form-control" id="input2" placeholder="Enter new Name"
                 value={name} onChange={(e)=>setName(e.target.value)}/>
                 
 
                 <label htmlFor="input3">Position</label>
-                <input type="text" class="form-control" id="input3" placeholder="Enter Position"
+                <input type="text" className="form-control" id="input3" placeholder="Enter Position"
                 value={position} onChange={(e)=>setPosition(e.target.value)}/>
                 <br/>
-                <button type="button" class="btn btn-success" data-toggle="button" 
+                <button type="button" className="btn btn-success" data-toggle="button" 
                 aria-pressed="false" onClick={fetchProfile}>
                 Update Profile
                 </button>

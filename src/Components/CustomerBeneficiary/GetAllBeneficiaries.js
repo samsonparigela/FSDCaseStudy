@@ -5,7 +5,6 @@ export default function GetAllBeneficiaries(){
     const [beneficiary, setBeneficiary] = useState([]);
     var customerID = sessionStorage.getItem("CID");
 
-    useEffect(() => {
     const fetchBeneficiaries = async () => {
       try {
         const token = sessionStorage.getItem('Token');
@@ -20,7 +19,8 @@ export default function GetAllBeneficiaries(){
 
         if (response.ok) {
           const beneficiaryData = await response.json();
-          setBeneficiary(beneficiaryData);
+          let filteredData = beneficiaryData.filter(obj => obj.beneficiaryName !== "Self");
+          setBeneficiary(filteredData);
         } else {
           console.error('Failed to fetch Loans');
         }
@@ -28,30 +28,33 @@ export default function GetAllBeneficiaries(){
         console.error('Error fetching loans:', error);
       } 
     }
-    fetchBeneficiaries();
-  },[]);
-  var [flag,setFlag] = useState(0);
-  var flagmethod = (e) =>{
-    if(flag==0)
-    setFlag(1)
-  else
-  setFlag(0)
-    console.log(flag);
-  }
+    
+  var [flag,setFlag] = useState(false);
+  useEffect(() => {
+    if (flag) {
+        fetchBeneficiaries();
+    }
+}, [flag]);
+function flagmethod(){
+  if(!flag)
+  setFlag(true);
+else
+setFlag(false);
+}
   return (
     <div style={{ width: '100%', backgroundColor: 'lightblue' }}>
     <br/>
 
     <div>
-    <div class="container mt-5">
-                    <div class="row">
+    <div className="container mt-5">
+                    <div className="row">
                     <div className="col-md-12 mb-4">
-                            <div class="card custom-bg-color">
-                                <div class="card-body">
+                            <div className="card custom-bg-color">
+                                <div className="card-body">
 
       <h1>All your Beneficiaries</h1>
-      <button type="button" class="btn btn-success" data-toggle="button" 
-      aria-pressed="false" autocomplete="off" onClick={flagmethod}>
+      <button type="button" className="btn btn-success" data-toggle="button" 
+      aria-pressed="false" onClick={flagmethod}>
       Get all your Beneficiaries
       </button>
       {flag==1? 

@@ -7,7 +7,7 @@ export default function TransacsToAcc(){
 
   const [options,setOptions]= useState([])
   const [accountNumbers, setAccountNumbers] = useState([]);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState("");
     
   const handleChange = (event) => {
     setSelectedOption(event.target.value);
@@ -96,19 +96,19 @@ export default function TransacsToAcc(){
         }
       return (
         <div style={{ width: '100%', backgroundColor: 'lightblue' }}>
-        <div class="container mt-5">
-            <div class="row">
-                <div class="col-md-12 mb-4">
-                    <div class="card custom-bg-color">
-                                <div class="card-body">
+        <div className="container mt-5">
+            <div className="row">
+                <div className="col-md-12 mb-4">
+                    <div className="card custom-bg-color">
+                                <div className="card-body">
     
     <div>
           <h1>All Transactions To Account</h1>
-          <div class="form-group">
+          <div className="form-group">
                             <div>
                                             <label htmlFor="input1">Account Number</label>
                                             <br/>
-                                            <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <select value={selectedOption} onChange={handleChange} className="browser-default custom-select">
                                             <option value="">Select an option</option>
                                                 {options.map((options) => (
                                                 <option key={options.accountNumber} value={options.accountNumber}>
@@ -118,7 +118,7 @@ export default function TransacsToAcc(){
                                             </select>
                                         </div>
                                         <br/>
-          <button type="button" class="btn btn-success" data-toggle="button" 
+          <button type="button" className="btn btn-success" data-toggle="button" 
           aria-pressed="false" onClick={flagmethod}>
           Get all your Transactions
           </button>

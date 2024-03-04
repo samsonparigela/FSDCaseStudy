@@ -37,7 +37,6 @@ export default function GetAllAccountsForCloseRequest(){
    
   else
   setFlag(0)
-    console.log(flag);
   }
   return (
     <div style={{ width: '100%', backgroundColor: 'lightblue' }}>
@@ -45,14 +44,14 @@ export default function GetAllAccountsForCloseRequest(){
 
 
 <div>
-<div class="container mt-5">
-                <div class="row">
-                    <div class="col-md-12 mb-4">
-                        <div class="card custom-bg-color">
-                                    <div class="card-body">
+<div className="container mt-5">
+                <div className="row">
+                    <div className="col-md-12 mb-4">
+                        <div className="card custom-bg-color">
+                                    <div className="card-body">
                                        
       <h1>All Accounts for Closing</h1>
-      <button type="button" class="btn btn-success" data-toggle="button" 
+      <button type="button" className="btn btn-success" data-toggle="button" 
       aria-pressed="false" onClick={flagmethod}>
       Get all Accounts
       </button>

@@ -7,6 +7,7 @@ import GetAllTransacsSent from './GetAllTransacsSent';
 import GetAllTransacsRecieved from './GetAllTransacsRecieved';
 import GetTopTransacs from './GetTopTransacs';
 import GetCustomerForAccount from "./GetCustomerForAccount";
+import Navbar from "../../Home/Navbar";
 
 export default function Accounts(){
     return(

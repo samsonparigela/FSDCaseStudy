@@ -14,10 +14,10 @@ export default function TransferMoney(){
     const [flag,setFlag] = useState(0);
 
     const [options1,setOptions1]= useState([])
-    const [selectedOption1, setSelectedOption1] = useState(null);
+    const [selectedOption1, setSelectedOption1] = useState("");
 
     const [options2,setOptions2]= useState([])
-    const [selectedOption2, setSelectedOption2] = useState(null);
+    const [selectedOption2, setSelectedOption2] = useState("");
 
     const handleChange1 = (event) => {
         setAccountNumber1(String(event.target.value))
@@ -120,17 +120,17 @@ export default function TransferMoney(){
 
     return(
         <div>
-            <div class="container mt-5">
-                <div class="row">
-                    <div class="col-md-12 mb-4">
-                        <div class="card p-4 custom-bg-color">
-                                    <div class="card-body">
+            <div className="container mt-5">
+                <div className="row">
+                    <div className="col-md-12 mb-4">
+                        <div className="card p-4 custom-bg-color">
+                                    <div className="card-body">
         <h1>Transfer Money</h1>
-            <div class="form-group">
+            <div className="form-group">
                 <div>
                                             <label htmlFor="input1">Account Number</label>
                                             <br/>
-                                            <select value={selectedOption1} onChange={handleChange1} class="browser-default custom-select">
+                                            <select value={selectedOption1} onChange={handleChange1} className="browser-default custom-select">
                                             <option value="">Select an option</option>
                                                 {options1.map((options) => (
                                                 <option key={options.accountNumber} value={options.accountNumber}>
@@ -144,7 +144,7 @@ export default function TransferMoney(){
                                         <div>
                                             <label htmlFor="input1">Destination Account Number</label>
                                             <br/>
-                                            <select value={selectedOption2} onChange={handleChange2} class="browser-default custom-select">
+                                            <select value={selectedOption2} onChange={handleChange2} className="browser-default custom-select">
                                             <option value="">Select an option</option>
                                                 {options2.map((options) => (
                                                 <option key={options} value={options}>
@@ -156,10 +156,10 @@ export default function TransferMoney(){
             
                 
                 <label htmlFor="input3">Amount</label>
-                <input type="text" class="form-control" id="input3" placeholder="Enter Amount"
+                <input type="text" className="form-control" id="input3" placeholder="Enter Amount"
                 value={amount} onChange={(e)=>setAmount(e.target.value)}/>
                 <br/>
-                <button type="button" class="btn btn-success" data-toggle="button" 
+                <button type="button" className="btn btn-success" data-toggle="button" 
                 aria-pressed="false" onClick={flagmethod}>
                 Transfer
                 </button>

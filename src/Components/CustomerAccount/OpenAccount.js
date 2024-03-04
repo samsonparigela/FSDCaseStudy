@@ -5,10 +5,10 @@ import axios from 'axios'
 export default function OpenAccount(){
 
     const [options,setOptions]= useState([])
-    const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedOption, setSelectedOption] = useState("");
     
     const [subOptions,setSubOptions]= useState([])
-    const [selectedSubOption, setSelectedSubOption] = useState(null);
+    const [selectedSubOption, setSelectedSubOption] = useState("");
 
     const [bankID, setBankID] = useState(0);
     const [branchID, setBranchID] = useState(0);
@@ -172,15 +172,15 @@ export default function OpenAccount(){
     
     return(
         <div style={{ width: '50%', backgroundColor: 'lightblue' }}>
-            <div class="container mt-5">
-                <div class="row">
-                    <div class="col-md-12 mb-4">
-                        <div class="card custom-bg-color">
-                                <div class="card-body">
-                                    <h1 class="card-title">Open Account</h1>
-                                    <div class="form-group">
+            <div className="container mt-5">
+                <div className="row">
+                    <div className="col-md-12 mb-4">
+                        <div className="card custom-bg-color">
+                                <div className="card-body">
+                                    <h1 className="card-title">Open Account</h1>
+                                    <div className="form-group">
                                         <label htmlFor="category">BankID:</label>
-                                            <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <select value={selectedOption} onChange={handleChange} className="browser-default custom-select">
                                             <option value="">Select an option</option>
                                                 {options.map(options => (
                                                 <option key={options.bankID} value={options.bankID}>
@@ -194,7 +194,7 @@ export default function OpenAccount(){
                                             {selectedOption && (
                                                 <div>
                                                 <label htmlFor="subOptions">Branches</label>
-                                                <select value={selectedSubOption} onChange={handleSubChange} class="browser-default custom-select">
+                                                <select value={selectedSubOption} onChange={handleSubChange} className="browser-default custom-select">
                                                 <option value="">Select an option</option>
                                                     {subOptions.map(option => (
                                                     <option key={option.ifscCode} value={option.ifscCode}>
@@ -205,19 +205,19 @@ export default function OpenAccount(){
                                                 </div>
                                             )}                                                        
                                                                 
-                                        <div class="form-group">
+                                        <div className="form-group">
                                             <label htmlFor="accountType">Account Type</label>
-                                            <input type="text" class="form-control" id="accountType" placeholder="Enter Account Type"
+                                            <input type="text" className="form-control" id="accountType" placeholder="Enter Account Type"
                                             value={accountType} onChange={(e)=>setAccountType(e.target.value)} autoComplete="on"/>
                                         </div>
 
-                                        <div class="form-group">
+                                        <div className="form-group">
                                             <label htmlFor="initialDeposit">Initial Deposit</label>
-                                            <input type="number" class="form-control" id="initialDeposit" placeholder="Enter Initial Deposit Amount"
+                                            <input type="number" className="form-control" id="initialDeposit" placeholder="Enter Initial Deposit Amount"
                                             value={balance} onChange={(e)=>setBalance(e.target.value)}/>
                                         </div>
 
-                                        <button type="submit" class="btn btn-success" onClick={flagmethod}>Open Account</button>
+                                        <button type="submit" className="btn btn-success" onClick={flagmethod}>Open Account</button>
                             </div>
                             {flag==1? 
           <table className="table">

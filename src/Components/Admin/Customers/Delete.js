@@ -8,7 +8,7 @@ export default function Delete(){
   var AdminID = sessionStorage.getItem("AdminID");
   const token = sessionStorage.getItem("Token");
   const [options,setOptions]= useState([]);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState("");
     
   const handleChange = (event) => {
     setSelectedOption(event.target.value);
@@ -42,7 +42,7 @@ export default function Delete(){
     const fetchCustomers = async () => {
       try {
         const token = sessionStorage.getItem('Token');
-        const response = await fetch('https://localhost:7075/api/Admin/DeleteEmployee?key='+CustomerID, {
+        const response = await fetch('https://localhost:7075/api/Admin/DeleteCustomer?ID='+CustomerID, {
           method: 'Delete',
           headers: {
             'Authorization': 'Bearer '+token,
@@ -77,23 +77,23 @@ export default function Delete(){
 
 
 <div>
-<div class="container mt-5">
-                <div class="row">
-                    <div class="col-md-12 mb-4">
-                        <div class="card custom-bg-color">
-                                    <div class="card-body">
+<div className="container mt-5">
+                <div className="row">
+                    <div className="col-md-12 mb-4">
+                        <div className="card custom-bg-color">
+                                    <div className="card-body">
                                     <h1>Delete Customer</h1>
-                                    <div class="form-group">
+                                    <div className="form-group">
       <div>
                                             <label htmlFor="input1">Customer ID</label>
                                             <br/>
 
-                                            <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <select value={selectedOption} onChange={handleChange} className="browser-default custom-select">
                                             <option value="">Select an option</option>
                                                 {options.map((options) => (
                                                         
-                                                <option key={options.CustomerID} value={options.CustomerID}>
-                                                    {options.customerID}&ensp;&ensp;{options.name}&ensp;&ensp;{options.aadhaar}
+                                                <option key={options.customerID} value={options.customerID}>
+                                                    {options.customerID}&ensp;&ensp;{options.name}
                                                 </option>
                                                 ))}
                                             </select>
@@ -101,9 +101,9 @@ export default function Delete(){
                                         </div>
                                         
 
-      <button type="button" class="btn btn-success" data-toggle="button" 
+      <button type="button" className="btn btn-success" data-toggle="button" 
       aria-pressed="false" onClick={flagmethod}>
-      Get Customer
+      Delete Customer
       </button>
       {flag==1? 
       <table className="table">
@@ -122,7 +122,6 @@ export default function Delete(){
         </thead>
         <tbody>
 
-        {Customers.map(Customers => (
             <tr key={Customers.customerID}>
               <td>{Customers.customerID}</td>
               <td>{Customers.name}</td>
@@ -134,7 +133,6 @@ export default function Delete(){
               <td>{Customers.aadhaar}</td>
               <td>{Customers.panNumber}</td>
             </tr>
-             ))}
         </tbody>
       </table>
       :<p></p>}

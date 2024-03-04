@@ -14,7 +14,7 @@ export default function WithdrawMoney(){
 
     const [options,setOptions]= useState([])
     const [accountNumbers, setAccountNumbers] = useState([]);
-    const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedOption, setSelectedOption] = useState("");
 
 
     const handleChange = (event) => {
@@ -107,17 +107,17 @@ export default function WithdrawMoney(){
 
     return(
         <div>
-            <div class="container mt-5">
-                <div class="row">
-                    <div class="col-md-12 mb-4">
-                        <div class="card p-4 custom-bg-color">
-                                    <div class="card-body"></div>
+            <div className="container mt-5">
+                <div className="row">
+                    <div className="col-md-12 mb-4">
+                        <div className="card p-4 custom-bg-color">
+                                    <div className="card-body"></div>
         <h1>Withdraw Money</h1>
-            <div class="form-group">
+            <div className="form-group">
             <div>
                                             <label htmlFor="input1">Account Number</label>
                                             <br/>
-                                            <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <select value={selectedOption} onChange={handleChange} className="browser-default custom-select">
                                             <option value="">Select an option</option>
                                                 {options.map((options) => (
                                                 <option key={options.accountNumber} value={options.accountNumber}>
@@ -128,10 +128,10 @@ export default function WithdrawMoney(){
                                         </div>
                 
                 <label htmlFor="input2">Amount</label>
-                <input type="text" class="form-control" id="input2" placeholder="Enter Amount"
+                <input type="text" className="form-control" id="input2" placeholder="Enter Amount"
                 value={amount} onChange={(e)=>setAmount(e.target.value)}/>
                 <br/>
-                <button type="button" class="btn btn-success" data-toggle="button" 
+                <button type="button" className="btn btn-success" data-toggle="button" 
                 aria-pressed="false" onClick={flagmethod}>
                 Withdraw
                 </button>

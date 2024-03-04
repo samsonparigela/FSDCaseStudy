@@ -4,7 +4,6 @@ import GetAllLoans from './GetAllLoans'
 import GetAllLoansbyACustomer from './GetAllLoansByACustomer'
 import GetAllLoanPolicies from './GetLoanPolicies'
 import GetLoansThatNeedApproval from './GetLoansThatNeedApproval'
-import ApproveLoanExtend from './ApproveLoanExtend'
 import DeleteLoanPolicy from './DeleteLoanPolicy'
 import AddLoanPolicy from './AddLoanPolicy'
 export default function Loans(){
@@ -23,9 +22,6 @@ export default function Loans(){
             <CheckCreditWorthiness />
             <ApproveLoan />
         </div>  
-        {/* <div style={{ display: 'flex' }}>
-            <ApproveLoanExtend />
-        </div>   */}
         <div style={{ display: 'flex' }}>
             <GetAllLoansbyACustomer />
             <GetAllLoanPolicies />

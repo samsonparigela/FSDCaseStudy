@@ -8,7 +8,7 @@ export default function GetByID(){
   var AdminID = sessionStorage.getItem("AdminID");
   const token = sessionStorage.getItem("Token");
   const [options,setOptions]= useState([]);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState("");
     
   const handleChange = (event) => {
     setSelectedOption(event.target.value);
@@ -77,17 +77,17 @@ export default function GetByID(){
 
 
 <div>
-<div class="container mt-5">
-                <div class="row">
-                    <div class="col-md-12 mb-4">
-                        <div class="card custom-bg-color">
-                                    <div class="card-body">
+<div className="container mt-5">
+                <div className="row">
+                    <div className="col-md-12 mb-4">
+                        <div className="card custom-bg-color">
+                                    <div className="card-body">
                                     <h1>Customer By ID</h1>
-                                    <div class="form-group">
+                                    <div className="form-group">
       <div>
                                             <label htmlFor="input1">Customer ID</label>
                                             <br/>
-                                            <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <select value={selectedOption} onChange={handleChange} className="browser-default custom-select">
                                             <option value="">Select an option</option>
                                                 {options.map((options) => (
                                                 <option key={options.customerID} value={options.customerID}>
@@ -98,7 +98,7 @@ export default function GetByID(){
                                         </div>
                                         </div>
                                         
-      <button type="button" class="btn btn-success" data-toggle="button" 
+      <button type="button" className="btn btn-success" data-toggle="button" 
       aria-pressed="false" onClick={flagmethod}>
       Get Customer
       </button>

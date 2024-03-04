@@ -1,16 +1,42 @@
 import { useEffect, useState } from "react"
 import './style.css'
+import axios from "axios";
 export default function AddBeneficiaries(){
 
-    const [beneficiaryNumber,setBeneficiaryNumber] = useState();
-    const [beneficiaryName,setBeneficiaryName] = useState();
-    const [ifscCode,setIfscCode] = useState();
+    const [options,setOptions]= useState([])
+    const [selectedOption, setSelectedOption] = useState("");
+    const [ifscCode,setIfscCode] = useState(0);
+
+    var customerID = sessionStorage.getItem("CID");
+    const token = sessionStorage.getItem("Token");
+    useEffect(()=>{
+    const func = async() =>{
+        const response2 = await axios.get('https://localhost:7075/api/BankAndBranch/GetAllBranches', {
+                headers: {
+                    'Authorization': 'Bearer '+token,
+                    'Content-Type': 'application/json'
+                }
+            })
+            
+            let filteredData = response2.data.filter(obj => obj.beneficiaryName !== "Self");
+            setOptions(filteredData);
+    } 
+    func()
+},[selectedOption]);
+    const handleChange = (event) => {
+        event.preventDefault()
+        let val = (event.target.value);
+        setSelectedOption(val);
+        setIfscCode(val);
+      };
+
+    const [beneficiaryNumber,setBeneficiaryNumber] = useState(0);
+    const [beneficiaryName,setBeneficiaryName] = useState("");
+
     const [beneficiary,setBeneficiary] = useState({});
     const [flag,setFlag] = useState(0);
 
-    const customerID = sessionStorage.getItem("CID");
 
-    useEffect(()=>{
         const fetchBeneficiaries= async () => {
         const token = sessionStorage.getItem('Token');
         const httpHeader = { 
@@ -33,17 +59,17 @@ export default function AddBeneficiaries(){
             .then(r=>r.json())
             .then(r=>setBeneficiary(r))
     }
-        fetchBeneficiaries();
-
-    },[flag]);
-
+    useEffect(() => {
+        if (flag) {
+            fetchBeneficiaries();
+        }
+    }, [flag]);
     function flagmethod(){
-        if(flag==0)
-        setFlag(1);
-
-        else
-        setFlag(0);
-    }
+        if(!flag)
+        setFlag(true);
+      else
+      setFlag(false);
+      }
 
     return(
 
@@ -51,28 +77,36 @@ export default function AddBeneficiaries(){
         <br/>
 
         <div>
-        <div class="container mt-5">
-                        <div class="row">
+        <div className="container mt-5">
+                        <div className="row">
                         <div className="col-md-12 mb-4">
-                                <div class="card custom-bg-color">
-                                    <div class="card-body">
+                                <div className="card custom-bg-color">
+                                    <div className="card-body">
             <h1>Add Beneficiary</h1>
-            <div class="form-group">
-                <label for="input3">Beneficiary Number</label>
-                <input type="text" class="form-control" id="input1" placeholder="Enter Beneficiary ACC No"
+            <div className="form-group">
+                <label htmlFor="input3">Beneficiary Number</label>
+                <input type="text" className="form-control" id="input1" placeholder="Enter Beneficiary ACC No"
                 value={beneficiaryNumber} onChange={(e)=>setBeneficiaryNumber(e.target.value)}/>
 
 
-                <label for="input3">beneficiary Name</label>
-                <input type="text" class="form-control" id="input2" placeholder="Enter Beneficiary Name"
+                <label htmlFor="input3">beneficiary Name</label>
+                <input type="text" className="form-control" id="input2" placeholder="Enter Beneficiary Name"
                 value={beneficiaryName} onChange={(e)=>setBeneficiaryName(e.target.value)}/>
                 
-                <label for="input3">IFSC</label>
-                <input type="text" class="form-control" id="input3" placeholder="Enter IFSC Code"
-                value={ifscCode} onChange={(e)=>setIfscCode(e.target.value)}/>
+                <div>
+                                                <label htmlFor="subOptions">IFSC Code</label>
+                                                <select value={selectedOption} onChange={handleChange} className="browser-default custom-select">
+                                                <option value="">Select an option</option>
+                                                    {options.map(option => (
+                                                    <option key={option.ifscCode} value={option.ifscCode}>
+                                                        {option.ifscCode}&ensp;&ensp;{option.branchName}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                </div>
 
-                <button type="button" class="btn btn-success" data-toggle="button" 
-                aria-pressed="false" autocomplete="off" onClick={flagmethod}>
+                <button type="button" className="btn btn-success" data-toggle="button" 
+                aria-pressed="false" onClick={flagmethod}>
                 Add Beneficiary
                 </button>
             </div>
@@ -86,7 +120,6 @@ export default function AddBeneficiaries(){
                         </tr>
                     </thead>
                     <tbody>
-                        {console.log(beneficiary)}
                         
                         <tr>
                             <td>{beneficiary.beneFiciaryNumber}</td>

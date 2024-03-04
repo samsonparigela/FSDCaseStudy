@@ -11,10 +11,10 @@ export default function AskForExtension(){
     const url1 = 'https://localhost:7075/api/CustomerLoan/GetAllAppliedLoans?ID='+customerID;
   
     const [options,setOptions]= useState([])
-    const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedOption, setSelectedOption] = useState("");
 
     const [options2,setOptions2]= useState([])
-    const [selectedOption2, setSelectedOption2] = useState(null);
+    const [selectedOption2, setSelectedOption2] = useState("");
       
     const handleChange = (event) => {
       setSelectedOption(event.target.value);
@@ -77,17 +77,17 @@ export default function AskForExtension(){
 
     return(
         <div>
-                        <div class="container mt-5">
-                <div class="row">
-                    <div class="col-md-12 mb-4">
-                        <div class="card p-4 custom-bg-color">
-                                    <div class="card-body"></div>
+                        <div className="container mt-5">
+                <div className="row">
+                    <div className="col-md-12 mb-4">
+                        <div className="card p-4 custom-bg-color">
+                                    <div className="card-body"></div>
             <h1>Ask for loan extension</h1>
-            <div class="form-group">
+            <div className="form-group">
             <div>
                                             <label htmlFor="input1">Loan ID</label>
                                             <br/>
-                                            <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                            <select value={selectedOption} onChange={handleChange} className="browser-default custom-select">
                                             <option value="">Select an option</option> {/* Default option */}
                                                 {options.map((options) => (
                                                 <option key={options.loanID} value={options.loanID}>
@@ -102,7 +102,7 @@ export default function AskForExtension(){
                                         <div>
                                             <label htmlFor="input1">Tenure in Months</label>
                                             <br/>
-                                            <select value={selectedOption2} onChange={handleChange2} class="browser-default custom-select">
+                                            <select value={selectedOption2} onChange={handleChange2} className="browser-default custom-select">
                                             <option value="">Select an option</option>
                                                 <option value="1">1 Month</option>
                                                 <option value="2">2 Months</option>
@@ -113,7 +113,7 @@ export default function AskForExtension(){
 
                                             </select>
                                         </div>
-                <button type="button" class="btn btn-success" data-toggle="button" 
+                <button type="button" className="btn btn-success" data-toggle="button" 
                 aria-pressed="false" onClick={flagmethod}>
                 Apply
                 </button>

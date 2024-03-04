@@ -40,15 +40,15 @@ export default function ViewAllBanks(){
       }
       return (
         <div style={{ width: '50%', backgroundColor: 'lightblue' }}>
-        <div class="container mt-5">
-            <div class="row">
-                <div class="col-md-12 mb-4">
-                    <div class="card custom-bg-color">
-                                <div class="card-body">
+        <div className="container mt-5">
+            <div className="row">
+                <div className="col-md-12 mb-4">
+                    <div className="card custom-bg-color">
+                                <div className="card-body">
     
     <div>
           <h1>All Banks Available</h1>
-          <button type="button" class="btn btn-success" data-toggle="button" 
+          <button type="button" className="btn btn-success" data-toggle="button" 
           aria-pressed="false" onClick={flagmethod}>
           Get all banks
           </button>

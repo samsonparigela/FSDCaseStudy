@@ -61,20 +61,20 @@ export default function ViewLastNTransacs(){
       
       return (
         <div style={{ width: '100%', backgroundColor: 'lightblue' }}>
-        <div class="container mt-5">
-            <div class="row">
-                <div class="col-md-12 mb-4">
-                    <div class="card custom-bg-color">
-                                <div class="card-body">
+        <div className="container mt-5">
+            <div className="row">
+                <div className="col-md-12 mb-4">
+                    <div className="card custom-bg-color">
+                                <div className="card-body">
     
     <div>
           <h1>All your N Transactions</h1>
-          <div class="form-group">
+          <div className="form-group">
                             <label htmlFor="input1">N Value</label>
-                            <input type="text" class="form-control" id="input1" placeholder="Enter Account Number"
+                            <input type="text" className="form-control" id="input1" placeholder="Enter Account Number"
                              value={num} onChange={(e)=>setNum(e.target.value)}/>
                              <br/>
-          <button type="button" class="btn btn-success" data-toggle="button" 
+          <button type="button" className="btn btn-success" data-toggle="button" 
           aria-pressed="false" onClick={flagmethod}>
           Get all your Transactions
           </button>

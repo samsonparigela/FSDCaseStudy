@@ -11,10 +11,12 @@ import ViewAllBanks from "./ViewAllBanks.js"
 import ViewAllBranches from "./ViewAllBranches.js"
 import GetAllTransacsSent from "./GetAllTransacsSent.js"
 import GetAllTransacsRecieved from "./GetAllTransacsRecieved.js"
+import Navbar from "../Home/Navbar.js"
 
 export default function Accounts(){
     return(
         <div>
+            <Navbar/>
         <div style={{ display: 'flex' }}>
             <GetAllAccounts />
         </div>

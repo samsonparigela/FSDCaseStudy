@@ -1,25 +1,35 @@
-export default function Navbar(){
+import React from 'react';
 
-    return(
+export default function Navbar() {
+    var logout = () => {
+        if (!window.confirm("Sure to logout?")) {
+          return null;
+        }
+        alert("Logged out successfully");
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.href = '/Home';
+      }
+    return (
         <div>
-            <nav class="navbar navbar-expand-lg navbar-light custom-bg-color2">
-                <div class="container">
-                    <a class="navbar-brand" href="google.com">Maverick Bank</a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+            <nav className="navbar navbar-expand-lg navbar-light custom-bg-color2">
+                <div className="container">
+                    <a className="navbar-brand" href="google.com">Maverick Bank</a>
+                    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"></span>
                     </button>
-                    <div class="collapse navbar-collapse" id="navbarNav">
-                        <ul class="navbar-nav ml-auto">
-                            <li class="nav-item active">
-                            <a class="nav-link" href="http://localhost:3000/Home">Home</a>
+                    <div className="collapse navbar-collapse" id="navbarNav">
+                        <ul className="navbar-nav ml-auto">
+                            <li className="nav-item active">
+                                <a className="nav-link" href="http://localhost:3000/Dashboard/">Dashboard</a>
                             </li>
-                            <li class="nav-item active">
-                            <a class="nav-link" href="http://localhost:3000/Dashboard">Dashboard</a>
+                            <li className="nav-item active">
+                                <a className="nav-link" onClick={logout}>Logout</a>
                             </li>
                         </ul>
                     </div>
                 </div>
             </nav>
         </div>
-    )
+    );
 }

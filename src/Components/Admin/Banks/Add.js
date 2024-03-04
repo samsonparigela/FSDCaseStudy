@@ -11,7 +11,7 @@ export default function AddBanks(){
   var [flag,setFlag] = useState(0);
 
     var [flag,setFlag] = useState(0);
-    var [bankName,setBankName] = useState(0);
+    var [bankName,setBankName] = useState("");
     var loanPolicy = {
         "bankName":bankName
     }
@@ -55,23 +55,23 @@ export default function AddBanks(){
 
 
 <div>
-<div class="container mt-5">
-                <div class="row">
-                    <div class="col-md-12 mb-4">
-                        <div class="card custom-bg-color">
-                                    <div class="card-body">
+<div className="container mt-5">
+                <div className="row">
+                    <div className="col-md-12 mb-4">
+                        <div className="card custom-bg-color">
+                                    <div className="card-body">
                                     <h1>Add Bank</h1>
-                                    <div class="form-group">
+                                    <div className="form-group">
       <div>
                                             <label htmlFor="input1">Bank Name</label>
-                            <input type="text" class="form-control" id="input1" placeholder="Enter Tenure in months"
+                            <input type="text" className="form-control" id="input1" placeholder="Enter Bank Name"
                              value={bankName} onChange={(e)=>setBankName(e.target.value)}/>
                             
                                         </div>
                                         </div>
                                         
 
-      <button type="button" class="btn btn-success" data-toggle="button" 
+      <button type="button" className="btn btn-success" data-toggle="button" 
       aria-pressed="false" onClick={flagmethod}>
       Add Bank
       </button>

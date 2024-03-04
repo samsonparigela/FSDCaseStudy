@@ -8,10 +8,10 @@ export default function ApplyLoan(){
   
     const [options,setOptions]= useState([])
 
-    const [selectedOption, setSelectedOption] = useState(null);
-    const [selectedSubOption, setSelectedSubOption] = useState(null);
-    const [selectedSubOption2, setSelectedSubOption2] = useState(null);
-    const [selectedOption2, setSelectedOption2] = useState(null);
+    const [selectedOption, setSelectedOption] = useState("");
+    const [selectedSubOption, setSelectedSubOption] = useState("");
+    const [selectedSubOption2, setSelectedSubOption2] = useState("");
+    const [selectedOption2, setSelectedOption2] = useState("");
       
     const handleChange = (event) => {
       const val =event.target.value;
@@ -97,17 +97,17 @@ export default function ApplyLoan(){
 
     return(
         <div>
-            <div class="container mt-5">
-                <div class="row">
-                    <div class="col-md-12 mb-4">
-                        <div class="card p-4 custom-bg-color">
-                            <div class="card-body"></div>
+            <div className="container mt-5">
+                <div className="row">
+                    <div className="col-md-12 mb-4">
+                        <div className="card p-4 custom-bg-color">
+                            <div className="card-body"></div>
                             <h1>Apply for a Loan</h1>
-                            <div class="form-group">
+                            <div className="form-group">
                                 <div>
                                     <label htmlFor="input1">Loan Policy ID</label>
                                     <br/>
-                                    <select value={selectedOption} onChange={handleChange} class="browser-default custom-select">
+                                    <select value={selectedOption} onChange={handleChange} className="browser-default custom-select">
                                     <option value="">Select an option</option>
                                         {options.map((option) => (
                                         <option key={option.tenureInMonths} value={option.loanPoilcyID}>
@@ -120,7 +120,7 @@ export default function ApplyLoan(){
                                 {selectedOption && (
                                                 <div>
                                                 <label htmlFor="subOptions">Tenure in months</label>
-                                                <select value={selectedSubOption} onChange={handleSubChange} disabled class="browser-default custom-select"> 
+                                                <select value={selectedSubOption} onChange={handleSubChange} disabled className="browser-default custom-select"> 
                                                     {options.map(option => (
                                                     <option key={option.tenureInMonths} value={option.tenureInMonths}>{option.tenureInMonths}</option>
                                                     ))}
@@ -130,7 +130,7 @@ export default function ApplyLoan(){
                                 {selectedOption && (
                                                 <div>
                                                 <label htmlFor="subOptions">Interest</label>
-                                                <select value={selectedSubOption2} onChange={handleSubChange} disabled class="browser-default custom-select"> 
+                                                <select value={selectedSubOption2} onChange={handleSubChange} disabled className="browser-default custom-select"> 
                                                     {options.map(option => (
                                                     <option key={option.tenureInMonths} value={option.interest}>{option.interest}</option>
                                                     ))}
@@ -138,13 +138,13 @@ export default function ApplyLoan(){
                                                 </div>
                                 )}                                 
                                 <label htmlFor="input3">Loan Purpose</label>
-                                <input type="text" class="form-control" id="input2" placeholder="Enter Loan Purpose"
+                                <input type="text" className="form-control" id="input4" placeholder="Enter Loan Purpose"
                                 value={loanPurpose} onChange={(e)=>setLoanPurpose(e.target.value)}/>
                 
                                 <div>
-                                    <label htmlFor="input1">Amount</label>
+                                    <label htmlFor="input4">Amount</label>
                                     <br/>
-                                    <select value={selectedOption2} onChange={handleChange2} class="browser-default custom-select">
+                                    <select value={selectedOption2} onChange={handleChange2} className="browser-default custom-select">
                                     <option value="">Select an option</option>
                                         {options.map((options) => (
                                         <option key={options.loanAmount} value={options.loanAmount}>
@@ -154,7 +154,7 @@ export default function ApplyLoan(){
                                     </select>
                                 </div>
                                 <br/>
-                                <button type="button" class="btn btn-success" data-toggle="button" 
+                                <button type="button" className="btn btn-success" data-toggle="button" 
                                 aria-pressed="false" onClick={flagmethod}>
                                 Apply
                                 </button>

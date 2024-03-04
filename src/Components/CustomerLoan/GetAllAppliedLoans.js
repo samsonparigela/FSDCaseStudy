@@ -39,16 +39,16 @@ export default function GetAllAppliedLoans(){
   }
   return (
     <div>
-                  <div class="container mt-5">
-                <div class="row">
-                    <div class="col-md-12 mb-4">
-                        <div class="card p-4 custom-bg-color">
-                                    <div class="card-body"></div>
+                  <div className="container mt-5">
+                <div className="row">
+                    <div className="col-md-12 mb-4">
+                        <div className="card p-4 custom-bg-color">
+                                    <div className="card-body"></div>
 
 
 <div>
       <h1>All your applied loans</h1>
-      <button type="button" class="btn btn-success" data-toggle="button" 
+      <button type="button" className="btn btn-success" data-toggle="button" 
       aria-pressed="false" onClick={flagmethod}>
       Get all your Loans
       </button>
