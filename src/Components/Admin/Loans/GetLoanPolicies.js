@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import './style.css'
 export default function GetAllLoanPolicies(){
 
@@ -9,7 +9,7 @@ export default function GetAllLoanPolicies(){
     const fetchLoans = async () => {
       try {
         const token = sessionStorage.getItem('Token');
-        const response = await fetch('https://localhost:7075/api/Admin/GetDifferentLoanPolicies', {
+        const response = await fetch('https://localhost:7075/api/BankEmpLoan/GetAllLoanPolicies', {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer '+token,
@@ -30,7 +30,7 @@ export default function GetAllLoanPolicies(){
     }
   
   var flagmethod = (e) =>{
-    if(flag==0){
+    if(flag===0){
       fetchLoans();
       setFlag(1);
     }
@@ -54,7 +54,7 @@ export default function GetAllLoanPolicies(){
       aria-pressed="false" onClick={flagmethod}>
       Get
       </button>
-      {flag==1? 
+      {flag===1? 
       <table className="table">
         <thead>
           <tr>

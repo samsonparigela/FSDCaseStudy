@@ -18,7 +18,7 @@ export default function AddBanks(){
     const fetchCustomers = async () => {
       try {
         const token = sessionStorage.getItem('Token');
-        const response = await fetch('https://localhost:7075/api/Admin/AddBank', {
+        const response = await fetch('https://localhost:7075/api/BankAndBranch/AddBank', {
           method: 'POST',
           'body':JSON.stringify(loanPolicy),
           headers: {

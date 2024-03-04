@@ -19,7 +19,7 @@ export default function Update(){
   
     useEffect(() => {
       var func =async()=>{
-          const response2 = await fetch('https://localhost:7075/api/Admin/GetAllBanks', {
+          const response2 = await fetch('https://localhost:7075/api/BankAndBranch/GetAllBanks', {
           method: 'GET',
           headers: {
               'Authorization': 'Bearer '+token,
@@ -48,7 +48,7 @@ export default function Update(){
     const fetchCustomers = async () => {
       try {
         const token = sessionStorage.getItem('Token');
-        const response = await fetch('https://localhost:7075/api/Admin/UpdateBank', {
+        const response = await fetch('https://localhost:7075/api/BankAndBranch/UpdateBank', {
           method: 'PUT',
           'body':JSON.stringify(bank),
           headers: {

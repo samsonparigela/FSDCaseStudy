@@ -5,7 +5,7 @@ export default function DeleteLoanPolicy(){
 
   const [Customers, setCustomers] = useState({});
   const [CustomerID, setCustomerID] = useState({});
-  var AdminID = sessionStorage.getItem("AdminID");
+
   const token = sessionStorage.getItem("Token");
   const [options,setOptions]= useState([]);
   const [selectedOption, setSelectedOption] = useState("");
@@ -20,7 +20,7 @@ export default function DeleteLoanPolicy(){
 
   useEffect(() => {
     var func =async()=>{
-        const response2 = await fetch('https://localhost:7075/api/Admin/GetDifferentLoanPolicies', {
+        await fetch('https://localhost:7075/api/BankEmpLoan/GetAllLoanPolicies', {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer '+token,
@@ -37,7 +37,7 @@ export default function DeleteLoanPolicy(){
     func()
   },[])
 
-    var [flag,setFlag] = useState(0);
+
     
     const fetchCustomers = async () => {
       try {
@@ -62,7 +62,7 @@ export default function DeleteLoanPolicy(){
     }
   
   var flagmethod = (e) =>{
-    if(flag==0){
+    if(flag===0){
       fetchCustomers()
       setFlag(1)
 
@@ -103,7 +103,7 @@ export default function DeleteLoanPolicy(){
       aria-pressed="false" onClick={flagmethod}>
       Delete Policy
       </button>
-      {flag==1? 
+      {flag===1? 
       <table className="table">
         <thead>
           <tr>

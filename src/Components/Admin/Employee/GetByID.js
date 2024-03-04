@@ -20,7 +20,7 @@ export default function GetByID(){
 
   useEffect(() => {
     var func =async()=>{
-        const response2 = await fetch('https://localhost:7075/api/Admin/GetAllEmp', {
+        const response2 = await fetch('https://localhost:7075/api/BankEmployee/GetAll', {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer '+token,
@@ -42,7 +42,7 @@ export default function GetByID(){
     const fetchCustomers = async () => {
       try {
         const token = sessionStorage.getItem('Token');
-        const response = await fetch('https://localhost:7075/api/Admin/GetEmployeeByID?key='+CustomerID, {
+        const response = await fetch('https://localhost:7075/api/BankEmployee/GetByID?ID='+CustomerID, {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer '+token,

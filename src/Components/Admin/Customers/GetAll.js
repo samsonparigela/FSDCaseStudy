@@ -10,7 +10,7 @@ export default function GetAll(){
     const fetchCustomers = async () => {
       try {
         const token = sessionStorage.getItem('Token');
-        const response = await fetch('https://localhost:7075/api/Admin/GetAllCustomers', {
+        const response = await fetch('https://localhost:7075/api/Customer/GetAll', {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer '+token,

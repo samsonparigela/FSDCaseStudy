@@ -17,7 +17,7 @@ export default function CheckCreditWorthiness(){
   
     useEffect(() => {
       var func =async()=>{
-          const response2 = await fetch('https://localhost:7075/api/Admin/GetAllCustomers', {
+          await fetch('https://localhost:7075/api/Customer/GetAll', {
           method: 'GET',
           headers: {
               'Authorization': 'Bearer '+token,
@@ -37,8 +37,6 @@ export default function CheckCreditWorthiness(){
     const [customerID, setCustomerID] = useState();
     var [worthy, setWorthy] = useState("");
 
-    var bankEmpID = sessionStorage.getItem("AdminID");
-    var [flag,setFlag] = useState(0);
 
     const validateInput = ({ customerID }) => {
         if (customerID==null) {
@@ -58,7 +56,7 @@ export default function CheckCreditWorthiness(){
       try {
 
             const token = sessionStorage.getItem('Token');
-            const response = await fetch('https://localhost:7075/api/Admin/GetCustomerCreditworthiness?CID='+customerID, {
+            const response = await fetch('https://localhost:7075/api/BankEmpLoan/CheckCustomerCreditworthiness?CID='+customerID, {
                 method: 'GET',
                 headers: {
                     'Authorization': 'Bearer '+token,
@@ -80,7 +78,7 @@ export default function CheckCreditWorthiness(){
     }
   
   var flagmethod = (e) =>{
-    if(flag==0){
+    if(flag===0){
         fetchLoans();
         setFlag(1);
     }
@@ -116,7 +114,7 @@ export default function CheckCreditWorthiness(){
                                 aria-pressed="false" onClick={flagmethod}>
                                 Check
                                 </button>
-                                {flag==1 ? 
+                                {flag===1 ? 
                                 <table className="table">
                                     <thead>
                                     <tr>

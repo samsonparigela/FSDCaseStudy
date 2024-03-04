@@ -9,7 +9,7 @@ export default function GetAll(){
     const fetchLoans = async () => {
       try {
         const token = sessionStorage.getItem('Token');
-        const response = await fetch('https://localhost:7075/api/Admin/GetAllBranches', {
+        const response = await fetch('https://localhost:7075/api/BankAndBranch/GetAllBranches', {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer '+token,

@@ -67,8 +67,11 @@ export default function AddBeneficiaries(){
     function flagmethod(){
         if(!flag)
         setFlag(true);
-      else
-      setFlag(false);
+      else{
+        window.location.reload(false);
+        setFlag(false);
+      }
+
       }
 
     return(

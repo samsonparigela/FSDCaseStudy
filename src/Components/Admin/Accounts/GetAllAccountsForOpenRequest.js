@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './style.css'
 
 export default function GetAllAccountsForOpenRequest(){
@@ -10,7 +10,7 @@ export default function GetAllAccountsForOpenRequest(){
     const fetchAccounts = async () => {
       try {
         const token = sessionStorage.getItem('Token');
-        const response = await fetch('https://localhost:7075/api/Admin/GetAllAccountsForOpenRequest', {
+        const response = await fetch('https://localhost:7075/api/BankEmpAccount/GetAllAccountsForOpenRequest', {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer '+token,
@@ -31,7 +31,7 @@ export default function GetAllAccountsForOpenRequest(){
     }
   
   var flagmethod = (e) =>{
-    if(flag==0){
+    if(flag===0){
       setFlag(1);
       fetchAccounts()
     }
@@ -56,7 +56,7 @@ export default function GetAllAccountsForOpenRequest(){
       aria-pressed="false" onClick={flagmethod}>
       Get all Accounts
       </button>
-      {flag==1? 
+      {flag===1? 
       <table className="table">
         <thead>
           <tr>

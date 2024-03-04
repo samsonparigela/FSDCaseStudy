@@ -19,7 +19,7 @@ export default function GetCustomerForAccount(){
 
   useEffect(() => {
     var func =async()=>{
-        const response2 = await fetch('https://localhost:7075/api/Admin/GetAllAccounts', {
+        const response2 = await fetch('https://localhost:7075/api/BankEmpAccount/GetAllAccounts', {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer '+token,
@@ -59,7 +59,7 @@ export default function GetCustomerForAccount(){
 
       try {
         const token = sessionStorage.getItem('Token');
-        const response = await fetch('https://localhost:7075/api/Admin/GetCustomerDetailsforAccount?AID='+accountNumber, {
+        const response = await fetch('https://localhost:7075/api/BankEmpAccount/GetCustomerDetailsForAccount?AID='+accountNumber, {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer '+token,

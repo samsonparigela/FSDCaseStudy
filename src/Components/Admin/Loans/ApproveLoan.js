@@ -17,7 +17,7 @@ export default function ApproveLoan(){
   
     useEffect(() => {
       var func =async()=>{
-          const response2 = await fetch('https://localhost:7075/api/Admin/GetAllLoansApplied', {
+          const response2 = await fetch('https://localhost:7075/api/BankEmpLoan/GetAllLoans', {
           method: 'GET',
           headers: {
               'Authorization': 'Bearer '+token,
@@ -57,7 +57,7 @@ export default function ApproveLoan(){
       try {
 
             const token = sessionStorage.getItem('Token');
-            const response = await fetch('https://localhost:7075/api/Admin/ApproveOrDisapproveLoan?LID='+loanID, {
+            const response = await fetch('https://localhost:7075/api/BankEmpLoan/ApproveOrDisapproveALoan?LID='+loanID, {
                 method: 'PUT',
                 headers: {
                     'Authorization': 'Bearer '+token,

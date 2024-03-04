@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import './style.css'
 export default function GetAllLoans(){
 
     const [loans, setLoans] = useState([]);
-    var bankEmpID = sessionStorage.getItem("AdminID");
     var [flag,setFlag] = useState(0);
 
     const fetchLoans = async () => {
       try {
         const token = sessionStorage.getItem('Token');
-        const response = await fetch('https://localhost:7075/api/Admin/GetAllLoansApplied', {
+        const response = await fetch('https://localhost:7075/api/BankEmpLoan/GetAllLoans', {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer '+token,
@@ -29,7 +28,7 @@ export default function GetAllLoans(){
     }
   
   var flagmethod = (e) =>{
-    if(flag==0){
+    if(flag===0){
       fetchLoans();
       setFlag(1);
     }
@@ -53,7 +52,7 @@ export default function GetAllLoans(){
       aria-pressed="false" onClick={flagmethod}>
       Get
       </button>
-      {flag==1? 
+      {flag===1? 
       <table className="table">
         <thead>
           <tr>

@@ -89,7 +89,10 @@ export default function RepayLoan(){
         
 
         else
-        setFlag(0);
+        {
+            setFlag(false);
+            window.location.reload(false);
+        }
     }
 
     return(

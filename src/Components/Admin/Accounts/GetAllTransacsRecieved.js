@@ -15,11 +15,10 @@ export default function GetAllTransacsRecieved(){
         
   };
 
-  var [flag,setFlag] = useState(0);
 
   useEffect(() => {
     var func =async()=>{
-        const response2 = await fetch('  https://localhost:7075/api/Admin/GetAllAccounts', {
+        await fetch('https://localhost:7075/api/BankEmpAccount/GetAllAccounts', {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer '+token,
@@ -58,7 +57,7 @@ export default function GetAllTransacsRecieved(){
 
       try {
         const token = sessionStorage.getItem('Token');
-        const response = await fetch('https://localhost:7075/api/Admin/ViewReceivedTransactions?AID='+accountNumber, {
+        const response = await fetch('https://localhost:7075/api/BankEmpAccount/ViewReceivedTransactions?AID='+accountNumber, {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer '+token,
@@ -79,7 +78,7 @@ export default function GetAllTransacsRecieved(){
     }
   
   var flagmethod = (e) =>{
-    if(flag2==0){
+    if(flag2===0){
       fetchTransacs();
       setFlag2(1);
     }
@@ -118,7 +117,7 @@ export default function GetAllTransacsRecieved(){
       aria-pressed="false" onClick={flagmethod}>
       Get all Transactions
       </button>
-      {flag2==1? 
+      {flag2===1? 
       <table className="table">
       <thead>
         <tr>

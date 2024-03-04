@@ -9,7 +9,7 @@ export default function GetAllAccountsForCloseRequest() {
   const fetchAccounts = async () => {
     try {
       const token = sessionStorage.getItem('Token');
-      const response = await fetch('https://localhost:7075/api/Admin/GetAllAccountsForCloseRequest', {
+      const response = await fetch('https://localhost:7075/api/BankEmpAccount/GetAllAccountsForCloseRequest', {
         method: 'GET',
         headers: {
           'Authorization': 'Bearer ' + token,

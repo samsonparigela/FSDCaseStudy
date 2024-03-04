@@ -10,7 +10,7 @@ export default function GetTopTransacs(){
     const fetchTransacs = async () => {
       try {
         const token = sessionStorage.getItem('Token');
-        const response = await fetch('https://localhost:7075/api/Admin/ViewTransactionsWith5HighestAmount', {
+        const response = await fetch('https://localhost:7075/api/BankEmpAccount/ViewTransactionsWith5HighestAmount', {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer '+token,

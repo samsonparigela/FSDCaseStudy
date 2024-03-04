@@ -17,7 +17,7 @@ export default function ApplyLoan(){
       const val =event.target.value;
       setSelectedOption(event.target.value);
       for(let i=0;i<options.length;i++){
-        if(options[i].loanPolicyID==val){
+        if(options[i].loanPolicyID===val){
             setSelectedSubOption(options[i].tenureInMonths)
             setSelectedSubOption2(options[i].interest)
             setInterest(options[i].interest)
@@ -40,11 +40,12 @@ export default function ApplyLoan(){
       };
 
     const [loanPolicyID,setLoanPolicyID] = useState();
-    const [loanPurpose,setLoanPurpose] = useState("");
-    const [loanAmount,setLoanAmount] = useState();
+    const [loanPurpose,setLoanPurpose] = useState(0);
+    const [loanAmount,setLoanAmount] = useState(0);
     const [loan,setLoan] = useState({});
     const [flag,setFlag] = useState(0);
-    var [interest,setInterest] = useState();
+    var fullAmount;
+    var [interest,setInterest] = useState(0);
 
         const fetchLoans = async () => {
         const httpHeader = { 
@@ -70,12 +71,13 @@ export default function ApplyLoan(){
             await fetch("https://localhost:7075/api/CustomerLoan/ApplyForALoan",httpHeader)
             .then(r=>r.json())
             .then(r=>setLoan(r))
+
     }
 
     useEffect(() => {
         var func =async()=>{
-            const response2 = await axios.get('https://localhost:7075/api/BankEmpLoan/GetAllLoanPolicies', {
-            method: 'GET',
+            const response2 = await axios.get('https://localhost:7075/api/CustomerLoan/GetDifferentLoanPolicies', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -87,7 +89,7 @@ export default function ApplyLoan(){
 
 
     function flagmethod(){
-        if(flag==0){
+        if(flag===0){
             fetchLoans();
             setFlag(1);
         }
@@ -160,25 +162,23 @@ export default function ApplyLoan(){
                                 </button>
                                 
                             </div>
-                            {flag==1?
+                            {flag===1?
                                 <table className="table">
                                     <thead>
                                         <tr>
                                         <th>Loan Policy ID</th>
                                         <th>Customer ID</th>
-                                        <th>Loan Purpose</th>
                                         <th>Loan Amount</th>
                                         <th>Repay Amount</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        
+                                        {console.log(loan)}
                                         <tr key={loan.loanPolicyID}>
                                             <td>{loan.loanPolicyID}</td>
                                             <td>{customerID}</td>
-                                            <td>{loan.loanPurpose}</td>
                                             <td>{loan.loanAmount}</td>
-                                            <td>{loan.loanAmount+(loan.loanAmount*(interest/100))}</td>
+                                            <td>{fullAmount = parseInt(loan.loanAmount)+(parseInt(loan.loanAmount)*(parseInt(interest)/100))}</td>
                                         </tr>
                                     </tbody>
                                 </table>      

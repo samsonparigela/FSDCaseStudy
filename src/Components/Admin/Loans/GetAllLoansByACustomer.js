@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './style.css'
 export default function GetAllLoansbyACustomer(){
 
-  var customerID = sessionStorage.getItem("AdminID");
   const token = sessionStorage.getItem("Token");
 
   const [options,setOptions]= useState([]);
@@ -18,7 +17,7 @@ export default function GetAllLoansbyACustomer(){
 
   useEffect(() => {
     var func =async()=>{
-        const response2 = await fetch('https://localhost:7075/api/Admin/GetAllCustomers', {
+        await fetch('https://localhost:7075/api/Customer/GetAll', {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer '+token,
@@ -35,7 +34,6 @@ export default function GetAllLoansbyACustomer(){
     func()
   },[])
     const [loans, setLoans] = useState([]);
-    var [flag,setFlag] = useState(0);
     var [customerID,setCustomerID] =useState("");
 
     const validateInput = ({ customerID }) => {
@@ -56,7 +54,7 @@ export default function GetAllLoansbyACustomer(){
 
       try {
         const token = sessionStorage.getItem('Token');
-        const response = await fetch('https://localhost:7075/api/Admin/GetAllLoansAppliedByACustomer?CID='+customerID, {
+        const response = await fetch('https://localhost:7075/api/BankEmpLoan/GetAllLoansbyACustomer?CID='+customerID, {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer '+token,
@@ -76,7 +74,7 @@ export default function GetAllLoansbyACustomer(){
     }
   
   var flagmethod = (e) =>{
-    if(flag==0){
+    if(flag===0){
       fetchLoans();
       setFlag(1);
     }
@@ -114,7 +112,7 @@ export default function GetAllLoansbyACustomer(){
       aria-pressed="false" onClick={flagmethod}>
       Get
       </button>
-      {flag==1? 
+      {flag===1? 
       <table className="table">
         <thead>
           <tr>

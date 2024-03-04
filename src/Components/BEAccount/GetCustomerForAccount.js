@@ -19,7 +19,7 @@ export default function GetCustomerForAccount(){
 
   useEffect(() => {
     var func =async()=>{
-        const response2 = await fetch('https://localhost:7075/api/BankEmpAccount/GetAllAccounts', {
+        await fetch('https://localhost:7075/api/BankEmpAccount/GetAllAccounts', {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer '+token,
@@ -38,7 +38,6 @@ export default function GetCustomerForAccount(){
   },[])
     const [profile, setCustomer] = useState({});
     const [accountNumber,setAccountNumber] = useState("");
-    var [flag,setFlag] = useState(0);
 
     const validateInput = ({ accountNumber }) => {
       if (!accountNumber.trim()) {
@@ -47,7 +46,6 @@ export default function GetCustomerForAccount(){
       return true;
     };
 
-    var customerID = sessionStorage.getItem("BID");
 
     const fetchCustomer = async () => {
 
@@ -71,7 +69,6 @@ export default function GetCustomerForAccount(){
         if (response.ok) {
           const customerData = await response.json();
           setCustomer(customerData);
-          console.log("Success");
         } else {
           console.error('customerData');
         }
@@ -81,7 +78,7 @@ export default function GetCustomerForAccount(){
     }
   
   var flagmethod = (e) =>{
-    if(flag==0){
+    if(flag===0){
       fetchCustomer();
       setFlag(1);
     }
@@ -120,7 +117,7 @@ export default function GetCustomerForAccount(){
       aria-pressed="false" onClick={flagmethod}>
       Get Customer
       </button>
-      {flag==1? 
+      {flag===1? 
       <table className="table">
       <thead>
         <tr>

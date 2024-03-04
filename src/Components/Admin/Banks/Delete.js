@@ -20,7 +20,7 @@ export default function Delete(){
 
   useEffect(() => {
     var func =async()=>{
-        const response2 = await fetch('https://localhost:7075/api/Admin/GetAllBanks', {
+        const response2 = await fetch('https://localhost:7075/api/BankAndBranch/GetAllBanks', {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer '+token,
@@ -42,7 +42,7 @@ export default function Delete(){
     const fetchCustomers = async () => {
       try {
         const token = sessionStorage.getItem('Token');
-        const response = await fetch('https://localhost:7075/api/Admin/DeleteBank?Key='+CustomerID, {
+        const response = await fetch('https://localhost:7075/api/BankAndBranch/DeleteBank?ID='+CustomerID, {
           method: 'Delete',
           headers: {
             'Authorization': 'Bearer '+token,

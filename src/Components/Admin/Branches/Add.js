@@ -3,7 +3,7 @@ import './style.css'
 
 export default function AddBanks(){
 
-  const [loans, setCustomers] = useState();
+  const [loans, setCustomers] = useState({});
   const token = sessionStorage.getItem("Token");
   const [options,setOptions]= useState([]);
   const [selectedOption, setSelectedOption] = useState("");
@@ -18,7 +18,7 @@ export default function AddBanks(){
 
   useEffect(() => {
     var func =async()=>{
-        const response2 = await fetch('https://localhost:7075/api/Admin/GetAllBanks', {
+        const response2 = await fetch('https://localhost:7075/api/BankAndBranch/GetAllBanks', {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer '+token,
@@ -35,27 +35,30 @@ export default function AddBanks(){
     func()
   },[])
 
-  const [ifscCode, setIfscCode] = useState();
-  const [branchName, setBranchName] = useState();
-  const [city, setCity] = useState();
-  const [bankID, setBankID] = useState();
+  const [ifscCode, setIfscCode] = useState("");
+  const [branchName, setBranchName] = useState("");
+  const [city, setCity] = useState("");
+  const [bankID, setBankID] = useState(0);
   var AdminID = sessionStorage.getItem("AdminID");
 
   var [flag,setFlag] = useState(0);
 
-    var loanPolicy = {
-      "ifscCode": ifscCode,
-      "branchName": branchName,
-      "city": city,
-      "bankID": bankID
-    }
+  var loanPolicy = {
+    "ifscCode": ifscCode,
+    "branchName": branchName,
+    "city": city,
+    "bankID": bankID
+  }
     const fetchCustomers = async () => {
       try {
+
+
         const token = sessionStorage.getItem('Token');
-        const response = await fetch('https://localhost:7075/api/Admin/AddBranch', {
+        const response = await fetch('https://localhost:7075/api/BankAndBranch/AddBranch', {
           method: 'POST',
           'body':JSON.stringify(loanPolicy),
           headers: {
+            'body':JSON.stringify(loanPolicy),
             'Authorization': 'Bearer '+token,
             'Content-Type': 'application/json'
           }

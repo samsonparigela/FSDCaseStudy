@@ -9,7 +9,7 @@ export default function GetAllAccounts() {
   const fetchAccounts = async () => {
     try {
       const token = sessionStorage.getItem('Token');
-      const response = await fetch('https://localhost:7075/api/Admin/GetAllAccounts', {
+      const response = await fetch('https://localhost:7075/api/BankEmpAccount/GetAllAccounts', {
         method: 'GET',
         headers: {
           'Authorization': 'Bearer ' + token,

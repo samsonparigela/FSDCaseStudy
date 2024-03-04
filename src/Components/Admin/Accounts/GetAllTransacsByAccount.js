@@ -4,7 +4,6 @@ import './style.css'
 export default function GetAllTransacsByAccount(){
 
 
-  var customerID = sessionStorage.getItem("AdminID");
   const token = sessionStorage.getItem("Token");
 
   const [options,setOptions]= useState([])
@@ -20,7 +19,7 @@ export default function GetAllTransacsByAccount(){
 
   useEffect(() => {
     var func =async()=>{
-        const response2 = await fetch('https://localhost:7075/api/Admin/GetAllAccounts', {
+        await fetch('https://localhost:7075/api/BankEmpAccount/GetAllAccounts', {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer '+token,
@@ -57,7 +56,7 @@ export default function GetAllTransacsByAccount(){
 
       try {
         const token = sessionStorage.getItem('Token');
-        const response = await fetch('https://localhost:7075/api/Admin/ViewTransactionDetailsByAccount?AID='+accountNumber, {
+        const response = await fetch('https://localhost:7075/api/BankEmpAccount/ViewTransactionDetailsByAccount?AID='+accountNumber, {
           method: 'GET',
           headers: {
             'Authorization': 'Bearer '+token,
@@ -78,7 +77,7 @@ export default function GetAllTransacsByAccount(){
     }
   
   var flagmethod = (e) =>{
-    if(flag==0){
+    if(flag===0){
       fetchTransacs();
       setFlag(1);
     }
@@ -117,7 +116,7 @@ export default function GetAllTransacsByAccount(){
       aria-pressed="false" onClick={flagmethod}>
       Get all Transactions
       </button>
-      {flag==1? 
+      {flag===1? 
       <table className="table">
       <thead>
         <tr>
