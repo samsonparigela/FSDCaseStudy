@@ -30,10 +30,12 @@ namespace MavericksBank.Services
 
         public async Task<LoginDTO> Register(CustomerRegisterDTO customerRegister)
         {
+
             //var users = await _UserRepo.GetAll();
             var x = await _UserRepo.GetByID(customerRegister.UserName);
             //var user = users.Where(u => u.UserName == customerRegister.UserName).ToList();
-            if(x!=null)
+
+            if (x!=null)
             {
                 throw new UserExistsException("User Already Exists");
             }
@@ -57,12 +59,17 @@ namespace MavericksBank.Services
         public async Task<LoginDTO> Login(LoginDTO customerLogin)
         {
             var user = await _UserRepo.GetByID(customerLogin.UserName);
+
             var customers = await _CustomerRepo.GetAll();
+
             var cust = customers.Where(c => c.UserID == user.UserID).ToList().SingleOrDefault();
             if (user == null)
+            {
                 throw new InvalidUserException();
+            }
             var password = GetEncryptedPassword(customerLogin.Password,user.Key);
-            if(ComparePasswords(password,user.Password))
+
+            if (ComparePasswords(password,user.Password))
             {
                 customerLogin.Password = "";
                 customerLogin.UserType = user.UserType;
@@ -127,15 +134,6 @@ namespace MavericksBank.Services
             return customer;
         }
 
-        public async Task<CustomerPhoneAndAddressDTO> UpdateCustomerPhoneAndAddress(CustomerPhoneAndAddressDTO customer)
-        {
-            var user = await _CustomerRepo.GetByID(customer.ID);
-            user.Phone = customer.phoneNumber;
-            user.Address = customer.Address;
-
-            _logger.LogInformation($"Successfully Updated Customer Phone and Adress with ID : {customer.ID}");
-            return customer;
-        }
     }
 }
 

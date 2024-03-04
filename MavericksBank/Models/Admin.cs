@@ -6,6 +6,10 @@ namespace MavericksBank.Models
 {
 	public class Admin
 	{
+        public Admin()
+        {
+
+        }
         public Admin(int adminID, string name,int userID)
         {
             AdminID = adminID;

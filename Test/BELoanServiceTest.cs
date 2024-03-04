@@ -61,7 +61,6 @@ namespace MavericksBankTest
             loan.LoanPolicyID = 6;
             loan.LoanPurpose = "House";
             var appliedLoan = await service.ApplyForALoan(loan);
-            Console.WriteLine("LLLLL");
             var loan2 = new Loan()
             {
                 LoanID = 333,
@@ -88,7 +87,7 @@ namespace MavericksBankTest
 
             };
             var appliedLoan2 = await _LoanRepo.Add(loan3);
-            Assert.That(appliedLoan.CustomerID== loan.CustomerID);
+            Assert.That(appliedLoan.CustomerID == loan.CustomerID);
 
         }
 
@@ -120,10 +119,10 @@ namespace MavericksBankTest
 
             ICustomerAccountService _AccService = new CustomerAccountService(_mockAccServicelogger.Object, _TransacRepo, _AccRepo, _BenifRepo, _BankRepo, _BranchRepo);
             ICustomerLoanService service1 = new CustomerLoanService(_mockCustomerLoanServicelogger.Object, _LoanRepo, _LoanPolicyRepo, _AccService, _AccRepo, _TransacRepo);
-            IBankEmpLoanService service2 = new BankEmpLoanService(_mockServicelogger.Object, _LoanRepo, _AccService,_CustomerRepo,service1,_LoanPolicyRepo);
+            IBankEmpLoanService service2 = new BankEmpLoanService(_mockServicelogger.Object, _LoanRepo, _AccService, _CustomerRepo, service1, _LoanPolicyRepo);
 
             var loan = await service2.ApproveOrDisapproveLoanExtend(334, "Approve Extension");
-            Assert.That(loan.Status=="Deposited");
+            Assert.That(loan.Status == "Deposited");
 
 
         }
@@ -201,7 +200,7 @@ namespace MavericksBankTest
         }
 
         [Test]
-        [Order(3)]
+        [Order(100)]
         public async Task GetAllLoansAppliedByCustomerTest()
         {
             var _mockLoanlogger = new Mock<ILogger<LoanRepo>>();
@@ -232,6 +231,7 @@ namespace MavericksBankTest
 
             var loan = await service2.GetAllLoansAppliedByACustomer(1);
             Assert.That(loan.Count == 1);
+            await _LoanRepo.Delete(334);
 
 
         }

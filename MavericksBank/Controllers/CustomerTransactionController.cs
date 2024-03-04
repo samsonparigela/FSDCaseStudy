@@ -96,6 +96,7 @@ namespace MavericksBank.Controllers
             }
         }
 
+        [Authorize(Roles = "Customer,Admin")]
         [Route("Get All Transactions")]
         [HttpGet]
         public async Task<ActionResult<List<Transactions>>> GetAllTransactions(int AID)
@@ -113,6 +114,7 @@ namespace MavericksBank.Controllers
             }
         }
 
+        [Authorize(Roles = "Customer,Admin")]
         [Route("Get Transactions ByID")]
         [HttpGet]
         public async Task<ActionResult<Transactions>> GetTransactionsByID(int TID)

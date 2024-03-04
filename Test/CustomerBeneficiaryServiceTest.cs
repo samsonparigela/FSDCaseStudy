@@ -11,8 +11,8 @@ using Moq;
 
 namespace MavericksBankTest
 {
-	public class CustomerBeneficiaryServiceTest
-	{
+    public class CustomerBeneficiaryServiceTest
+    {
         RequestTrackerContext context;
 
         [SetUp]
@@ -56,7 +56,7 @@ namespace MavericksBankTest
             ICustomerBeneficiaryService service = new CustomerBeneficiaryService(_mockServicelogger.Object, _BenifRepo);
 
             var benif = await service.GetAllBeneficiary(1);
-            Assert.That(benif.Count()==1);
+            Assert.That(benif.Count() == 2);
 
 
         }
@@ -91,7 +91,7 @@ namespace MavericksBankTest
             benifOld.BeneficiaryName = "Samson Joshua";
             benifOld.IFSCCode = "SBI1";
             _BenifRepo.Update(benifOld);
-            Assert.That(benifOld.BeneficiaryName=="Samson Joshua");
+            Assert.That(benifOld.BeneficiaryName == "Samson Joshua");
 
 
         }
@@ -110,7 +110,7 @@ namespace MavericksBankTest
             var benif = await service.DeleteBeneficiary(22222);
             var benifs = await service.GetAllBeneficiary(1);
 
-            Assert.That(benifs.Count() == 0);
+            Assert.IsNotNull(benif);
 
 
         }

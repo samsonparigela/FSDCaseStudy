@@ -28,7 +28,6 @@ namespace MavericksBank.Controllers
             _service = service;
         }
 
-        [Authorize(Roles = "Customer")]
         [Route("ApplyForALoan")]
         [HttpPost]
         public async Task<ActionResult<LoanApplyDTO>> ApplyForALoan(LoanApplyDTO ApplyLoan)
@@ -64,6 +63,7 @@ namespace MavericksBank.Controllers
             }
         }
 
+        [Authorize(Roles = "Customer,Admin")]
         [Route("GetAllAppliedLoans")]
         [HttpGet]
         public async Task<ActionResult<List<Loan>>> GetAllAppliedLoans(int ID)
@@ -81,6 +81,7 @@ namespace MavericksBank.Controllers
             }
         }
 
+        [Authorize(Roles = "Customer,Admin")]
         [Route("GetAllAvailedLoans")]
         [HttpGet]
         public async Task<ActionResult<List<Loan>>> GetAllAvailedLoans(int ID)
@@ -98,6 +99,7 @@ namespace MavericksBank.Controllers
             }
         }
 
+        [Authorize(Roles = "Customer,Admin")]
         [Route("GetAllApprovedLoans")]
         [HttpGet]
         public async Task<ActionResult<List<Loan>>> GetAllApprovedLoans(int ID)

@@ -19,7 +19,7 @@ internal class Program
 
         // Add services to the container.
 
-        builder.Services.AddControllers().AddJsonOptions(opts=>
+        builder.Services.AddControllers().AddJsonOptions(opts =>
         {
             opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             opts.JsonSerializerOptions.WriteIndented = true;
@@ -27,14 +27,14 @@ internal class Program
         );
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen(opt=>
+        builder.Services.AddSwaggerGen(opt =>
         {
             opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });
             opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,
                 Description = "Please Enter Token",
-                Name="Authorization",
+                Name = "Authorization",
                 Type = SecuritySchemeType.Http,
                 BearerFormat = "JWT",
                 Scheme = "bearer"
@@ -86,6 +86,7 @@ internal class Program
         builder.Services.AddScoped<IRepository<LoanPolicies, int>, LoanPoliciesRepo>();
         builder.Services.AddScoped<IRepository<Users, string>, UsersRepo>();
         builder.Services.AddScoped<IRepository<Transactions, int>, TransactionsRepo>();
+        builder.Services.AddScoped<IRepository<Admin, int>, AdminRepo>();
 
         builder.Services.AddScoped<ICustomerAdminService, CustomerService>();
         builder.Services.AddScoped<ICustomerAccountService, CustomerAccountService>();
@@ -97,6 +98,7 @@ internal class Program
         builder.Services.AddScoped<IBankEmpLoanService, BankEmpLoanService>();
         builder.Services.AddScoped<IBranchAdminService, BranchService>();
         builder.Services.AddScoped<ICustomerLoanService, CustomerLoanService>();
+        builder.Services.AddScoped<IAdminService, AdminService>();
         builder.Services.AddScoped<ITokenService, TokenService>();
 
         builder.Services.AddCors(options =>

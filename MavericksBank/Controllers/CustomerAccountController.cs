@@ -48,7 +48,7 @@ namespace MavericksBank.Controllers
             }
         }
 
-        [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Customer,Admin")]
         [Route("CloseAccount")]
         [HttpDelete]
         public async Task<ActionResult<Accounts>> CloseAccount(int key)
@@ -66,7 +66,7 @@ namespace MavericksBank.Controllers
             }
         }
 
-        [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Customer,Admin")]
         [Route("Update Account")]
         [HttpPut]
         public async Task<ActionResult<AccountsUpdateDTO>> UpdateAccount(AccountsUpdateDTO accountDTO)
@@ -158,6 +158,7 @@ namespace MavericksBank.Controllers
             }
         }
 
+        [Authorize(Roles = "Customer,Admin")]
         [Route("View Account By ID")]
         [HttpGet]
         public async Task<ActionResult<Accounts>> ViewAccountByID(int key)
@@ -175,6 +176,7 @@ namespace MavericksBank.Controllers
             }
         }
 
+        [Authorize(Roles = "Customer,Admin")]
         [Route("ViewAllYourTransactions")]
         [HttpGet]
         public async Task<ActionResult<List<TransactionDTO>>> ViewAllYourTransactions(int CID)
@@ -192,7 +194,7 @@ namespace MavericksBank.Controllers
             }
         }
 
-
+        [Authorize(Roles = "Customer,Admin")]
         [Route("ViewAllYourTransactionsByAccount")]
         [HttpGet]
         public async Task<ActionResult<List<TransactionDTO>>> ViewAllTransactionsByAccount(int AID)
@@ -210,6 +212,7 @@ namespace MavericksBank.Controllers
             }
         }
 
+        [Authorize(Roles = "Customer,Admin")]
         [Route("View all Transactions to an Account")]
         [HttpGet]
         public async Task<ActionResult<List<TransactionDTO>>> ViewAllTransactionsMadeToAnAccount(int AID, int CID)
@@ -236,6 +239,7 @@ namespace MavericksBank.Controllers
         //    return transacs;
         //}
 
+        [Authorize(Roles = "Customer,Admin")]
         [Route("View Transactions in Last month")]
         [HttpGet]
         public async Task<ActionResult<List<TransactionDTO>>> ViewAllTransactionsInTheLastMonth(int CID)
@@ -253,6 +257,7 @@ namespace MavericksBank.Controllers
             }
         }
 
+        [Authorize(Roles = "Customer,Admin")]
         [Route("View Transactions in This month")]
         [HttpGet]
         public async Task<ActionResult<List<TransactionDTO>>> ViewAllTransactionsInThisMonth(int CID)
@@ -270,6 +275,7 @@ namespace MavericksBank.Controllers
             }
         }
 
+        [Authorize(Roles = "Customer,Admin")]
         [Route("View Last N Transactions")]
         [HttpGet]
         public async Task<ActionResult<List<TransactionDTO>>> ViewLastNTransactions(int ID, int n)

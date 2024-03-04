@@ -29,7 +29,7 @@ namespace MavericksBank.Controllers
             _service = service;
         }
 
-        [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Customer,Admin")]
         [Route("AddBeneficiary")]
         [HttpPost]
         public async Task<ActionResult<AddOrUpdateBenifDTO>> AddBeneficiary(AddOrUpdateBenifDTO benifDTO)
@@ -99,7 +99,7 @@ namespace MavericksBank.Controllers
             }
         }
 
-        [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Customer,Admin")]
         [Route("UpdateBeneficiary")]
         [HttpPut]
         public async Task<ActionResult<AddOrUpdateBenifDTO>> UpdateBeneficiary(AddOrUpdateBenifDTO benifDTO)

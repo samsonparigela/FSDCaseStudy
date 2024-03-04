@@ -28,7 +28,7 @@ namespace MavericksBank.Controllers
             _service = service;
         }
 
-        [Authorize(Roles = "Bank Employee")]
+        [Authorize(Roles = "Bank Employee,Admin")]
         [Route("ApproveOrDisapproveALoan")]
         [HttpPut]
         public async Task<ActionResult<Loan>> ApproveOrDisapproveLoan(int LID)
@@ -46,7 +46,7 @@ namespace MavericksBank.Controllers
             }
         }
 
-        [Authorize(Roles = "Bank Employee")]
+        [Authorize(Roles = "Bank Employee,Admin")]
         [Route("ApproveOrDisapproveLoanExtend")]
         [HttpPut]
         public async Task<ActionResult<Loan>> ApproveOrDisapproveLoanExtend(int LID,string approval)
@@ -64,7 +64,7 @@ namespace MavericksBank.Controllers
             }
         }
 
-        [Authorize(Roles = "Bank Employee")]
+        [Authorize(Roles = "Bank Employee,Admin")]
         [Route("GetAllLoans")]
         [HttpGet]
         public async Task<ActionResult<List<Loan>>> GetAllLoansApplied()
@@ -83,8 +83,9 @@ namespace MavericksBank.Controllers
         }
 
 
-        [Route("GetAllLoanPolicies")]
+        [Authorize(Roles = "Bank Employee,Admin")]
         [HttpGet]
+        [Route("GetAllLoanPolicies")]
         public async Task<ActionResult<List<LoanPolicies>>> GetAllLoanPolicies()
         {
             try
@@ -100,61 +101,7 @@ namespace MavericksBank.Controllers
             }
         }
 
-        [Authorize(Roles = "Bank Employee")]
-        [Route("AddLoanPolicies")]
-        [HttpPost]
-        public async Task<ActionResult<LoanPolicies>> AddLoanPolicies(LoanPolicies policies)
-        {
-            try
-            {
-                var loanPolicy = await _service.AddLoanPolicies(policies);
-                _logger.LogInformation("Added Loan Policy");
-                return loanPolicy;
-            }
-            catch (NoLoanFoundException ex)
-            {
-                _logger.LogCritical(ex.Message);
-                return NotFound(ex.Message);
-            }
-        }
-
-        [Authorize(Roles = "Bank Employee")]
-        [Route("DeleteLoanPolicies")]
-        [HttpDelete]
-        public async Task<ActionResult<LoanPolicies>> DeleteLoanPolicies(int ID)
-        {
-            try
-            {
-                var loanPolicy = await _service.DeleteLoanPolicies(ID);
-                _logger.LogInformation("Deleted Loan Policy");
-                return loanPolicy;
-            }
-            catch (NoLoanFoundException ex)
-            {
-                _logger.LogCritical(ex.Message);
-                return NotFound(ex.Message);
-            }
-        }
-
-        [Authorize(Roles = "Bank Employee")]
-        [Route("UpdateLoanPolicies")]
-        [HttpPut]
-        public async Task<ActionResult<LoanPolicies>> UpdateLoanPolicies(LoanPolicies policies)
-        {
-            try
-            {
-                var loanPolicy = await _service.UpdateLoanPolicies(policies);
-                _logger.LogInformation("Updated Loan Policy");
-                return loanPolicy;
-            }
-            catch (NoLoanFoundException ex)
-            {
-                _logger.LogCritical(ex.Message);
-                return NotFound(ex.Message);
-            }
-        }
-
-
+        [Authorize(Roles = "Bank Employee,Admin")]
         [Route("GetAllLoansbyACustomer")]
         [HttpGet]
         public async Task<ActionResult<List<Loan>>> GetAllLoansAppliedByACustomer(int CID)
@@ -172,7 +119,7 @@ namespace MavericksBank.Controllers
             }
         }
 
-        [Authorize(Roles = "Bank Employee")]
+        [Authorize(Roles = "Bank Employee,Admin")]
         [Route("GetAllLoansThatNeedApproval")]
         [HttpGet]
         public async Task<ActionResult<List<Loan>>> GetAllLoansThatNeedApproval()

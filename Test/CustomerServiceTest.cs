@@ -11,92 +11,66 @@ using MavericksBank.Exceptions;
 using System.Text;
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using MavericksBank.Contexts;
+using Microsoft.EntityFrameworkCore;
+using MavericksBank.Repository;
+using Microsoft.Extensions.Configuration;
 
 namespace MavericksBankTest
 {
     [TestFixture]
     public class CustomerServiceTest
     {
-        private CustomerService _customerService;
-        private Mock<IRepository<Customer, int>> _customerRepoMock;
-        private Mock<IRepository<Users, string>> _userRepoMock;
-        private Mock<ITokenService> _tokenServiceMock;
-        private Mock<ILogger<CustomerService>> _loggerMock;
+        RequestTrackerContext context;
 
         [SetUp]
         public void Setup()
         {
-            _customerRepoMock = new Mock<IRepository<Customer, int>>();
-            _userRepoMock = new Mock<IRepository<Users, string>>();
-            _tokenServiceMock = new Mock<ITokenService>();
-            _loggerMock = new Mock<ILogger<CustomerService>>();
-
-            _customerService = new CustomerService(
-                _loggerMock.Object,
-                _customerRepoMock.Object,
-                _userRepoMock.Object,
-                _tokenServiceMock.Object
-            );
+            var options = new DbContextOptionsBuilder<RequestTrackerContext>().UseInMemoryDatabase("dummy2Database").Options;
+            context = new RequestTrackerContext(options);
         }
 
+
         [Test]
+        [Order(1)]
         public async Task RegisterTest()
         {
-            // Arrange
-            var customerRegisterDTO = new CustomerRegisterDTO
-            {
-                UserName = "samsungman",
-                Password = "password123",
-                Name = "Samson Joshua",
-                Aadhaar = "12345",
-                PANNumber = "12345",
-                Gender = "Male",
-                Age = 22,
-                Phone = "12345",
-                UserType = "Customer",
-                Address = "Hyderabad"
-            };
+            var _mockServicelogger = new Mock<ILogger<CustomerService>>();
+            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
+            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
+            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
+            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
+            var _mockCustlogger = new Mock<ILogger<CustomerRepo>>();
+            var _mockUserlogger = new Mock<ILogger<UsersRepo>>();
+
+            var configurationMock = new Mock<IConfiguration>();
+            configurationMock.Setup(c => c["SecretKey"]).Returns("test_secret_keynsmjxkfncifrncfirncifrjncfirncifjrncifrcnfrincifrcnfiurncfirncfiurncfrijncfuirncfirjncfijdcnfiuru");
+
+            // Act
+            var tokenService = new TokenService(configurationMock.Object);
+
+            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
+            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
+            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
+            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
+            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
+            IRepository<Customer, int> _CustRepo = new CustomerRepo(_mockCustlogger.Object, context);
+            IRepository<Users, string> _UserRepo = new UsersRepo(_mockUserlogger.Object, context);
+
+            ITokenService _TokenService = new TokenService(configurationMock.Object);
+            ICustomerAdminService service = new CustomerService(_mockServicelogger.Object,_CustRepo,_UserRepo,_TokenService);
 
             var user = new Users
             {
-                UserID = 1,
-                UserName = customerRegisterDTO.UserName,
+                UserID = 2,
+                UserName = "SS"
+
             };
 
-            var customer = new Customer
-            {
-                CustomerID = 1,
-                Name = "Samson Joshua",
-                Aadhaar = "12345",
-                PANNumber = "12345",
-                Gender = "Male",
-                Age = 22,
-                Phone = "12345",
-                Address = "Hyderabad",
-                UserID = 1
-            };
-
-            _userRepoMock.Setup(repo => repo.GetByID(customerRegisterDTO.UserName)).ReturnsAsync((Users)null);
-            _userRepoMock.Setup(repo => repo.Add(It.IsAny<Users>())).ReturnsAsync(user);
-            _customerRepoMock.Setup(repo => repo.Add(It.IsAny<Customer>())).ReturnsAsync(customer);
-
-            // Act
-            var result = await _customerService.Register(customerRegisterDTO);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(customerRegisterDTO.UserName, result.UserName);
-            Assert.AreEqual("Customer", result.UserType);
-            // Add other assertions as needed
-        }
-
-        [Test]
-        public async Task RegisterExistingUSer()
-        {
-            // Arrange
             var customerRegisterDTO = new CustomerRegisterDTO
             {
-                UserName = "samsungman",
+                UserName = "samsungmany",
                 Password = "password123",
                 Name = "Samson Joshua",
                 Aadhaar = "12345",
@@ -105,116 +79,50 @@ namespace MavericksBankTest
                 Age = 22,
                 Phone = "12345",
                 UserType = "Customer",
-                Address = "Hyderabad"
+                Address = "Hyderabad",
+                DOB = DateTime.Now,
             };
 
-            var existingUser = new Users
-            {
-                UserName = customerRegisterDTO.UserName
-            };
 
-            _userRepoMock.Setup(repo => repo.GetByID(customerRegisterDTO.UserName)).ReturnsAsync(existingUser);
 
-            Assert.ThrowsAsync<UserExistsException>(() => _customerService.Register(customerRegisterDTO));
+            // Act
+            var result = await service.Register(customerRegisterDTO);
+
+            Assert.IsNotNull(result);
+
         }
 
+
         [Test]
+        [Order(2)]
         public async Task LoginTest()
         {
-            // Arrange
-            var loginDTO = new LoginDTO
-            {
-                UserName = "samsungman",
-                Password = "password123",
-                // Add other properties as needed
-            };
+            var _mockServicelogger = new Mock<ILogger<CustomerService>>();
+            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
+            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
+            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
+            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
+            var _mockCustlogger = new Mock<ILogger<CustomerRepo>>();
+            var _mockUserlogger = new Mock<ILogger<UsersRepo>>();
 
-            byte[] GetEncryptedPassword(String password, byte[] key)
-            {
-                HMACSHA512 hmac = new HMACSHA512(key);
-                byte[] userPassword = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return userPassword;
-            }
-
-            var encryptedPwd = GetEncryptedPassword(loginDTO.Password, Encoding.UTF8.GetBytes("test_key"));
-            var user = new Users
-            {
-                UserName = loginDTO.UserName,
-                Key = Encoding.UTF8.GetBytes("test_key"),
-                Password = encryptedPwd,
-                UserType = "Customer"
-            };
-
-            var customer = new Customer
-            {
-                CustomerID = 1,
-            };
-
-            _userRepoMock.Setup(repo => repo.GetByID(loginDTO.UserName)).ReturnsAsync(user);
-            _customerRepoMock.Setup(repo => repo.GetAll()).ReturnsAsync(new List<Customer> { customer });
-            _tokenServiceMock.Setup(service => service.GenerateToken(It.IsAny<LoginDTO>())).ReturnsAsync("generated_token");
+            var configurationMock = new Mock<IConfiguration>();
+            configurationMock.Setup(c => c["SecretKey"]).Returns("test_secret_keynsmjxkfncifrncfirncifrjncfirncifjrncifrcnfrincifrcnfiurncfirncfiurncfrijncfuirncfirjncfijdcnfiurull");
 
             // Act
-            var result = await _customerService.Login(loginDTO);
+            var tokenService = new TokenService(configurationMock.Object);
 
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(loginDTO.UserName, result.UserName);
-            Assert.AreEqual("Customer", result.UserType);
-            Assert.AreEqual(customer.CustomerID, result.userID);
-            Assert.AreEqual("generated_token", result.token);
-        }
+            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
+            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
+            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
+            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
+            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
+            IRepository<Customer, int> _CustRepo = new CustomerRepo(_mockCustlogger.Object, context);
+            IRepository<Users, string> _UserRepo = new UsersRepo(_mockUserlogger.Object, context);
 
-        [Test]
-        public async Task LoginInvalidTest()
-        {
-            // Arrange
-            var loginDTO = new LoginDTO
-            {
-                UserName = "john_doe",
-                Password = "password123",
-                userID = 1,
-                UserType = "Customer"
-            };
+            ITokenService _TokenService = new TokenService(configurationMock.Object);
+            ICustomerAdminService service = new CustomerService(_mockServicelogger.Object, _CustRepo, _UserRepo, _TokenService);
 
-            byte[] GetEncryptedPassword(String password, byte[] key)
-            {
-                HMACSHA512 hmac = new HMACSHA512(key);
-                byte[] userPassword = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return userPassword;
-            }
-            var encryptedPwd = GetEncryptedPassword(loginDTO.Password+"2", Encoding.UTF8.GetBytes("test_key"));
-            var user = new Users
-            {
-                UserName = loginDTO.UserName,
-                Key = Encoding.UTF8.GetBytes("test_key"),
-                Password = encryptedPwd,
-                UserType = "Customer"
-            };
-
-            var customer = new Customer
-            {
-                CustomerID = 1,
-                Name = "Samson Joshua",
-                Aadhaar = "12345",
-                PANNumber = "12345",
-                Gender = "Male",
-                Age = 22,
-                Phone = "12345",
-                Address = "Hyderabad"
-            };
-
-            _userRepoMock.Setup(repo => repo.GetByID(loginDTO.UserName)).ReturnsAsync(user);
-            _customerRepoMock.Setup(repo => repo.GetAll()).ReturnsAsync(new List<Customer> { customer });
-            _tokenServiceMock.Setup(service => service.GenerateToken(It.IsAny<LoginDTO>())).ReturnsAsync("generated_token");
-
-            Assert.ThrowsAsync<InvalidUserException>(() => _customerService.Login(loginDTO));
-        }
-
-        [Test]
-        public async Task RegisterNewUserTest()
-        {
-            // Arrange
             var customerRegisterDTO = new CustomerRegisterDTO
             {
                 UserName = "samsungman",
@@ -226,45 +134,295 @@ namespace MavericksBankTest
                 Age = 22,
                 Phone = "12345",
                 UserType = "Customer",
-                Address = "Hyderabad"
+                Address = "Hyderabad",
+                DOB = DateTime.Now,
             };
 
+
+
+            // Act
+            var result2 = await service.Register(customerRegisterDTO);
+
+            var loginDTO = new LoginDTO
+            {
+                UserName = "samsungman",
+                Password = "password123",
+            };
+
+            byte[] GetEncryptedPassword(String password, byte[] key)
+            {
+                HMACSHA512 hmac = new HMACSHA512(key);
+                byte[] userPassword = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return userPassword;
+            }
+
+            var encryptedPwd = GetEncryptedPassword(loginDTO.Password, Encoding.UTF8.GetBytes("test_secret_key"));
             var user = new Users
             {
-                UserName = customerRegisterDTO.UserName,
+                UserName = loginDTO.UserName,
+                Key = Encoding.UTF8.GetBytes("test_secret_keynsmjxkfncifrncfirncifrjncfirncifjrncifrcnfrincifrcnfiurncfirncfiurncfrijncfuirncfirjncfijdcnfiurull"),
+                Password = encryptedPwd,
+                UserType = "Customer"
             };
 
             var customer = new Customer
             {
-                Name = "Samson Joshua",
-                Aadhaar = "12345",
-                PANNumber = "12345",
-                Gender = "Male",
-                Age = 22,
-                Phone = "12345",
-                Address = "Hyderabad"
+                CustomerID = 1,
             };
 
-            _userRepoMock.Setup(repo => repo.GetByID(customerRegisterDTO.UserName)).ReturnsAsync((Users)null);
-            _userRepoMock.Setup(repo => repo.Add(It.IsAny<Users>())).ReturnsAsync(user);
-            _customerRepoMock.Setup(repo => repo.Add(It.IsAny<Customer>())).ReturnsAsync(customer);
 
             // Act
-            var result = await _customerService.Register(customerRegisterDTO);
+            var result = await service.Login(loginDTO);
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(customerRegisterDTO.UserName, result.UserName);
-            Assert.AreEqual("Customer", result.UserType);
         }
+
+        [Test]
+        [Order(3)]
+        public async Task GetAllCustomersTest()
+        {
+            var _mockServicelogger = new Mock<ILogger<CustomerService>>();
+            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
+            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
+            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
+            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
+            var _mockCustlogger = new Mock<ILogger<CustomerRepo>>();
+            var _mockUserlogger = new Mock<ILogger<UsersRepo>>();
+
+            var configurationMock = new Mock<IConfiguration>();
+            configurationMock.Setup(c => c["SecretKey"]).Returns("test_secret_keynsmjxkfncifrncfirncifrjncfirncifjrncifrcnfrincifrcnfiurncfirncfiurncfrijncfuirncfirjncfijdcnfiurull");
+
+            // Act
+            var tokenService = new TokenService(configurationMock.Object);
+
+            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
+            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
+            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
+            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
+            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
+            IRepository<Customer, int> _CustRepo = new CustomerRepo(_mockCustlogger.Object, context);
+            IRepository<Users, string> _UserRepo = new UsersRepo(_mockUserlogger.Object, context);
+
+            ITokenService _TokenService = new TokenService(configurationMock.Object);
+            ICustomerAdminService service = new CustomerService(_mockServicelogger.Object, _CustRepo, _UserRepo, _TokenService);
+
+            var result = await service.GetAllCustomers();
+            Assert.That(result.Count() == 2);
+        }
+
+        [Test]
+        [Order(4)]
+        public async Task GetCustomerByIDTest()
+        {
+            var _mockServicelogger = new Mock<ILogger<CustomerService>>();
+            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
+            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
+            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
+            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
+            var _mockCustlogger = new Mock<ILogger<CustomerRepo>>();
+            var _mockUserlogger = new Mock<ILogger<UsersRepo>>();
+
+            var configurationMock = new Mock<IConfiguration>();
+            configurationMock.Setup(c => c["SecretKey"]).Returns("test_secret_keynsmjxkfncifrncfirncifrjncfirncifjrncifrcnfrincifrcnfiurncfirncfiurncfrijncfuirncfirjncfijdcnfiurull");
+
+            // Act
+            var tokenService = new TokenService(configurationMock.Object);
+
+            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
+            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
+            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
+            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
+            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
+            IRepository<Customer, int> _CustRepo = new CustomerRepo(_mockCustlogger.Object, context);
+            IRepository<Users, string> _UserRepo = new UsersRepo(_mockUserlogger.Object, context);
+
+            ITokenService _TokenService = new TokenService(configurationMock.Object);
+            ICustomerAdminService service = new CustomerService(_mockServicelogger.Object, _CustRepo, _UserRepo, _TokenService);
+
+            var result = await service.GetCustomerByID(1);
+            Assert.IsNotNull(result);
+        }
+
+
+        [Test]
+        [Order(5)]
+        public async Task UpdateCustomerTest()
+        {
+            var _mockServicelogger = new Mock<ILogger<CustomerService>>();
+            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
+            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
+            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
+            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
+            var _mockCustlogger = new Mock<ILogger<CustomerRepo>>();
+            var _mockUserlogger = new Mock<ILogger<UsersRepo>>();
+
+            var configurationMock = new Mock<IConfiguration>();
+            configurationMock.Setup(c => c["SecretKey"]).Returns("test_secret_keynsmjxkfncifrncfirncifrjncfirncifjrncifrcnfrincifrcnfiurncfirncfiurncfrijncfuirncfirjncfijdcnfiurull");
+
+            // Act
+            var tokenService = new TokenService(configurationMock.Object);
+
+            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
+            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
+            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
+            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
+            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
+            IRepository<Customer, int> _CustRepo = new CustomerRepo(_mockCustlogger.Object, context);
+            IRepository<Users, string> _UserRepo = new UsersRepo(_mockUserlogger.Object, context);
+
+            ITokenService _TokenService = new TokenService(configurationMock.Object);
+            ICustomerAdminService service = new CustomerService(_mockServicelogger.Object, _CustRepo, _UserRepo, _TokenService);
+            var custDTO = new CustomerNameDTO();
+            custDTO.Address = "Bangalore";
+            custDTO.ID = 1;
+            custDTO.phoneNumber = "9011";
+            custDTO.Name = "Samson Joshua";
+            var result = await service.UpdateCustomerName(custDTO);
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        [Order(6)]
+        public async Task DeleteCustomerTest()
+        {
+            var _mockServicelogger = new Mock<ILogger<CustomerService>>();
+            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
+            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
+            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
+            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
+            var _mockCustlogger = new Mock<ILogger<CustomerRepo>>();
+            var _mockUserlogger = new Mock<ILogger<UsersRepo>>();
+
+            var configurationMock = new Mock<IConfiguration>();
+            configurationMock.Setup(c => c["SecretKey"]).Returns("test_secret_keynsmjxkfncifrncfirncifrjncfirncifjrncifrcnfrincifrcnfiurncfirncfiurncfrijncfuirncfirjncfijdcnfiurull");
+
+            // Act
+            var tokenService = new TokenService(configurationMock.Object);
+
+            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
+            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
+            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
+            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
+            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
+            IRepository<Customer, int> _CustRepo = new CustomerRepo(_mockCustlogger.Object, context);
+            IRepository<Users, string> _UserRepo = new UsersRepo(_mockUserlogger.Object, context);
+
+            ITokenService _TokenService = new TokenService(configurationMock.Object);
+            ICustomerAdminService service = new CustomerService(_mockServicelogger.Object, _CustRepo, _UserRepo, _TokenService);
+
+            var customer = await service.DeleteCustomer(1);
+            Assert.IsNotNull(customer);
+        }
+
+
+
+
+        [Test]
+        [Order(5)]
+        public async Task InvalidLoginTest()
+        {
+            var _mockServicelogger = new Mock<ILogger<CustomerService>>();
+            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
+            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
+            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
+            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
+            var _mockCustlogger = new Mock<ILogger<CustomerRepo>>();
+            var _mockUserlogger = new Mock<ILogger<UsersRepo>>();
+
+            var configurationMock = new Mock<IConfiguration>();
+            configurationMock.Setup(c => c["SecretKey"]).Returns("test_secret_keynsmjxkfncifrncfirncifrjncfirncifjrncifrcnfrincifrcnfiurncfirncfiurncfrijncfuirncfirjncfijdcnfiurull");
+
+            // Act
+            var tokenService = new TokenService(configurationMock.Object);
+
+            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
+            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
+            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
+            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
+            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
+            IRepository<Customer, int> _CustRepo = new CustomerRepo(_mockCustlogger.Object, context);
+            IRepository<Users, string> _UserRepo = new UsersRepo(_mockUserlogger.Object, context);
+
+            ITokenService _TokenService = new TokenService(configurationMock.Object);
+            ICustomerAdminService service = new CustomerService(_mockServicelogger.Object, _CustRepo, _UserRepo, _TokenService);
+
+            var loginDTO = new LoginDTO
+            {
+                UserName = "samsungman",
+                Password = "password1234",
+            };
+
+            byte[] GetEncryptedPassword(String password, byte[] key)
+            {
+                HMACSHA512 hmac = new HMACSHA512(key);
+                byte[] userPassword = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return userPassword;
+            }
+
+            var encryptedPwd = GetEncryptedPassword(loginDTO.Password, Encoding.UTF8.GetBytes("test_secret_key"));
+            var user = new Users
+            {
+                UserName = loginDTO.UserName,
+                Key = Encoding.UTF8.GetBytes("test_secret_keynsmjxkfncifrncfirncifrjncfirncifjrncifrcnfrincifrcnfiurncfirncfiurncfrijncfuirncfirjncfijdcnfiurull"),
+                Password = encryptedPwd,
+                UserType = "Customer"
+            };
+
+            var customer = new Customer
+            {
+                CustomerID = 1,
+            };
+
+            Assert.ThrowsAsync<InvalidUserException>(() => service.Login(loginDTO));
+
+        }
+
 
         [Test]
         public async Task RegisterExistingCustomerTest()
         {
-            // Arrange
+            var _mockServicelogger = new Mock<ILogger<CustomerService>>();
+            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
+            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
+            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
+            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
+            var _mockCustlogger = new Mock<ILogger<CustomerRepo>>();
+            var _mockUserlogger = new Mock<ILogger<UsersRepo>>();
+
+            var configurationMock = new Mock<IConfiguration>();
+            configurationMock.Setup(c => c["SecretKey"]).Returns("test_secret_keynsmjxkfncifrncfirncifrjncfirncifjrncifrcnfrincifrcnfiurncfirncfiurncfrijncfuirncfirjncfijdcnfiuru");
+
+            // Act
+            var tokenService = new TokenService(configurationMock.Object);
+
+            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
+            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
+            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
+            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
+            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
+            IRepository<Customer, int> _CustRepo = new CustomerRepo(_mockCustlogger.Object, context);
+            IRepository<Users, string> _UserRepo = new UsersRepo(_mockUserlogger.Object, context);
+
+            ITokenService _TokenService = new TokenService(configurationMock.Object);
+            ICustomerAdminService service = new CustomerService(_mockServicelogger.Object, _CustRepo, _UserRepo, _TokenService);
+
+            var user = new Users
+            {
+                UserID = 2,
+                UserName = "SS"
+
+            };
+
             var customerRegisterDTO = new CustomerRegisterDTO
             {
-                UserName = "samsungman",
+                UserName = "samsungmany",
                 Password = "password123",
                 Name = "Samson Joshua",
                 Aadhaar = "12345",
@@ -273,107 +431,15 @@ namespace MavericksBankTest
                 Age = 22,
                 Phone = "12345",
                 UserType = "Customer",
-                Address = "Hyderabad"
+                Address = "Hyderabad",
+                DOB = DateTime.Now,
             };
 
-            var existingUser = new Users
-            {
-                UserName = customerRegisterDTO.UserName,
-            };
 
-            _userRepoMock.Setup(repo => repo.GetByID(customerRegisterDTO.UserName)).ReturnsAsync(existingUser);
 
-            Assert.ThrowsAsync<UserExistsException>(() => _customerService.Register(customerRegisterDTO));
+            Assert.ThrowsAsync<UserExistsException>(() => service.Register(customerRegisterDTO));
         }
 
-        [Test]
-        public async Task DeleteCustomerTest()
-        {
-            // Arrange
-            int customerIdToDelete = 1;
-            var deletedCustomer = new Customer { CustomerID = 1, Name = "Samson", Phone = "9014445354", Aadhaar = "12345", Address = "Hyd", Age = 21, Gender = "Male", PANNumber = "12345", UserID = 1 };
-
-            _customerRepoMock.Setup(repo => repo.GetByID(customerIdToDelete)).ReturnsAsync(deletedCustomer);
-            _customerRepoMock.Setup(repo => repo.Delete(customerIdToDelete)).ReturnsAsync(deletedCustomer);
-
-            // Act
-            var result = await _customerService.DeleteCustomer(customerIdToDelete);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(customerIdToDelete, result.CustomerID);
-        }
-
-        [Test]
-        public async Task GetCustomerByIDTest()
-        {
-            // Arrange
-            int customerIdToRetrieve = 1;
-            var expectedCustomer = new Customer { CustomerID = 1, Name = "Samson", Phone = "9014445354",Aadhaar="12345",Address="Hyd",Age=21,Gender="Male",PANNumber="12345",UserID=1 };
-
-            _customerRepoMock.Setup(repo => repo.GetByID(customerIdToRetrieve)).ReturnsAsync(expectedCustomer);
-
-            // Act
-            var result = await _customerService.GetCustomerByID(customerIdToRetrieve);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(customerIdToRetrieve, result.CustomerID);
-        }
-
-        [Test]
-        public async Task GetAllCustomersTest()
-        {
-            // Arrange
-            var expectedCustomers = new List<Customer>
-            {
-                new Customer { CustomerID = 1, Name = "Samson", Phone = "9014445354",Aadhaar="12345",Address="Hyd",Age=21,Gender="Male",PANNumber="12345",UserID=1 },
-                new Customer { CustomerID = 2, Name = "Joshua", Phone = "9014445354",Aadhaar="12345",Address="Hyd",Age=21,Gender="Male",PANNumber="12345",UserID=1 }
-            };
-
-            _customerRepoMock.Setup(repo => repo.GetAll()).ReturnsAsync(expectedCustomers);
-
-            // Act
-            var result = await _customerService.GetAllCustomers();
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(expectedCustomers.Count, result.Count);
-        }
-
-        [Test]
-        public async Task UpdateCustomerTest()
-        {
-            // Arrange
-            var customerToUpdate = new CustomerNameDTO
-            {
-                ID = 1,
-                Name = "John Doe",
-                phoneNumber = "1234567890",
-                Address = "123 Main St"
-            };
-
-            var updatedCustomer = new Customer
-            {
-                CustomerID = customerToUpdate.ID,
-                Name = customerToUpdate.Name,
-                Phone = customerToUpdate.phoneNumber,
-                Address = customerToUpdate.Address
-            };
-
-            _customerRepoMock.Setup(repo => repo.GetByID(customerToUpdate.ID)).ReturnsAsync(updatedCustomer);
-            _customerRepoMock.Setup(repo => repo.Update(It.IsAny<Customer>())).ReturnsAsync(updatedCustomer);
-
-            // Act
-            var result = await _customerService.UpdateCustomerName(customerToUpdate);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(customerToUpdate.ID, result.ID);
-            Assert.AreEqual(customerToUpdate.Name, result.Name);
-            Assert.AreEqual(customerToUpdate.phoneNumber, result.phoneNumber);
-            Assert.AreEqual(customerToUpdate.Address, result.Address);
-        }
 
     }
-}
+    }

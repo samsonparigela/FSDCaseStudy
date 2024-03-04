@@ -32,7 +32,7 @@ namespace MavericksBank.Controllers
             _service2 = service2;
         }
 
-        [Authorize(Roles = "Bank Employee")]
+        [Authorize(Roles = "Admin")]
         [Route("AddBank")]
         [HttpPost]
         public async Task<ActionResult<BankCreateDTO>> AddBankAsync(BankCreateDTO bank)
@@ -88,7 +88,7 @@ namespace MavericksBank.Controllers
 
         }
 
-        [Authorize(Roles = "Bank Employee")]
+        [Authorize(Roles = "Admin")]
         [Route("UpdateBank")]
         [HttpPut]
         public async Task<ActionResult<BankUpdateDTO>> UpdateBankAsync(BankUpdateDTO bank)
@@ -107,7 +107,7 @@ namespace MavericksBank.Controllers
 
         }
 
-        [Authorize(Roles = "Bank Employee")]
+        [Authorize(Roles = "Admin")]
         [Route("DeleteBank")]
         [HttpDelete]
         public async Task<ActionResult<Banks>> DeleteAccountAsync(int ID)
@@ -126,7 +126,7 @@ namespace MavericksBank.Controllers
 
         }
 
-        [Authorize(Roles = "Bank Employee")]
+        [Authorize(Roles = "Admin")]
         [Route("AddBranch")]
         [HttpPost]
         public async Task<ActionResult<BranchCreateDTO>> AddBranchAsync(BranchCreateDTO branch)
@@ -197,7 +197,7 @@ namespace MavericksBank.Controllers
             }
         }
 
-        [Authorize(Roles = "Bank Employee")]
+        [Authorize(Roles = "Admin")]
         [Route("UpdateBranch")]
         [HttpPut]
         public async Task<ActionResult<BranchUpdateDTO>> UpdateBranchAsync(BranchUpdateDTO branch)
@@ -215,7 +215,7 @@ namespace MavericksBank.Controllers
             }
         }
 
-        [Authorize(Roles = "Bank Employee")]
+        [Authorize(Roles = "Admin")]
         [Route("DeleteBranch")]
         [HttpDelete]
         public async Task<ActionResult<Branches>> DeleteBranchAsync(string ID)

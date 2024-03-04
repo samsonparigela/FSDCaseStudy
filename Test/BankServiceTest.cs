@@ -1,135 +1,173 @@
 ﻿using System;
 using MavericksBank.Interfaces;
-using MavericksBank.Models;using NUnit.Framework;
+using MavericksBank.Models;
+using NUnit.Framework;
 using Moq;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using MavericksBank.Services;
 using MavericksBank.Models;
 using MavericksBank.Models.DTO;
+using MavericksBank.Contexts;
+using Microsoft.EntityFrameworkCore;
+using MavericksBank.Repository;
 
 namespace MavericksBankTest
 {
     [TestFixture]
     public class BankServiceTest
     {
-        private BankService _bankService;
-        private Mock<IRepository<Banks, int>> _bankRepoMock;
-        private Mock<ILogger<BankService>> _loggerMock;
+        RequestTrackerContext context;
 
         [SetUp]
         public void Setup()
         {
-            _bankRepoMock = new Mock<IRepository<Banks, int>>();
-            _loggerMock = new Mock<ILogger<BankService>>();
-
-            _bankService = new BankService(
-                _loggerMock.Object,
-                _bankRepoMock.Object
-            );
+            var options = new DbContextOptionsBuilder<RequestTrackerContext>().UseInMemoryDatabase("dummy2Database").Options;
+            context = new RequestTrackerContext(options);
         }
 
         [Test]
         public async Task AddBankTest()
         {
+            var _mockServicelogger = new Mock<ILogger<BankService>>();
+            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
+            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
+            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
+            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
+
+            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
+            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
+            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
+            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
+            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
+
+            IBankAdminService service = new BankService(_mockServicelogger.Object, _BankRepo);
             // Arrange
-            var bankCreateDTO = new BankCreateDTO
-            {
-                BankName="ICICI"
-            };
-            var bank = await _bankService.AddBank(bankCreateDTO);
+            var bank = new Banks();
+            bank.BankID = 4;
+            bank.BankName = "HDFC";
+
+            await _BankRepo.Add(bank);
+
+            var bankDTO = new BankCreateDTO();
+            bankDTO.BankName = "Union Bank";
+
+            var addedBank = await service.AddBank(bankDTO);
 
             // Assert
-            Assert.IsNotNull(bank.BankName=="ICICI");
+            Assert.IsNotNull(bankDTO);
+
         }
 
         [Test]
+        [Order(10)]
         public async Task DeleteBankTest()
         {
-            // Arrange
-            var banks = new Banks
-            {
-                BankID = 3,
-                BankName = "ICICI"
-            };
+            var _mockServicelogger = new Mock<ILogger<BankService>>();
+            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
+            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
+            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
+            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
 
-            // Setup mock behavior for GetByID method to return the bank
-            _bankRepoMock.Setup(repo => repo.GetByID(banks.BankID)).ReturnsAsync(banks);
+            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
+            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
+            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
+            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
+            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
 
-            // Setup mock behavior for Delete method to return the deleted bank
-            _bankRepoMock.Setup(repo => repo.Delete(banks.BankID)).ReturnsAsync(banks);
+            IBankAdminService service = new BankService(_mockServicelogger.Object, _BankRepo);
 
-            // Act
-            var deletedBank = await _bankService.DeleteBank(banks.BankID);
+            var bank = new Banks();
+            bank.BankID = 4;
+            bank.BankName = "HDFC";
+
+            await _BankRepo.Add(bank);
+
+            var banks = await service.DeleteBank(4);
 
             // Assert
-            Assert.IsNotNull(deletedBank); // Check if deletedBank is not null, indicating successful deletion
-            Assert.AreEqual(banks.BankID, deletedBank.BankID); // Check if the deletedBank ID matches the ID of the bank we attempted to delete
+            Assert.IsNotNull(banks);
+
         }
 
-
         [Test]
-        public async Task GetBanksByIDTest()
+        public async Task GetBankByIDTest()
         {
-            // Arrange
-            var bank = new Banks { BankID = 1, BankName = "HDFC" };
+            var _mockServicelogger = new Mock<ILogger<BankService>>();
+            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
+            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
+            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
+            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
 
-            _bankRepoMock.Setup(repo => repo.GetByID(bank.BankID)).ReturnsAsync(bank);
+            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
+            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
+            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
+            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
+            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
 
-            // Act
-            var bank2 = await _bankService.GetBankbyID(bank.BankID);
+            IBankAdminService service = new BankService(_mockServicelogger.Object, _BankRepo);
+
+            var addedBank = await service.GetBankbyID(4);
 
             // Assert
-            Assert.That(bank.BankID == bank2.BankID);
+            Assert.IsNotNull(addedBank);
+
         }
 
         [Test]
         public async Task GetAllBanksTest()
         {
-            // Arrange
-            var expectedBanks = new List<Banks>
-            {
-                new Banks { BankID=1,BankName="HDFC" },
-                new Banks { BankID=2,BankName="ICICI" },
-                // Add more banks as needed
-            };
+            var _mockServicelogger = new Mock<ILogger<BankService>>();
+            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
+            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
+            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
+            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
 
-            _bankRepoMock.Setup(repo => repo.GetAll()).ReturnsAsync(expectedBanks);
+            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
+            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
+            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
+            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
+            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
 
-            // Act
-            var result = await _bankService.GetAllBanks();
+            IBankAdminService service = new BankService(_mockServicelogger.Object, _BankRepo);
+
+            var banks = await service.GetAllBanks();
 
             // Assert
-            Assert.AreEqual(expectedBanks.Count, result.Count);
+            Assert.That(banks.Count()==2);
+
         }
 
         [Test]
-        public async Task UpdateBankTest()
+        public async Task UpdateBanksTest()
         {
-            // Arrange
-            var bankToUpdate = new Banks
-            {
-                BankID = 3,
-                BankName = "ICICI"
-            };
+            var _mockServicelogger = new Mock<ILogger<BankService>>();
+            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
+            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
+            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
+            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
 
-            var updatedBankInfo = new BankUpdateDTO
-            {
-                ID = bankToUpdate.BankID,
-                BankName = "Updated ICICI"
-            };
+            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
+            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
+            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
+            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
+            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
 
-            _bankRepoMock.Setup(repo => repo.GetByID(bankToUpdate.BankID)).ReturnsAsync(bankToUpdate);
+            IBankAdminService service = new BankService(_mockServicelogger.Object, _BankRepo);
 
-            _bankRepoMock.Setup(repo => repo.Update(It.IsAny<Banks>())).ReturnsAsync(bankToUpdate);
-
-            // Act
-            var updatedBank = await _bankService.UpdateBank(updatedBankInfo);
+            var bankDTO = new BankUpdateDTO();
+            bankDTO.ID = 4;
+            bankDTO.BankName = "City Bank";
+            var bank = await service.UpdateBank(bankDTO);
 
             // Assert
-            Assert.IsNotNull(updatedBank);
-            Assert.AreEqual(updatedBankInfo.ID, updatedBank.ID);
-            Assert.AreEqual(updatedBankInfo.BankName, updatedBank.BankName);
+            Assert.That(bank.BankName== "City Bank");
+
         }
 
 

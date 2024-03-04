@@ -55,13 +55,14 @@ namespace MavericksBank.Services
 
         public async Task<BranchUpdateDTO> UpdateBranch(BranchUpdateDTO branch)
         {
+
             var myBranch = await _BranchRepo.GetByID(branch.IFSCCode);
             myBranch.BankID = branch.BankID;
             myBranch.BranchName = branch.BranchName;
             myBranch.City = myBranch.City;
 
             await _BranchRepo.Update(myBranch);
-            _logger.LogInformation($"Successfully Updated Branch with ID : {branch.BranchID}");
+            _logger.LogInformation($"Successfully Updated Branch with ID ");
             return branch;
 
         }

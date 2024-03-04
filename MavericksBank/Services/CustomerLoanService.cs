@@ -46,7 +46,7 @@ namespace MavericksBank.Services
             var loan = await _loanRepo.GetByID(loanExtend.LoanID);
             if (loan.Status != "Deposited" || loan.Status != "Pending")
             {
-                if (loan.Status == "Pending")
+                if (loan.Status == "Pending" || loan.Status=="Deposited")
                     goto here;
                 throw new LoanNotApprovedYetException($"Loan is {loan.Status}");
             }
@@ -102,6 +102,7 @@ namespace MavericksBank.Services
         {
             var loan = await _loanRepo.GetByID(LoanID);
             var account = await _AccRepo.GetByID(AccID);
+
             if (loan.Status == "Repayed" || loan.Status == "Deposited")
                 throw new NoLoanFoundException("Loan is already availed");
 

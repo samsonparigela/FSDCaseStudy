@@ -9,7 +9,6 @@ namespace MavericksBank.Interfaces
         public Task<LoginDTO> Register(CustomerRegisterDTO customerRegister);
         public Task<LoginDTO> Login(LoginDTO customerLogin);
         public Task<CustomerNameDTO> UpdateCustomerName(CustomerNameDTO customer);
-        public Task<CustomerPhoneAndAddressDTO> UpdateCustomerPhoneAndAddress(CustomerPhoneAndAddressDTO customer);
         public Task<Customer> DeleteCustomer(int key);
         public Task<Customer> GetCustomerByID(int key);
     }

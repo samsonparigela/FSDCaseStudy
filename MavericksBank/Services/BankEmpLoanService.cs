@@ -65,36 +65,11 @@ namespace MavericksBank.Repository
             return loanPolicies;
         }
 
-        public async Task<LoanPolicies> AddLoanPolicies(LoanPolicies policies)
-        {
-            var loanPolicies = await _LoanPolicyRepo.Add(policies);
-            _logger.LogInformation("Loan Policy added Successfully");
-            return loanPolicies;
-        }
-
-        public async Task<LoanPolicies> DeleteLoanPolicies(int ID)
-        {
-            var loanPolicies = await _LoanPolicyRepo.Delete(ID);
-            _logger.LogInformation("Loan Policy Deleted Successfully");
-            return loanPolicies;
-        }
-
-        public async Task<LoanPolicies> UpdateLoanPolicies(LoanPolicies policies)
-        {
-
-            var loanPolicy = await _LoanPolicyRepo.GetByID(policies.LoanPolicyID);
-            loanPolicy.Interest = policies.Interest;
-            loanPolicy.LoanAmount = policies.LoanAmount;
-            loanPolicy.TenureInMonths = policies.TenureInMonths;
-            loanPolicy = await _LoanPolicyRepo.Update(loanPolicy);
-            _logger.LogInformation("Loan Policy Updated Successfully");
-            return loanPolicy;
-        }
-
         public async Task<List<Loan>> GetAllLoansAppliedByACustomer(int CID)
         {
             var loans = await _LoanRepo.GetAll();
             var Customerloans = loans.Where(l => l.CustomerID == CID).ToList();
+            _logger.LogInformation("Loans appplied by a customer retrieved");
             return Customerloans;
         }
 
@@ -102,6 +77,7 @@ namespace MavericksBank.Repository
         {
             var loans = await _LoanRepo.GetAll();
             var Approvalloans = loans.Where(l => l.Status == "Pending").ToList();
+            _logger.LogInformation("Loans that need approval are retrieved");
             return Approvalloans;
         }
 
@@ -116,6 +92,7 @@ namespace MavericksBank.Repository
             var loans = await _LoanService.GetAllAppliedLoans(CID);
             int transacCount = transactions.Count();
             int loanCount = loans.Count();
+            _logger.LogInformation("Customer Credit worthiness checked");
             if (transacCount > 2 && ratio > 1 )
                 return true;
             return false;

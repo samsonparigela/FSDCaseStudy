@@ -34,6 +34,7 @@ namespace MavericksBank.Services
                 return account;
 
         }
+
         public async Task<Customer> GetCustomerDetailsforAccount(int AID)
         {
             var accounts = await _AccRepo.GetAll();
@@ -43,6 +44,7 @@ namespace MavericksBank.Services
             return customer;
 
         }
+
         public async Task<Accounts> ApproveAccountOpening(int AID)
         {
             var account = await _AccRepo.GetByID(AID);

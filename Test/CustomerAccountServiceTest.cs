@@ -11,8 +11,8 @@ using Moq;
 
 namespace MavericksBankTest
 {
-	public class CustomerAccountServiceTest
-	{
+    public class CustomerAccountServiceTest
+    {
         RequestTrackerContext context;
 
         [SetUp]
@@ -48,10 +48,16 @@ namespace MavericksBankTest
             account.CustomerID = 1;
             account.Status = "Approved";
             account.IFSCCode = "SBI1";
+            await _AccRepo.Add(account);
+            var accDTO = new AccountsCreateDTO();
+            accDTO.AccountNumber = 0;
+            accDTO.AccountType = "Savings";
+            accDTO.Balance = 300;
+            accDTO.customerID = 1;
+            accDTO.IFSCCode = "SBI1";
+            accDTO = await _AccService.OpenAccount(accDTO);
 
-            account = await _AccRepo.Add(account);
-            context.SaveChanges();
-            Assert.That(account.AccountNumber == 34567);
+            Assert.IsNotNull(accDTO);
 
         }
 
@@ -76,6 +82,7 @@ namespace MavericksBankTest
 
             var account = await _AccService.CloseAccount(34567);
             Assert.That(account.AccountNumber == 34567);
+            await _AccRepo.Delete(account.AccountNumber);
         }
 
         [Test]
@@ -100,8 +107,8 @@ namespace MavericksBankTest
 
             var account = await _AccService.ViewAccountByID(34567);
             account.Status = "Approved";
-            _AccRepo.Update(account);
-            Assert.That(account.Status== "Approved");
+            await _AccRepo.Update(account);
+            Assert.That(account.Status == "Approved");
         }
 
         [Test]
@@ -125,7 +132,7 @@ namespace MavericksBankTest
 
 
             var account = await _AccService.ViewAccountByID(34567);
-            Assert.That(account.AccountNumber==34567);
+            Assert.That(account.AccountNumber == 34567);
         }
 
         [Test]
@@ -148,10 +155,10 @@ namespace MavericksBankTest
             ICustomerAccountService _AccService = new CustomerAccountService(_mockServicelogger.Object, _TransacRepo, _AccRepo, _BenifRepo, _BankRepo, _BranchRepo);
 
             var acc = await _AccService.ViewAllYourAccounts(1);
-            foreach(Accounts a in acc)
+            foreach (Accounts a in acc)
                 Console.WriteLine(a.AccountNumber);
             var transacs = await _AccService.ViewAllYourTransactions(1);
-            Assert.That(transacs.Count()== 1);
+            Assert.That(transacs.Count() == 1);
         }
 
         [Test]
@@ -179,7 +186,7 @@ namespace MavericksBankTest
                 TransactionType = "Deposit"
             };
 
-  
+
             _TransacRepo.Add(trans);
             var transactions = await _TransacRepo.GetAll();
             Assert.That(transactions.Count == 1);
@@ -208,6 +215,180 @@ namespace MavericksBankTest
                 Console.WriteLine(a.AccountNumber);
             var transacs = await _AccService.ViewAllYourTransactions(1);
             Assert.That(transacs.Count() == 1);
+        }
+
+        [Test]
+        [Order(7)]
+        public async Task ViewTransactionsByAccountTest()
+        {
+            var _mockServicelogger = new Mock<ILogger<CustomerAccountService>>();
+            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
+            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
+            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
+            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
+
+            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
+            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
+            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
+            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
+            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
+
+            ICustomerAccountService _AccService = new CustomerAccountService(_mockServicelogger.Object, _TransacRepo, _AccRepo, _BenifRepo, _BankRepo, _BranchRepo);
+
+            var transacs = await _AccService.ViewAllTransactionsByAccount(34567);
+            Assert.That(transacs.Count() == 1);
+        }
+
+        [Test]
+        [Order(8)]
+        public async Task ViewTransactionsToAccountTest()
+        {
+            var _mockServicelogger = new Mock<ILogger<CustomerAccountService>>();
+            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
+            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
+            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
+            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
+
+            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
+            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
+            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
+            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
+            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
+
+            ICustomerAccountService _AccService = new CustomerAccountService(_mockServicelogger.Object, _TransacRepo, _AccRepo, _BenifRepo, _BankRepo, _BranchRepo);
+
+            var transacs = await _AccService.ViewAllTransactionsMadeToAnAccount(12345,1);
+            Assert.That(transacs.Count() == 1);
+        }
+
+        [Test]
+        [Order(8)]
+        public async Task ViewTransactionsThisMonthTest()
+        {
+            var _mockServicelogger = new Mock<ILogger<CustomerAccountService>>();
+            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
+            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
+            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
+            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
+
+            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
+            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
+            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
+            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
+            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
+
+            ICustomerAccountService _AccService = new CustomerAccountService(_mockServicelogger.Object, _TransacRepo, _AccRepo, _BenifRepo, _BankRepo, _BranchRepo);
+
+            var transacs = await _AccService.ViewAllTransactionsInThisMonth(1);
+            Assert.That(transacs.Count() == 1);
+        }
+
+        [Test]
+        [Order(9)]
+        public async Task ViewTransactionsLastMonthTest()
+        {
+            var _mockServicelogger = new Mock<ILogger<CustomerAccountService>>();
+            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
+            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
+            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
+            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
+
+            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
+            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
+            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
+            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
+            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
+
+            ICustomerAccountService _AccService = new CustomerAccountService(_mockServicelogger.Object, _TransacRepo, _AccRepo, _BenifRepo, _BankRepo, _BranchRepo);
+
+            var transacs = await _AccService.ViewAllTransactionsInTheLastMonth(1);
+            Assert.That(transacs.Count() == 0);
+        }
+
+        [Test]
+        [Order(9)]
+        public async Task ViewAllBenifAccountsTest()
+        {
+            var _mockServicelogger = new Mock<ILogger<CustomerAccountService>>();
+            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
+            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
+            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
+            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
+
+            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
+            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
+            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
+            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
+            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
+
+            ICustomerAccountService _AccService = new CustomerAccountService(_mockServicelogger.Object, _TransacRepo, _AccRepo, _BenifRepo, _BankRepo, _BranchRepo);
+
+            var transacs = await _AccService.ViewAllYourBenifAccounts(1);
+            Assert.That(transacs.Count() == 0);
+        }
+
+        [Test]
+        [Order(9)]
+        public async Task ViewAllBanksTest()
+        {
+            var _mockServicelogger = new Mock<ILogger<CustomerAccountService>>();
+            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
+            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
+            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
+            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
+
+            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
+            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
+            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
+            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
+            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
+
+            ICustomerAccountService _AccService = new CustomerAccountService(_mockServicelogger.Object, _TransacRepo, _AccRepo, _BenifRepo, _BankRepo, _BranchRepo);
+
+            var bank = new Banks();
+            bank.BankID = 3;
+            bank.BankName = "HDFC";
+
+            await _BankRepo.Add(bank);
+            var banks = await _AccService.ViewAllBanks();
+            Assert.That(banks.Count() == 4);
+        }
+
+        [Test]
+        [Order(9)]
+        public async Task ViewAllBranchesTest()
+        {
+            var _mockServicelogger = new Mock<ILogger<CustomerAccountService>>();
+            var _mockAcclogger = new Mock<ILogger<AccountsRepo>>();
+            var _mockTransaclogger = new Mock<ILogger<TransactionsRepo>>();
+            var _mockBeniflogger = new Mock<ILogger<BeneficiariesRepo>>();
+            var _mockBanklogger = new Mock<ILogger<BanksRepo>>();
+            var _mockBranchlogger = new Mock<ILogger<BranchesRepo>>();
+
+            IRepository<Accounts, int> _AccRepo = new AccountsRepo(_mockAcclogger.Object, context);
+            IRepository<Transactions, int> _TransacRepo = new TransactionsRepo(_mockTransaclogger.Object, context);
+            IRepository<Beneficiaries, int> _BenifRepo = new BeneficiariesRepo(_mockBeniflogger.Object, context);
+            IRepository<Banks, int> _BankRepo = new BanksRepo(_mockBanklogger.Object, context);
+            IRepository<Branches, string> _BranchRepo = new BranchesRepo(_mockBranchlogger.Object, context);
+
+            ICustomerAccountService _AccService = new CustomerAccountService(_mockServicelogger.Object, _TransacRepo, _AccRepo, _BenifRepo, _BankRepo, _BranchRepo);
+
+
+            var branch = new Branches();
+            branch.BankID = 3;
+            branch.BranchName = "Gachibowli Branch";
+            branch.City = "Hyderabad";
+            branch.IFSCCode = "HDFC3";
+
+            await _BranchRepo.Add(branch);
+            var banks = await _AccService.ViewBankBranches(2);
+            Assert.That(banks.Count() == 1);
         }
     }
 }

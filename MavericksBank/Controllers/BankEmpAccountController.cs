@@ -46,7 +46,7 @@ namespace MavericksBank.Controllers
             }
         }
 
-        [Authorize(Roles = "Bank Employee")]
+        [Authorize(Roles = "Bank Employee,Admin")]
         [Route("GetCustomerDetailsForAccount")]
         [HttpGet]
         public async Task<ActionResult<Customer>> GetCustomerDetailsforAccount(int AID)
@@ -80,7 +80,7 @@ namespace MavericksBank.Controllers
             }
         }
 
-        [Authorize(Roles = "Bank Employee")]
+        [Authorize(Roles = "Bank Employee,Admin")]
         [Route("GetAllAccounts")]
         [HttpGet]
         public async Task<ActionResult<List<Accounts>>> GetAllAccounts()
@@ -97,7 +97,7 @@ namespace MavericksBank.Controllers
             }
         }
 
-        [Authorize(Roles = "Bank Employee")]
+        [Authorize(Roles = "Bank Employee,Admin")]
         [Route("GetAllAccountsForCloseRequest")]
         [HttpGet]
         public async Task<ActionResult<List<Accounts>>> GetAllAccountsForCloseRequest()
@@ -114,7 +114,7 @@ namespace MavericksBank.Controllers
             }
         }
 
-        [Authorize(Roles = "Bank Employee")]
+        [Authorize(Roles = "Bank Employee,Admin")]
         [Route("GetAllAccountsForOpenRequest")]
         [HttpGet]
         public async Task<ActionResult<List<Accounts>>> GetAllAccountsForOpenRequest()
@@ -131,7 +131,7 @@ namespace MavericksBank.Controllers
             }
         }
 
-        [Authorize(Roles = "Bank Employee")]
+        [Authorize(Roles = "Bank Employee,Admin")]
         [Route("GetAllTransactions")]
         [HttpGet]
         public async Task<ActionResult<List<TransactionDTO>>> GetAllTransactions()
@@ -148,7 +148,7 @@ namespace MavericksBank.Controllers
             }
         }
 
-        [Authorize(Roles = "Bank Employee")]
+        [Authorize(Roles = "Bank Employee,Admin")]
         [Route("ViewAccountDetails")]
         [HttpGet]
         public async Task<ActionResult<Accounts>> ViewAccountDetails(int AID)
@@ -165,7 +165,7 @@ namespace MavericksBank.Controllers
             }
         }
 
-
+        [Authorize(Roles = "Bank Employee,Admin")]
         [Route("ViewTransactionDetailsByAccount")]
         [HttpGet]
         public async Task<ActionResult<List<TransactionDTO>>> ViewTransactionDetailsByAccount(int AID)
@@ -182,7 +182,7 @@ namespace MavericksBank.Controllers
             }
         }
 
-
+        [Authorize(Roles = "Bank Employee,Admin,Customer")]
         [Route("ViewSentTransactions")]
         [HttpGet]
         public async Task<ActionResult<List<TransactionDTO>>> ViewSentTransactions(int AID)
@@ -200,6 +200,7 @@ namespace MavericksBank.Controllers
 
         }
 
+        [Authorize(Roles = "Bank Employee,Admin,Customer")]
         [Route("ViewReceivedTransactions")]
         [HttpGet]
         public async Task<ActionResult<List<TransactionDTO>>> ViewReceivedTransactions(int AID)
@@ -216,6 +217,7 @@ namespace MavericksBank.Controllers
             }
         }
 
+        [Authorize(Roles = "Bank Employee,Admin")]
         [Route("ViewTransactionsWith5HighestAmount")]
         [HttpGet]
         public async Task<ActionResult<List<TransactionDTO>>> ViewTransactionsWith5HighestAmount()

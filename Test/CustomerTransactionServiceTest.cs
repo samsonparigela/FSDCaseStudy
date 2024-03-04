@@ -83,9 +83,9 @@ public class CustomerTransactionServiceTest
             context.SaveChanges();
         }
         var count = await _AccRepo.GetAll();
-        Console.WriteLine(count + "GGGGGGG");
         Assert.That(6 == count.Count());
     }
+
 
     [Test]
     [Order(2)]
@@ -149,11 +149,10 @@ public class CustomerTransactionServiceTest
         ICustomerTransactionService service = new CustomerTransactionService(_mockServicelogger.Object, _TransacRepo, _AccRepo);
 
 
-        var transactions = await service.GetAllTransactions(12345);
-        Console.WriteLine(transactions.Count());
-        //Assert
+        var transactions = await service.GetAllTransactions(34345);
 
-        Assert.That( 0== transactions.Count());
+        //Assert
+        Assert.That( 2== transactions.Count());
 
     }
 
