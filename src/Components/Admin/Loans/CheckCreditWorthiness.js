@@ -13,6 +13,7 @@ export default function CheckCreditWorthiness(){
           
     };
   
+    
     var [flag,setFlag] = useState(0);
   
     useEffect(() => {
