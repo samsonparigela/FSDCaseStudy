@@ -14,8 +14,8 @@ export default function ApproveLoan(){
     };
   
     useEffect(() => {
-      var func =async()=>{
-          const response2 = await fetch('https://localhost:7075/api/BankEmpLoan/GetAllLoans', {
+      const func =async()=>{
+          await fetch('https://localhost:7075/api/BankEmpLoan/GetAllLoans', {
           method: 'GET',
           headers: {
               'Authorization': 'Bearer '+token,
@@ -34,11 +34,10 @@ export default function ApproveLoan(){
 
     const [loanID, setLoanID] = useState();
     const [loan,setLoan] = useState({})
-    var bankEmpID = sessionStorage.getItem("BID");
-    var [flag,setFlag] = useState(0);
+    const [flag,setFlag] = useState(0);
 
     const validateInput = ({ loanID }) => {
-        if (loanID==null) {
+        if (loanID===null) {
           return false;
         }
         return true;
