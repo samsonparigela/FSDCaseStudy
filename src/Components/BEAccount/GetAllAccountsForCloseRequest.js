@@ -4,7 +4,6 @@ import './style.css'
 export default function GetAllAccountsForCloseRequest(){
 
     const [accounts, setAccounts] = useState([]);
-    const customerID = sessionStorage.getItem("BID");
     const [flag,setFlag] = useState(0);
     
     const fetchAccounts = async () => {
@@ -14,7 +13,6 @@ export default function GetAllAccountsForCloseRequest(){
           method: 'GET',
           headers: {
             'Authorization': 'Bearer '+token,
-            body: JSON.stringify(customerID), // Include your authorization token
             'Content-Type': 'application/json'
           }
         });
@@ -74,7 +72,7 @@ export default function GetAllAccountsForCloseRequest(){
         {accounts.map(acc => (
             <tr key={acc.accountNumber}>
               <td>{acc.accountNumber}</td>
-              <td>{customerID}</td>
+              <td>{acc.customerID}</td>
               <td>{acc.ifscCode}</td>
               <td>{acc.status}</td>
               <td>{acc.accountType}</td>

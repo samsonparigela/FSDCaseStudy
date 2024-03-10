@@ -4,7 +4,6 @@ import './style.css';
 export default function GetAllAccountsForOpenRequest() {
     const [accounts, setAccounts] = useState([]);
     const [flag, setFlag] = useState(0);
-    const customerID = sessionStorage.getItem("BID");
 
     const fetchAccounts = async () => {
         try {
@@ -66,7 +65,7 @@ export default function GetAllAccountsForOpenRequest() {
                                             {accounts.map(acc => (
                                                 <tr key={acc.accountNumber}>
                                                     <td>{acc.accountNumber}</td>
-                                                    <td>{customerID}</td>
+                                                    <td>{acc.customerID}</td>
                                                     <td>{acc.ifscCode}</td>
                                                     <td>{acc.status}</td>
                                                     <td>{acc.accountType}</td>
