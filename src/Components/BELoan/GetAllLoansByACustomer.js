@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './style.css'
 export default function GetAllLoansbyACustomer(){
 
-  var customerID = sessionStorage.getItem("BID");
   const token = sessionStorage.getItem("Token");
 
   const [options,setOptions]= useState([]);
@@ -18,7 +17,7 @@ export default function GetAllLoansbyACustomer(){
 
   useEffect(() => {
     var func =async()=>{
-        const response2 = await fetch('https://localhost:7075/api/Customer/GetAll', {
+        await fetch('https://localhost:7075/api/Customer/GetAll', {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer '+token,
@@ -35,7 +34,6 @@ export default function GetAllLoansbyACustomer(){
     func()
   },[])
     const [loans, setLoans] = useState([]);
-    var [flag,setFlag] = useState(0);
     var [customerID,setCustomerID] =useState("");
 
     const validateInput = ({ customerID }) => {

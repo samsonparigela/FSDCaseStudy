@@ -31,7 +31,7 @@ export default function GetAllAccounts(){
     }
   
   var flagmethod = (e) =>{
-    if(flag==0){
+    if(flag===0){
       setFlag(1)
       fetchAccounts()
     }

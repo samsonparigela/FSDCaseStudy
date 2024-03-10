@@ -13,7 +13,6 @@ export default function CheckCreditWorthiness(){
           
     };
   
-    var [flag,setFlag] = useState(0);
   
     useEffect(() => {
       var func =async()=>{
@@ -78,7 +77,7 @@ export default function CheckCreditWorthiness(){
         }
     }
   
-  var flagmethod = (e) =>{
+  const flagmethod = (e) =>{
     if(flag==0){
         fetchLoans();
         setFlag(1);

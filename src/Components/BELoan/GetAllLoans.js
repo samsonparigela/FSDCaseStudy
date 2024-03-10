@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import './style.css'
 export default function GetAllLoans(){
 
     const [loans, setLoans] = useState([]);
-    var bankEmpID = sessionStorage.getItem("BID");
     var [flag,setFlag] = useState(0);
 
     const fetchLoans = async () => {
@@ -13,7 +12,6 @@ export default function GetAllLoans(){
           method: 'GET',
           headers: {
             'Authorization': 'Bearer '+token,
-            body: JSON.stringify(bankEmpID), // Include your authorization token
             'Content-Type': 'application/json'
           }
         });

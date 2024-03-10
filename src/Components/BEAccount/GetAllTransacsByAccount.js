@@ -3,8 +3,6 @@ import './style.css'
 
 export default function GetAllTransacsByAccount(){
 
-
-  var customerID = sessionStorage.getItem("BID");
   const token = sessionStorage.getItem("Token");
 
   const [options,setOptions]= useState([])
@@ -20,11 +18,10 @@ export default function GetAllTransacsByAccount(){
 
   useEffect(() => {
     var func =async()=>{
-        const response2 = await fetch('https://localhost:7075/api/BankEmpAccount/GetAllAccounts', {
+        await fetch('https://localhost:7075/api/BankEmpAccount/GetAllAccounts', {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer '+token,
-            body: JSON.stringify(customerID), 
             'Content-Type': 'application/json'
         }
     })

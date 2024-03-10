@@ -13,8 +13,6 @@ export default function ApproveLoan(){
           
     };
   
-    var [flag,setFlag] = useState(0);
-  
     useEffect(() => {
       var func =async()=>{
           const response2 = await fetch('https://localhost:7075/api/BankEmpLoan/GetAllLoans', {
@@ -78,7 +76,7 @@ export default function ApproveLoan(){
         }
     }
   
-  var flagmethod = (e) =>{
+  const flagmethod = (e) =>{
     if(flag==0){
         fetchLoans();
         setFlag(1);
