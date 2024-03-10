@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import './style.css'
 
 export default function GetAllAccountsForCloseRequest(){
 
     const [accounts, setAccounts] = useState([]);
-    var customerID = sessionStorage.getItem("BID");
-    var [flag,setFlag] = useState(0);
+    const customerID = sessionStorage.getItem("BID");
+    const [flag,setFlag] = useState(0);
     
     const fetchAccounts = async () => {
       try {
@@ -29,7 +29,7 @@ export default function GetAllAccountsForCloseRequest(){
         console.error('Error fetching:', error);
       }
     }
-  var flagmethod = (e) =>{
+  const flagmethod = (e) =>{
     if(flag==0){
       setFlag(1)
       fetchAccounts()
