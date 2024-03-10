@@ -19,8 +19,6 @@ export default function GetAllAccountsForOpenRequest() {
             if (response.ok) {
                 const accountsData = await response.json();
                 setAccounts(accountsData);
-            } else {
-                console.error('Failed to fetch');
             }
         } catch (error) {
             console.error('Error fetching:', error);
