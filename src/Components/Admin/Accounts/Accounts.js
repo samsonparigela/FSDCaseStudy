@@ -1,13 +1,12 @@
-import GetAllAccounts from "./GetAllAccounts";
-import GetAllAccountsForOpenRequest from './GetAllAccountsForOpenRequest';
-import GetAllAccountsForCloseRequest from './GetAllAccountsForCloseRequest';
-import GetAllTransacs from './GetAllTransacs';
-import GetAllTransacsByAccount from './GetAllTransacsByAccount';
-import GetAllTransacsSent from './GetAllTransacsSent';
-import GetAllTransacsRecieved from './GetAllTransacsRecieved';
-import GetTopTransacs from './GetTopTransacs';
-import GetCustomerForAccount from "./GetCustomerForAccount";
-import Navbar from "../../Home/Navbar";
+import GetAllAccounts from "../../BEAccount/GetAllAccounts";
+import GetAllAccountsForOpenRequest from '../../BEAccount/GetAllAccountsForOpenRequest';
+import GetAllAccountsForCloseRequest from '../../BEAccount/GetAllAccountsForCloseRequest';
+import GetAllTransacs from '../../BEAccount/GetAllTransacs';
+import GetAllTransacsByAccount from '../../BEAccount/GetAllTransacsByAccount';
+import GetAllTransacsSent from '../../BEAccount/GetAllTransacsSent';
+import GetAllTransacsRecieved from '../../BEAccount/GetAllTransacsRecieved';
+import GetTopTransacs from '../../BEAccount/GetTopTransacs';
+import GetCustomerForAccount from "../../BEAccount/GetCustomerForAccount";
 
 export default function Accounts(){
     return(
