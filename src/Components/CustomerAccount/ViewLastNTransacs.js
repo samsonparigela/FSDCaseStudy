@@ -21,6 +21,7 @@ export default function ViewLastNTransacs(){
           if(!validInput){
             alert("Input Cannot be null");
             return null;
+            
           }
           try {
             const token = sessionStorage.getItem('Token');
