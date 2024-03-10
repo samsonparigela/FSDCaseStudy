@@ -1,5 +1,5 @@
 import Delete from "./Delete";
-import GetAll from "./GetAll";
+import GetAll from "../../CustomerAccount/ViewAllBanks";
 import GetByID from "./GetByID";
 import Add from "./Add";
 import Update from "./Update"

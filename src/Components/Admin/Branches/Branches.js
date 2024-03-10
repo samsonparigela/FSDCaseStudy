@@ -1,8 +1,7 @@
 import Delete from "./Delete";
-import GetAll from "./GetAll";
+import GetAll from "../../CustomerAccount/ViewAllBranches";
 import GetByID from "./GetByID";
 import Add from "./Add";
-import Update from "./Update"
 
 export default function Branches(){
     return(
@@ -17,9 +16,6 @@ export default function Branches(){
             <GetByID />
             
             </div>
-            {/* <div style={{ display: 'flex' }}>
-            <Update />
-            </div>  */}
         </div>
     )
 }
