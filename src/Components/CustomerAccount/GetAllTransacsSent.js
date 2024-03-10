@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './style.css'
 export default function GetAllTransacsSent(){
 
-  var customerID = sessionStorage.getItem("CID");
   const token = sessionStorage.getItem("Token");
 
   const [options,setOptions]= useState([])
@@ -17,20 +16,13 @@ export default function GetAllTransacsSent(){
     const [accountNumber,setAccountNumber] = useState(0);
     var [flag,setFlag] = useState(0);
 
-    const validateInput = ({ accountNumber }) => {
-      if (!accountNumber) {
-        return false;
-      }
-      return true;
-    };
-
     useEffect(() => {
       var func =async()=>{
-          const response2 = await fetch('https://localhost:7075/api/CustomerAccount/View All your Accounts?ID='+customerID, {
+          await fetch('https://localhost:7075/api/CustomerAccount/View All your Accounts?ID='+sessionStorage.getItem("CID"), {
           method: 'GET',
           headers: {
               'Authorization': 'Bearer '+token,
-              body: JSON.stringify(customerID), 
+              body: JSON.stringify(sessionStorage.getItem("CID")), 
               'Content-Type': 'application/json'
           }
       })
@@ -45,8 +37,7 @@ export default function GetAllTransacsSent(){
     },[])
 
     const fetchTransacs = async () => {
-      const validInput = validateInput({accountNumber})
-          if(!validInput){
+          if(!accountNumber){
             alert("Account Number Cannot be null");
             return null;
           }
