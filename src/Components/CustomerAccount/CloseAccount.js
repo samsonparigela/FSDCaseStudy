@@ -71,7 +71,7 @@ const token = sessionStorage.getItem("Token");
         try{
         let response = await axios.delete("https://localhost:7075/api/CustomerAccount/CloseAccount?key="+accountNumber,httpHeader)
         setAccount1(response.data);
-        if(response.data.status="Account Closing Approved" && response.data.balance==0)
+        if((response.data.status==="Account Closing Approved") && response.data.balance==0)
         {
           alert("Successfully closed the account");
         }
@@ -95,7 +95,7 @@ const token = sessionStorage.getItem("Token");
 
 
     return(
-        <div style={{ width: '50%', backgroundColor: 'lightblue' }}>
+      <div style={{ width: '100%'}}>
             <div className="container mt-5">
             <div className="row"></div>
             <div className="col-md-12 mb-4">

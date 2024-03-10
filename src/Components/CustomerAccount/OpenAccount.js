@@ -35,22 +35,6 @@ export default function OpenAccount(){
         let val = (event.target.value);
         setSelectedOption(val);
         setBankID(val);
-        // var func =async()=>{
-        //     const response2 = await fetch('https://localhost:7075/api/CustomerAccount/View All Branches?BID='+bankID, {
-        //     method: 'GET',
-        //     headers: {
-        //         'Authorization': 'Bearer '+token,
-        //         body: JSON.stringify(customerID), 
-        //         'Content-Type': 'application/json'
-        //     }
-        // })
-        // .then(response => response.json())
-        // .then(data => {
-        // setSubOptions(data);
-        // });
-    
-        // }
-        //     func();
       };
 
 
@@ -171,7 +155,7 @@ export default function OpenAccount(){
     }
     
     return(
-        <div style={{ width: '50%', backgroundColor: 'lightblue' }}>
+        <div style={{ width: '100%'}}>
             <div className="container mt-5">
                 <div className="row">
                     <div className="col-md-12 mb-4">

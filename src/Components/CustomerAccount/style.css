@@ -7,9 +7,37 @@
   }
   
   .custom-bg-color3 {
-    background-color:    #faf0e6; /* Your hexadecimal color code */
+    background-color:    #e4c6a9; /* Your hexadecimal color code */
   }  
 
+  .container-fluid {
+    /* Set desired width */
+    width: 120%; /* Adjust this value as needed */
+    margin: 0 auto; /* Center the container */
+    /* Add any additional styles as needed */
+  }
 
 
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
 
+.section {
+    margin-bottom: 30px;
+}
+
+.section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.bank-info {
+    display: flex;
+}
+
+.account-operations {
+    display: flex;
+    justify-content: space-between;
+}

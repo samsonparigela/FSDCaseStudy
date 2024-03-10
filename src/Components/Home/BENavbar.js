@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './Images/logo.jpeg'; // Import your logo image
 
-export default function Navbar() {
+export default function BENavbar() {
     const logout = () => {
         if (!window.confirm("Sure to logout?")) {
           return null;
@@ -25,10 +25,10 @@ export default function Navbar() {
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav ml-auto">
                         <li className="nav-item active">
-                            <a className="nav-link" href="http://localhost:3000/Dashboard/">Dashboard</a>
+                            <a className="nav-link" href="http://localhost:3000/BEDashboard/">Dashboard</a>
                         </li>
                         <li className="nav-item active">
-                            <button className="nav-link btn" onClick={logout} onKeyDown={this.handleKeyDown}>Logout</button>
+                            <button className="nav-link btn" onClick={logout}>Logout</button>
                         </li>
                     </ul>
                 </div>

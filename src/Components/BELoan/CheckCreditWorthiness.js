@@ -89,7 +89,7 @@ export default function CheckCreditWorthiness(){
 
 
   return (
-    <div style={{ width: '50%', backgroundColor: 'lightblue' }}>
+    <div style={{ width: '50%'}}>
             <div className="container mt-5">
                 <div className="row">
                     <div className="col-md-12 mb-4">

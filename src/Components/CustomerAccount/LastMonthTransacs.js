@@ -39,8 +39,8 @@ export default function ThisMonthTransacs(){
       setFlag(0)
       }
       return (
-        <div style={{ width: '100%', backgroundColor: 'lightblue' }}>
-        <div className="container mt-5">
+        <div style={{ width: '100%'}}>
+        <div className="container-fluid mt-5">
             <div className="row">
                 <div className="col-md-12 mb-4">
                     <div className="card custom-bg-color">
@@ -53,6 +53,7 @@ export default function ThisMonthTransacs(){
           Get all your Transactions
           </button>
           {flag==1? 
+          <div className="table-responsive">
           <table className="table">
             <thead>
               <tr>
@@ -82,6 +83,7 @@ export default function ThisMonthTransacs(){
               ))}
             </tbody>
           </table>
+          </div>
           :<p></p>}
         </div>
         </div>

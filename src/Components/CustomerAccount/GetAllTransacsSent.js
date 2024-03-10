@@ -18,7 +18,7 @@ export default function GetAllTransacsSent(){
     var [flag,setFlag] = useState(0);
 
     const validateInput = ({ accountNumber }) => {
-      if (!accountNumber.trim()) {
+      if (!accountNumber) {
         return false;
       }
       return true;
@@ -81,12 +81,12 @@ const flagmethod = (e) =>{
         setFlag(0)
         }
   return (
-    <div style={{ width: '100%', backgroundColor: 'lightblue' }}>
+    <div style={{ width: '100%'}}>
 
 
 
 <div>
-<div className="container mt-5">
+<div className="container-fluid mt-5">
                 <div className="row">
                     <div className="col-md-12 mb-4">
                         <div className="card custom-bg-color">
@@ -112,6 +112,7 @@ const flagmethod = (e) =>{
       Get all Transactions
       </button>
       {flag==1? 
+      <div className="table-responsive">
       <table className="table">
       <thead>
         <tr>
@@ -141,7 +142,9 @@ const flagmethod = (e) =>{
         ))}
       </tbody>
     </table>
+    </div>
       :<p></p>}
+
     </div>
     </div>
     </div>

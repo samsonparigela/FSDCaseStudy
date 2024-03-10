@@ -39,7 +39,7 @@ export default function GetAllAccountsForCloseRequest(){
   setFlag(0)
   }
   return (
-    <div style={{ width: '100%', backgroundColor: 'lightblue' }}>
+    <div style={{ width: '100%'}}>
 
 
 
@@ -50,12 +50,14 @@ export default function GetAllAccountsForCloseRequest(){
                         <div className="card custom-bg-color">
                                     <div className="card-body">
                                        
-      <h1>All Accounts for Closing</h1>
-      <button type="button" className="btn btn-success" data-toggle="button" 
-      aria-pressed="false" onClick={flagmethod}>
-      Get all Accounts
-      </button>
+                                    <h1 className="text-center">All Accounts for Closing</h1>
+                            <div className="text-center"> 
+                            <button type="button" className="btn btn-success mb-3" onClick={flagmethod}>
+                            Get all Accounts
+                            </button>
+                            </div>
       {flag==1? 
+      <div className="table-responsive">      
       <table className="table">
         <thead>
           <tr>
@@ -81,6 +83,7 @@ export default function GetAllAccountsForCloseRequest(){
           ))}
         </tbody>
       </table>
+      </div>
       :<p></p>}
     </div>
     </div>

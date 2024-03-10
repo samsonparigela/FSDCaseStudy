@@ -39,20 +39,16 @@ export default function ViewAllYourTransacs(){
       setFlag(0)
       }
       return (
-        <div style={{ width: '100%', backgroundColor: 'lightblue' }}>
-        <div className="container mt-5">
-            <div className="row">
-                <div className="col-md-12 mb-4">
-                    <div className="card custom-bg-color">
-                                <div className="card-body">
-    
-    <div>
+        <div className="container-fluid mt-5">
+        <div className="card custom-bg-color">
+          <div className="card-body">
           <h1>All your Transactions</h1>
           <button type="button" className="btn btn-success" data-toggle="button" 
           aria-pressed="false" onClick={flagmethod}>
           Get all your Transactions
           </button>
           {flag==1? 
+          <div className="table-responsive">
           <table className="table">
             <thead>
               <tr>
@@ -82,13 +78,12 @@ export default function ViewAllYourTransacs(){
               ))}
             </tbody>
           </table>
+          </div>
           :<p></p>}
         </div>
+
         </div>
         </div>
-        </div>
-        </div>
-        </div>
-        </div>
+
       );
     }

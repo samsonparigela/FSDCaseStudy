@@ -113,7 +113,7 @@ export default function GetLoanAmountToAccount(){
                                             <option value="">Select an option</option> {/* Default option */}
                                                 {options2.map((options) => (
                                                 <option key={options.accountNumber} value={options.accountNumber}>
-                                                    {options.accountNumber}
+                                                    {options.accountNumber}&ensp;&ensp;{options.balance}
                                                 </option>
                                                 ))}
                                             </select>

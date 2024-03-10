@@ -34,7 +34,7 @@ export default function RepayLoan(){
                 'Authorization': 'Bearer '+token,
                 'Content-Type': 'application/json'
             },});
-            let filteredList = response.data.filter(obj => obj.status == "Deposited");
+            let filteredList = response.data.filter(obj => obj.status == "Deposited" || obj.status == "Amount Pending");
         setOptions(filteredList);
         }
         func()
@@ -133,7 +133,6 @@ export default function RepayLoan(){
                                                 ))}
                                             </select>
                                         </div>
-                                        <br/>
 
 
                 <label htmlFor="input3">Amount</label>

@@ -82,12 +82,12 @@ export default function GetAllTransacsRecieved(){
     setFlag(0)
     }
   return (
-    <div style={{ width: '100%', backgroundColor: 'lightblue' }}>
+    <div style={{ width: '100%'}}>
 
 
 
 <div>
-<div className="container mt-5">
+<div className="container-fluid mt-5">
                 <div className="row">
                     <div className="col-md-12 mb-4">
                         <div className="card custom-bg-color">

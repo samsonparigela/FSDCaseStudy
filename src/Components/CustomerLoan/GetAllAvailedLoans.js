@@ -20,7 +20,7 @@ export default function GetAllAvailedLoans(){
 
         if (response.ok) {
           const loansData = await response.json();
-          let filteredList = loansData.filter(obj => obj.status !== "Disapproved" && obj.status !== "Repayed");
+          let filteredList = loansData.filter(obj => obj.status !== "Pending");
           setLoans(filteredList);
         } else {
           console.error('Failed to fetch Loans');

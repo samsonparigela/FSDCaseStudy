@@ -85,7 +85,7 @@ export default function GetAllLoansbyACustomer(){
   setFlag(0)
   }
   return (
-    <div style={{ width: '50%', backgroundColor: 'lightblue' }}>
+    <div style={{ width: '80%'}}>
 
 
 <div>
@@ -115,6 +115,7 @@ export default function GetAllLoansbyACustomer(){
       Get
       </button>
       {flag==1? 
+            <div className="table-responsive">    
       <table className="table">
         <thead>
           <tr>
@@ -137,6 +138,7 @@ export default function GetAllLoansbyACustomer(){
           ))}
         </tbody>
       </table>
+      </div>
       :<p></p>}
     </div>
     </div>

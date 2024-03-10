@@ -7,6 +7,7 @@ export default function ApplyLoan(){
     const token = sessionStorage.getItem("Token");
   
     const [options,setOptions]= useState([])
+    const [soptions,setSOptions]= useState({})
 
     const [selectedOption, setSelectedOption] = useState("");
     const [selectedSubOption, setSelectedSubOption] = useState("");
@@ -15,23 +16,23 @@ export default function ApplyLoan(){
       
     const handleChange = (event) => {
       const val =event.target.value;
+
       setSelectedOption(event.target.value);
+      setLoanPolicyID(event.target.value)
+
       for(let i=0;i<options.length;i++){
-        if(options[i].loanPolicyID===val){
+        if(options[i].loanPolicyID===parseInt(val)){
+
+            setSOptions(options[i]);
             setSelectedSubOption(options[i].tenureInMonths)
             setSelectedSubOption2(options[i].interest)
+            setTenureInMonths(options[i].tenureInMonths);
             setInterest(options[i].interest)
         }
       }
-      setLoanPolicyID(event.target.value)
+
           
     };
-
-    const handleSubChange = (event) => {
-        setSelectedSubOption(event.target.value);
-        setLoanPolicyID(event.target.value)
-            
-      };
 
     const handleChange2 = (event) => {
         setSelectedOption2(event.target.value);
@@ -42,6 +43,7 @@ export default function ApplyLoan(){
     const [loanPolicyID,setLoanPolicyID] = useState();
     const [loanPurpose,setLoanPurpose] = useState(0);
     const [loanAmount,setLoanAmount] = useState(0);
+    const [tenureInMonths,setTenureInMonths] = useState(0);
     const [loan,setLoan] = useState({});
     const [flag,setFlag] = useState(0);
     var fullAmount;
@@ -122,7 +124,7 @@ export default function ApplyLoan(){
                                 {selectedOption && (
                                                 <div>
                                                 <label htmlFor="subOptions">Tenure in months</label>
-                                                <select value={selectedSubOption} onChange={handleSubChange} disabled className="browser-default custom-select"> 
+                                                <select value={selectedSubOption} disabled className="browser-default custom-select"> 
                                                     {options.map(option => (
                                                     <option key={option.tenureInMonths} value={option.tenureInMonths}>{option.tenureInMonths}</option>
                                                     ))}
@@ -132,9 +134,9 @@ export default function ApplyLoan(){
                                 {selectedOption && (
                                                 <div>
                                                 <label htmlFor="subOptions">Interest</label>
-                                                <select value={selectedSubOption2} onChange={handleSubChange} disabled className="browser-default custom-select"> 
+                                                <select value={selectedSubOption2} onChange={handleChange2} disabled className="browser-default custom-select"> 
                                                     {options.map(option => (
-                                                    <option key={option.tenureInMonths} value={option.interest}>{option.interest}</option>
+                                                    <option key={option.interest} value={option.interest}>{option.interest}</option>
                                                     ))}
                                                 </select>
                                                 </div>
@@ -173,7 +175,6 @@ export default function ApplyLoan(){
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {console.log(loan)}
                                         <tr key={loan.loanPolicyID}>
                                             <td>{loan.loanPolicyID}</td>
                                             <td>{customerID}</td>

@@ -87,7 +87,7 @@ export default function GetCustomerForAccount(){
   setFlag(0)
   }
   return (
-    <div style={{ width: '100%', backgroundColor: 'lightblue' }}>
+    <div style={{ width: '100%'}}>
 
 
 
@@ -118,6 +118,7 @@ export default function GetCustomerForAccount(){
       Get Customer
       </button>
       {flag===1? 
+      <div className="table-responsive">
       <table className="table">
       <thead>
         <tr>
@@ -146,6 +147,7 @@ export default function GetCustomerForAccount(){
           </tr>
       </tbody>
     </table>
+    </div>
       :<p></p>}
     </div>
     </div>

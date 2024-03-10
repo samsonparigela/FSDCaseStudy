@@ -87,7 +87,7 @@ export default function GetAllTransacsSent(){
   setFlag(0)
   }
   return (
-    <div style={{ width: '100%', backgroundColor: 'lightblue' }}>
+    <div style={{ width: '100%'}}>
 
 
 
@@ -118,6 +118,7 @@ export default function GetAllTransacsSent(){
       Get all Transactions
       </button>
       {flag==1? 
+      <div className="table-responsive">
       <table className="table">
       <thead>
         <tr>
@@ -147,6 +148,7 @@ export default function GetAllTransacsSent(){
         ))}
       </tbody>
     </table>
+    </div>
       :<p></p>}
     </div>
     </div>

@@ -39,7 +39,7 @@ export default function GetAllLoanPolicies(){
   setFlag(0)
   }
   return (
-    <div style={{ width: '50%', backgroundColor: 'lightblue' }}>
+    <div style={{ width: '50%'}}>
 
 
 <div>
@@ -55,6 +55,7 @@ export default function GetAllLoanPolicies(){
       Get
       </button>
       {flag==1? 
+            <div className="table-responsive">    
       <table className="table">
         <thead>
           <tr>
@@ -75,6 +76,7 @@ export default function GetAllLoanPolicies(){
           ))}
         </tbody>
       </table>
+      </div>
       :<p></p>}
     </div>
     </div>

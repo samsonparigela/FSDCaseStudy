@@ -15,13 +15,13 @@ import BEAccount from './Components/BEAccount/Account';
 import BELogin from './Components/Home/BELogin'
 import BELoans from './Components/BELoan/BELoans';
 import BEProfile from './Components/BEProfile/Profile';
-import BEDashboard from './Components/BEDashboard/BEDashboard';
+// import BEDashboard from './Components/BEDashboard/BEDashboard';
 import ForgotPassword from './Components/Home/ForgotPassword';
 import BERegister from './Components/Home/BERegister';
 import CustomerRegister from './Components/Home/CustomerRegister';
 import AdminLogin from './Components/Home/AdminLogin';
 import AdminDashboard from './Components/AdminDashboard/AdminDashboard';
-
+import BEDashboard from './Components/Home/BEDashboard';
 
 export default function App() {
   const IsLoggedIn = sessionStorage.getItem("IsLoggedIn");
@@ -36,7 +36,8 @@ export default function App() {
         <Route path='/Dashboard' element={<Dashboard/>}/>
         <Route path='/BERegister' element={<BERegister/>}/>
         <Route path='/CustomerRegister' element={<CustomerRegister/>}/>
-        <Route path='/BEDashboard' element={<BEDashboard/>}/>
+        {/* <Route path='/BEDashboard' element={<BEDashboard/>}/> */}
+        <Route path="/BEDashBoard" element={<BEDashboard/>}/>
         <Route path='/AdminDashboard' element={<AdminDashboard/>}/>
         <Route path='/Dashboard/Accounts' element={<Accounts/>}/>
         <Route path='/Dashboard/Loans' element={<Loans/>}/>

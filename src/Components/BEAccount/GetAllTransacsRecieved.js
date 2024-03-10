@@ -88,7 +88,7 @@ export default function GetAllTransacsRecieved(){
   setFlag2(0)
   }
   return (
-    <div style={{ width: '100%', backgroundColor: 'lightblue' }}>
+    <div style={{ width: '100%'}}>
 
 
 

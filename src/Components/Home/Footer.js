@@ -9,7 +9,8 @@ const Footer = () => {
                 <div className="row">
                     <div className="col-md-6">
                         <h5>About Us</h5>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sit amet eleifend lectus, ac posuere quam.</p>
+                        <p>At Mavericks Bank, we pride ourselves on being more than just a financial institution; we're your trusted partner on the path to financial success. 
+                            </p>
                     </div>
                     <div className="col-md-6 text-right"> {/* Push to right */}
                         <h5>Connect with Us</h5>

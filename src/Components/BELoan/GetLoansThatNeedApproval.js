@@ -41,7 +41,7 @@ export default function GetLoansThatNeedApproval(){
   setFlag(0)
   }
   return (
-    <div style={{ width: '50%', backgroundColor: 'lightblue' }}>
+    <div style={{ width: '100%'}}>
 
 
 <div>
@@ -56,7 +56,8 @@ export default function GetLoansThatNeedApproval(){
       aria-pressed="false" onClick={flagmethod}>
       Get
       </button>
-      {flag==1? 
+      {flag==1?
+      <div className="table-responsive">     
       <table className="table">
         <thead>
           <tr>
@@ -79,6 +80,7 @@ export default function GetLoansThatNeedApproval(){
           ))}
         </tbody>
       </table>
+      </div>
       :<p></p>}
     </div>
     </div>
