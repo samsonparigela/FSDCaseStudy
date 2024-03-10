@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './style.css'
-import AccountRow from './AccountRow';
+
 export default function GetAllAccounts(){
 
     const [accounts, setAccounts] = useState([]);
@@ -22,7 +22,9 @@ export default function GetAllAccounts(){
         if (response.ok) {
           const accountsData = await response.json();
           setAccounts(accountsData);
-        } 
+        } else {
+          console.error('Failed to fetch');
+        }
       } catch (error) {
         console.error('Error fetching:', error);
       }
@@ -69,9 +71,16 @@ export default function GetAllAccounts(){
           </tr>
         </thead>
         <tbody>
-        {accounts.map(account => (
-                                                    <AccountRow key={account.accountNumber} account={account} />
-                                                ))}
+        {accounts.map(acc => (
+            <tr key={acc.accountNumber}>
+              <td>{acc.accountNumber}</td>
+              <td>{customerID}</td>
+              <td>{acc.ifscCode}</td>
+              <td>{acc.status}</td>
+              <td>{acc.accountType}</td>
+              <td>{acc.balance}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
       </div>
