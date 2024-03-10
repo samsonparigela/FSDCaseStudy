@@ -1,4 +1,5 @@
 import React, { useState} from 'react';
+import LoanTable from './LoanTable';
 import './style.css'
 export default function GetAllLoans(){
 
@@ -53,30 +54,7 @@ export default function GetAllLoans(){
       Get
       </button>
       {flag==1? 
-            <div className="table-responsive">    
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Loan ID</th>
-            <th>Customer ID</th>
-            <th>Loan Amount</th>
-            <th>Status</th>
-            <th>Loan Purpose</th>
-          </tr>
-        </thead>
-        <tbody>
-        {loans.map(loans => (
-            <tr key={loans.loanID}>
-              <td>{loans.loanID}</td>
-              <td>{loans.customerID}</td>
-              <td>{loans.loanAmount}</td>
-              <td>{loans.status}</td>
-              <td>{loans.loanPurpose}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      </div>
+            <LoanTable loans={loans}/>
       :<p></p>}
     </div>
     </div>

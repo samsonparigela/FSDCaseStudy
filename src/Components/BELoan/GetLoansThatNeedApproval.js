@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './style.css'
+import LoanTable from './LoanTable';
 export default function GetLoansThatNeedApproval(){
 
   
@@ -56,31 +57,8 @@ export default function GetLoansThatNeedApproval(){
       aria-pressed="false" onClick={flagmethod}>
       Get
       </button>
-      {flag==1?
-      <div className="table-responsive">     
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Loan ID</th>
-            <th>Customer ID</th>
-            <th>Loan Amount</th>
-            <th>Status</th>
-            <th>Loan Purpose</th>
-          </tr>
-        </thead>
-        <tbody>
-        {loans.map(loans => (
-            <tr key={loans.loanID}>
-              <td>{loans.loanID}</td>
-              <td>{loans.customerID}</td>
-              <td>{loans.loanAmount}</td>
-              <td>{loans.status}</td>
-              <td>{loans.loanPurpose}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      </div>
+      {flag==1? 
+            <LoanTable loans={loans}/>
       :<p></p>}
     </div>
     </div>
