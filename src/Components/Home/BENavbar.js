@@ -15,7 +15,7 @@ export default function BENavbar() {
     return (
         <nav className="navbar navbar-expand-lg navbar-light custom-bg-color2">
             <div className="container-fluid d-flex align-items-center">
-                <a className="navbar-brand d-flex align-items-center" href="#">
+                <a className="navbar-brand d-flex align-items-center" href="/Home">
                     <img src={logo} alt="Maverick Bank Logo" width="70" height="70" className="mr-2" />
                     <span className="text-center">Maverick Bank</span> {/* Center the title */}
                 </a>

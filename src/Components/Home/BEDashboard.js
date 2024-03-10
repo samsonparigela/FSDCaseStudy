@@ -2,13 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from './Navbar';
 import pic1 from './Images/n3.jpg';
-import pic2 from './Images/n5.jpg';
 import pic3 from './Images/n7.jpg';
 import pic4 from './Images/n9.jpg';
 import './style.css';
 
 export default function BEDashboard() {
-  var logout = () => {
+  const logout = () => {
     if (!window.confirm("Sure to logout?")) {
       return null;
     }
@@ -36,7 +35,7 @@ export default function BEDashboard() {
         <div className="row">
           <div className="col-md-6">
             <div className="card transparent-card">
-              <img src={pic1} className="card-img-top" alt="Card Image" />
+              <img src={pic1} className="card-img-top"/>
               <div className="card-body">
                 <h5 className="card-title">Accounts</h5>
                 <p className="card-text">Manage Customer Accounts</p>
@@ -46,7 +45,7 @@ export default function BEDashboard() {
           </div>
           <div className="col-md-6">
             <div className="card transparent-card">
-              <img src={pic3} className="card-img-top" alt="Card Image" />
+              <img src={pic3} className="card-img-top"/>
               <div className="card-body">
               <h5 className="card-title">Loans</h5>
                 <p className="card-text">Manage all the Customer Loans</p>
@@ -58,7 +57,7 @@ export default function BEDashboard() {
         <div className="row">
           <div className="col-md-6">
             <div className="card transparent-card">
-              <img src={pic4} className="card-img-top" alt="Card Image" />
+              <img src={pic4} className="card-img-top"/>
               <div className="card-body">
               <h5 className="card-title">My Profile</h5>
                 <p className="card-text">View your Employee profile. Update the necessary details.</p>

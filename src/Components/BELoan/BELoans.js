@@ -4,8 +4,7 @@ import GetAllLoans from './GetAllLoans'
 import GetAllLoansbyACustomer from './GetAllLoansByACustomer'
 import GetAllLoanPolicies from './GetLoanPolicies'
 import GetLoansThatNeedApproval from './GetLoansThatNeedApproval'
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import BENavbar from '../Home/BENavbar'
 import { Container, Row, Col, Nav } from 'react-bootstrap';
 import './style.css'

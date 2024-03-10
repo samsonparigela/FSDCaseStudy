@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import OpenAccount from "./OpenAccount.js";
 import CloseAccount from "./CloseAccount.js";
 import GetAllAccounts from "./GetAllAccounts.js";
@@ -6,7 +6,6 @@ import ViewAllBanks from "./ViewAllBanks.js";
 import ViewAllBranches from "./ViewAllBranches.js";
 import Navbar from "../Home/Navbar.js";
 import Transacs from './Transacs.js';
-import { useState } from 'react';
 import { Container, Row, Col, Nav } from 'react-bootstrap';
 import './style.css'
 

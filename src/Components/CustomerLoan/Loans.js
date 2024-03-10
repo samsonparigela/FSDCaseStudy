@@ -6,8 +6,7 @@ import GetAllAvailedLoans from './GetAllAvailedLoans';
 import GetLoanAmountToAccount from './GetLoanAmountToAccount';
 import GetLoanPolicies from './GetLoanPolicies';
 import RepayLoan from './RepayLoan';
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Container, Row, Col, Nav } from 'react-bootstrap';
 import './style.css'
 

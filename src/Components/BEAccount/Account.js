@@ -9,8 +9,7 @@ import GetAllTransacsSent from './GetAllTransacsSent';
 import GetAllTransacsRecieved from './GetAllTransacsRecieved';
 import GetTopTransacs from './GetTopTransacs';
 import GetCustomerForAccount from "./GetCustomerForAccount";
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import BENavbar from '../Home/BENavbar'
 import { Container, Row, Col, Nav } from 'react-bootstrap';
 import './style.css'

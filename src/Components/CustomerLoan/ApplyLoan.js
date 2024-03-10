@@ -7,7 +7,6 @@ export default function ApplyLoan(){
     const token = sessionStorage.getItem("Token");
   
     const [options,setOptions]= useState([])
-    const [soptions,setSOptions]= useState({})
 
     const [selectedOption, setSelectedOption] = useState("");
     const [selectedSubOption, setSelectedSubOption] = useState("");
@@ -23,10 +22,8 @@ export default function ApplyLoan(){
       for(let i=0;i<options.length;i++){
         if(options[i].loanPolicyID===parseInt(val)){
 
-            setSOptions(options[i]);
             setSelectedSubOption(options[i].tenureInMonths)
             setSelectedSubOption2(options[i].interest)
-            setTenureInMonths(options[i].tenureInMonths);
             setInterest(options[i].interest)
         }
       }
@@ -43,7 +40,6 @@ export default function ApplyLoan(){
     const [loanPolicyID,setLoanPolicyID] = useState();
     const [loanPurpose,setLoanPurpose] = useState(0);
     const [loanAmount,setLoanAmount] = useState(0);
-    const [tenureInMonths,setTenureInMonths] = useState(0);
     const [loan,setLoan] = useState({});
     const [flag,setFlag] = useState(0);
     var fullAmount;

@@ -29,7 +29,7 @@ export default function ViewAllYourTransacs(){
           }
         }
       var [flag,setFlag] = useState(0);
-      var flagmethod = (e) =>{
+      const flagmethod = (e) =>{
         if(flag==0){
           fetchTransacs()
           setFlag(1)
