@@ -35,7 +35,7 @@ export default function BEDashboard() {
         <div className="row">
           <div className="col-md-6">
             <div className="card transparent-card">
-              <img src={pic1} className="card-img-top"/>
+              <img src={pic1} className="card-img-top" alt="Logo"/>
               <div className="card-body">
                 <h5 className="card-title">Accounts</h5>
                 <p className="card-text">Manage Customer Accounts</p>
@@ -45,7 +45,7 @@ export default function BEDashboard() {
           </div>
           <div className="col-md-6">
             <div className="card transparent-card">
-              <img src={pic3} className="card-img-top"/>
+              <img src={pic3} className="card-img-top" alt="Logo"/>
               <div className="card-body">
               <h5 className="card-title">Loans</h5>
                 <p className="card-text">Manage all the Customer Loans</p>
@@ -57,7 +57,7 @@ export default function BEDashboard() {
         <div className="row">
           <div className="col-md-6">
             <div className="card transparent-card">
-              <img src={pic4} className="card-img-top"/>
+              <img src={pic4} className="card-img-top" alt="Logo"/>
               <div className="card-body">
               <h5 className="card-title">My Profile</h5>
                 <p className="card-text">View your Employee profile. Update the necessary details.</p>
