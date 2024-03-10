@@ -1,22 +1,11 @@
 import React, { useState} from 'react';
 import './style.css'
-
+import AccountRow from './AccountRow';
 export default function GetAllAccountsForCloseRequest(){
 
     const [accounts, setAccounts] = useState([]);
     const [flag,setFlag] = useState(0);
-    function AccountRow({ account }) {
-      return (
-          <tr key={account.accountNumber}>
-              <td>{account.accountNumber}</td>
-              <td>{account.customerID}</td>
-              <td>{account.ifscCode}</td>
-              <td>{account.status}</td>
-              <td>{account.accountType}</td>
-              <td>{account.balance}</td>
-          </tr>
-      );
-  }
+
     const fetchAccounts = async () => {
       try {
         const token = sessionStorage.getItem('Token');
