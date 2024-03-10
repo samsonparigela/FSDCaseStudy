@@ -65,7 +65,7 @@ export default function ViewAllTransacsByAcc(){
       console.error('Error fetching transactions:', error);
     }
   }
-  var flagmethod = (e) =>{
+  const flagmethod = (e) =>{
     if(flag==0){
       fetchTransacs()
       setFlag(1)
