@@ -28,7 +28,7 @@ export default function Navbar() {
                             <a className="nav-link" href="http://localhost:3000/Dashboard/">Dashboard</a>
                         </li>
                         <li className="nav-item active">
-                            <button className="nav-link btn" onClick={logout} onKeyDown={this.handleKeyDown}>Logout</button>
+                            <button className="nav-link btn" onClick={logout}>Logout</button>
                         </li>
                     </ul>
                 </div>
