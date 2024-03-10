@@ -5,7 +5,18 @@ export default function GetAllAccountsForCloseRequest(){
 
     const [accounts, setAccounts] = useState([]);
     const [flag,setFlag] = useState(0);
-    
+    function AccountRow({ account }) {
+      return (
+          <tr key={account.accountNumber}>
+              <td>{account.accountNumber}</td>
+              <td>{account.customerID}</td>
+              <td>{account.ifscCode}</td>
+              <td>{account.status}</td>
+              <td>{account.accountType}</td>
+              <td>{account.balance}</td>
+          </tr>
+      );
+  }
     const fetchAccounts = async () => {
       try {
         const token = sessionStorage.getItem('Token');
@@ -69,16 +80,9 @@ export default function GetAllAccountsForCloseRequest(){
           </tr>
         </thead>
         <tbody>
-        {accounts.map(acc => (
-            <tr key={acc.accountNumber}>
-              <td>{acc.accountNumber}</td>
-              <td>{acc.customerID}</td>
-              <td>{acc.ifscCode}</td>
-              <td>{acc.status}</td>
-              <td>{acc.accountType}</td>
-              <td>{acc.balance}</td>
-            </tr>
-          ))}
+        {accounts.map(account => (
+                                                    <AccountRow key={account.accountNumber} account={account} />
+                                                ))}
         </tbody>
       </table>
       </div>
