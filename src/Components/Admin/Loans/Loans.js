@@ -1,5 +1,5 @@
 import ApproveLoan from './ApproveLoan'
-import CheckCreditWorthiness from './CheckCreditWorthiness'
+import CheckCreditWorthiness from '../../BELoan/CheckCreditWorthiness'
 import GetAllLoans from './GetAllLoans'
 import GetAllLoansbyACustomer from './GetAllLoansByACustomer'
 import GetAllLoanPolicies from './GetLoanPolicies'
@@ -19,7 +19,7 @@ export default function Loans(){
             
         </div>  
         <div style={{ display: 'flex' }}>
-            <CheckCreditWorthiness />
+            <CheckCreditWorthiness/>
             <ApproveLoan />
         </div>  
         <div style={{ display: 'flex' }}>
