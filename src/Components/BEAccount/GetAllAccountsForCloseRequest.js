@@ -1,6 +1,6 @@
 import React, { useState} from 'react';
 import './style.css'
-import AccountRow from './AccountRow';
+import AccountTable from './AccountTable';
 export default function GetAllAccountsForCloseRequest(){
 
     const [accounts, setAccounts] = useState([]);
@@ -54,27 +54,8 @@ export default function GetAllAccountsForCloseRequest(){
                             Get all Accounts
                             </button>
                             </div>
-      {flag==1? 
-      <div className="table-responsive">      
-      <table className="table">
-        <thead>
-          <tr>
-            <th>AccountNumber</th>
-            <th>CustomerID</th>
-            <th>IFSC Code</th>
-            <th>Status</th>
-            <th>Account Type</th>
-            <th>Balance</th>
-            {/* Add more table headers as needed */}
-          </tr>
-        </thead>
-        <tbody>
-        {accounts.map(account => (
-                                                    <AccountRow key={account.accountNumber} account={account} />
-                                                ))}
-        </tbody>
-      </table>
-      </div>
+                            {flag==1? 
+      <AccountTable accounts={accounts}/>
       :<p></p>}
     </div>
     </div>

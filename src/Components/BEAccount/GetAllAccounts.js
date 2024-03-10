@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './style.css'
-
+import AccountTable from './AccountTable';
 export default function GetAllAccounts(){
 
     const [accounts, setAccounts] = useState([]);
@@ -57,33 +57,7 @@ export default function GetAllAccounts(){
       Get all Accounts
       </button>
       {flag==1? 
-      <div className="table-responsive">
-      <table className="table">
-        <thead>
-          <tr>
-            <th>AccountNumber</th>
-            <th>CustomerID</th>
-            <th>IFSC Code</th>
-            <th>Status</th>
-            <th>Account Type</th>
-            <th>Balance</th>
-            {/* Add more table headers as needed */}
-          </tr>
-        </thead>
-        <tbody>
-        {accounts.map(acc => (
-            <tr key={acc.accountNumber}>
-              <td>{acc.accountNumber}</td>
-              <td>{customerID}</td>
-              <td>{acc.ifscCode}</td>
-              <td>{acc.status}</td>
-              <td>{acc.accountType}</td>
-              <td>{acc.balance}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      </div>
+      <AccountTable accounts={accounts}/>
       :<p></p>}
     </div>
     </div>
